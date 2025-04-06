@@ -69,7 +69,7 @@ export default function RichTextEditor({
   }, [field]);
 
   return (
-    <div className="space-y-2">
+    <div className="flex flex-col gap-2">
       {label && (
         <label className="text-sm font-medium text-white">{label}</label>
       )}

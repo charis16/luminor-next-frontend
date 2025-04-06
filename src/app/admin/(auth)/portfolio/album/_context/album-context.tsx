@@ -9,57 +9,7 @@ import {
   useState,
 } from "react";
 
-export type Album = {
-  id: number;
-  category: string;
-  slug: string;
-  description: string;
-  thumbnail: string;
-  authorName: string;
-  authorAvatar: string;
-};
-
-const ALBUMS: Album[] = [
-  {
-    id: 1,
-    category: "Vacation",
-    slug: "vacation",
-    description: "Photos from my vacation",
-    thumbnail: "https://heroui.com/images/card-example-5.jpeg",
-    authorName: "John Doe",
-    authorAvatar: "https://randomuser.me/api/portraits/men/32.jpg",
-  },
-  {
-    id: 2,
-    category: "Wedding",
-    slug: "wedding",
-    description: "Wedding ceremony memories",
-    thumbnail: "https://heroui.com/images/card-example-3.jpeg",
-    authorName: "Jane Smith",
-    authorAvatar: "https://randomuser.me/api/portraits/women/44.jpg",
-  },
-  {
-    id: 3,
-    category: "Nature",
-    slug: "nature",
-    description: "Beautiful nature shots",
-    thumbnail: "https://heroui.com/images/card-example-4.jpeg",
-    authorName: "Alex Johnson",
-    authorAvatar: "https://randomuser.me/api/portraits/men/65.jpg",
-  },
-];
-
-export interface AlbumFormHandle {
-  submit: () => void;
-}
-
-type AlbumContextType = {
-  albums: Album[];
-  filteredAlbums: Album[];
-  search: string;
-  setSearch: (value: string) => void;
-  formRef: React.RefObject<AlbumFormHandle>;
-};
+import { AlbumContextType, AlbumFormHandle, ALBUMS } from "../_type";
 
 const AlbumContext = createContext<AlbumContextType | null>(null);
 

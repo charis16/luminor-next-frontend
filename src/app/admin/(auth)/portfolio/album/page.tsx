@@ -1,7 +1,7 @@
 import ButtonAdd from "./_components/button-add";
 import { AlbumProvider } from "./_context/album-context";
-import InputSearch from "./_components/input-search";
 import AlbumDataPage from "./_components/album-data";
+import AlbumSearchInput from "./_components/album-search-input";
 
 import TitlePage from "@/app/admin/_components/title-page";
 
@@ -16,7 +16,7 @@ export default function IndexPage() {
           <ButtonAdd />
         </TitlePage>
 
-        <InputSearch />
+        <AlbumSearchInput />
         <AlbumDataPage />
       </div>
     </AlbumProvider>

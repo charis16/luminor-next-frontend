@@ -2,10 +2,10 @@
 import { Button } from "@heroui/button";
 import { Save } from "lucide-react";
 
-import { useAlbumContext } from "../_context/album-context";
+import { useCategoryContext } from "../_context/category-context";
 
 export default function ButtonSave() {
-  const { formRef } = useAlbumContext();
+  const { formRef } = useCategoryContext();
 
   const handleSave = () => {
     formRef.current?.submit(); // atau validasi, atau getValues dsb.

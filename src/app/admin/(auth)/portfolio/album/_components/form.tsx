@@ -8,32 +8,22 @@ import {
   type ForwardRefRenderFunction,
 } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@heroui/input";
 import { Select, SelectItem } from "@heroui/select";
+import { Switch } from "@heroui/switch";
 
-import { AlbumFormHandle, useAlbumContext } from "../_context/album-context";
+import { AlbumFormHandle, AlbumFormValues, AlbumSchema } from "../_type";
+import { useAlbumContext } from "../_context/album-context";
 
 import { Dropzone } from "@/app/admin/_components/dropzone";
 import RichTextEditor from "@/app/admin/_components/rich-text-editor";
-
-const AlbumSchema = z.object({
-  slug: z.string().min(1, "Slug is required"),
-  title: z.string().min(1, "Title is required"),
-  category: z.string().min(1, "Category is required"),
-  author: z.string().min(1, "Author name is required"),
-  description: z.string().min(1, "Description is required"),
-  images: z.array(z.any()).min(1, "At least one image is required"),
-  thumbnail: z.any().nullable(),
-});
-
-type AlbumFormValues = z.infer<typeof AlbumSchema>;
 
 const AlbumForm: ForwardRefRenderFunction<AlbumFormHandle> = () => {
   const form = useForm<AlbumFormValues>({
     resolver: zodResolver(AlbumSchema),
     defaultValues: {
+      isPublished: true,
       slug: "",
       title: "",
       category: "",
@@ -50,6 +40,7 @@ const AlbumForm: ForwardRefRenderFunction<AlbumFormHandle> = () => {
   const onSubmit = (data: AlbumFormValues) => {
     const formData = new FormData();
 
+    formData.append("is_publish", data.isPublished ? "publish" : "draft");
     formData.append("slug", data.slug);
     formData.append("title", data.title);
     formData.append("category", data.category);
@@ -85,6 +76,26 @@ const AlbumForm: ForwardRefRenderFunction<AlbumFormHandle> = () => {
       className="flex flex-col gap-4"
       onSubmit={form.handleSubmit(onSubmit)}
     >
+      {/* Published */}
+      <Controller
+        control={form.control}
+        name="isPublished"
+        render={({ field }) => (
+          <Switch
+            ref={field.ref}
+            aria-label="published"
+            checked={field.value}
+            defaultSelected={field.value}
+            name={field.name}
+            size="md"
+            onBlur={field.onBlur}
+            onChange={field.onChange}
+          >
+            {field.value ? "Published" : "Draft"}
+          </Switch>
+        )}
+      />
+      {/* Published */}
       {/* Slug */}
       <Controller
         control={form.control}
@@ -133,9 +144,15 @@ const AlbumForm: ForwardRefRenderFunction<AlbumFormHandle> = () => {
               field.onChange(Array.from(keys)[0] as string)
             }
           >
-            <SelectItem key="Nature">Nature</SelectItem>
-            <SelectItem key="Architecture">Architecture</SelectItem>
-            <SelectItem key="People">People</SelectItem>
+            <SelectItem key="Nature" className="outline-none">
+              Nature
+            </SelectItem>
+            <SelectItem key="Architecture" className="outline-none">
+              Architecture
+            </SelectItem>
+            <SelectItem key="People" className="outline-none">
+              People
+            </SelectItem>
           </Select>
         )}
       />
@@ -156,9 +173,15 @@ const AlbumForm: ForwardRefRenderFunction<AlbumFormHandle> = () => {
               field.onChange(Array.from(keys)[0] as string)
             }
           >
-            <SelectItem key="Alex Johnson">Alex Johnson</SelectItem>
-            <SelectItem key="Emily Smith">Emily Smith</SelectItem>
-            <SelectItem key="Michael Brown">Michael Brown</SelectItem>
+            <SelectItem key="Alex Johnson" className="outline-none">
+              Alex Johnson
+            </SelectItem>
+            <SelectItem key="Emily Smith" className="outline-none">
+              Emily Smith
+            </SelectItem>
+            <SelectItem key="Michael Brown" className="outline-none">
+              Michael Brown
+            </SelectItem>
           </Select>
         )}
       />
@@ -182,6 +205,7 @@ const AlbumForm: ForwardRefRenderFunction<AlbumFormHandle> = () => {
         name="images"
         render={({ field }) => (
           <Dropzone
+            label="Album Images"
             onChange={(files) => field.onChange(files)}
             onSelectThumbnail={(file) =>
               form.setValue("thumbnail", file, { shouldValidate: true })

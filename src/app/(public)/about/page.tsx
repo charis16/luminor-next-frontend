@@ -14,7 +14,7 @@ export default function AboutPage() {
         <h2 className="text-4xl md:text-5xl font-extrabold uppercase text-white mt-2">
           Immortalizing Every Moment
         </h2>
-        <p className="text-gray-400 mt-4 max-w-7xl text-lg md:text-xl ">
+        <p className="text-gray-400 my-6 max-w-7xl text-lg md:text-xl ">
           Luminor is not just a photography vendor, it is a team of passionate
           professionals dedicated to capturing the essence of every moment with
           artistic precision. We specialize in transforming stories into

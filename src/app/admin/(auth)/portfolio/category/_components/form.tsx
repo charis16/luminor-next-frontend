@@ -9,7 +9,6 @@ import {
 } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Input } from "@heroui/input";
 import { Switch } from "@heroui/switch";
 
 import {
@@ -19,6 +18,8 @@ import {
 } from "../_type";
 import { useCategoryContext } from "../_context/category-context";
 import { AlbumFormHandle } from "../../album/_type";
+
+import InputText from "@/app/admin/_components/input-text";
 
 const CategoryForm: ForwardRefRenderFunction<CategoryFormHandle> = () => {
   const form = useForm<CategoryFormValues>({
@@ -77,13 +78,12 @@ const CategoryForm: ForwardRefRenderFunction<CategoryFormHandle> = () => {
         control={form.control}
         name="category"
         render={({ field, fieldState }) => (
-          <Input
-            {...field}
-            errorMessage={fieldState.error?.message}
-            isInvalid={!!fieldState.error}
+          <InputText
+            error={fieldState.error}
+            field={field}
             label="Category"
             labelPlacement="outside"
-            placeholder="ex: nature-collection"
+            placeholder="ex: wedding"
           />
         )}
       />

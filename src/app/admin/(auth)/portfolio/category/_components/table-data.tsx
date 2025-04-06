@@ -77,18 +77,18 @@ export default function TableData() {
         ) : null
       }
     >
-      <TableHeader>
-        <TableHeader columns={[...COLUMNS]}>
-          {(column) => (
-            <TableColumn
-              key={column.uid}
-              align={column.uid === "actions" ? "center" : "start"}
-            >
-              {column.name}
-            </TableColumn>
-          )}
-        </TableHeader>
+      <TableHeader columns={[...COLUMNS]}>
+        {(column) => (
+          <TableColumn
+            key={column.uid}
+            align={column.uid === "actions" ? "center" : "start"}
+            className="!text-white !font-semibold text-base"
+          >
+            {column.name}
+          </TableColumn>
+        )}
       </TableHeader>
+
       <TableBody
         items={data}
         loadingContent={

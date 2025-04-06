@@ -9,7 +9,6 @@ import {
 } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Input } from "@heroui/input";
 import { Select, SelectItem } from "@heroui/select";
 import { Switch } from "@heroui/switch";
 
@@ -18,6 +17,7 @@ import { useAlbumContext } from "../_context/album-context";
 
 import { Dropzone } from "@/app/admin/_components/dropzone";
 import RichTextEditor from "@/app/admin/_components/rich-text-editor";
+import InputText from "@/app/admin/_components/input-text";
 
 const AlbumForm: ForwardRefRenderFunction<AlbumFormHandle> = () => {
   const form = useForm<AlbumFormValues>({
@@ -101,10 +101,9 @@ const AlbumForm: ForwardRefRenderFunction<AlbumFormHandle> = () => {
         control={form.control}
         name="slug"
         render={({ field, fieldState }) => (
-          <Input
-            {...field}
-            errorMessage={fieldState.error?.message}
-            isInvalid={!!fieldState.error}
+          <InputText
+            error={fieldState.error}
+            field={field}
             label="Slug"
             labelPlacement="outside"
             placeholder="ex: nature-collection"
@@ -117,10 +116,9 @@ const AlbumForm: ForwardRefRenderFunction<AlbumFormHandle> = () => {
         control={form.control}
         name="title"
         render={({ field, fieldState }) => (
-          <Input
-            {...field}
-            errorMessage={fieldState.error?.message}
-            isInvalid={!!fieldState.error}
+          <InputText
+            error={fieldState.error}
+            field={field}
             label="Title"
             labelPlacement="outside"
             placeholder="ex: nature collection"
@@ -193,6 +191,7 @@ const AlbumForm: ForwardRefRenderFunction<AlbumFormHandle> = () => {
         render={({ field }) => (
           <RichTextEditor
             field={field}
+            id={field.name}
             label="Album Description"
             placeholder="Tulis deskripsi album..."
           />

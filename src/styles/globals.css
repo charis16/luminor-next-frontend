@@ -187,11 +187,7 @@ html {
 
 /* Editor container */
 .custom-quill .ql-container.ql-snow {
-  background-color: hsl(var(--heroui-default-100)) !important;
   border: none !important;
-  border-radius: 0 0 0.5rem 0.5rem !important;
-  color: hsl(var(--heroui-foreground)) !important;
-  opacity: 1;
 }
 
 /* Editor text */
@@ -203,6 +199,15 @@ html {
 /* Placeholder */
 .custom-quill .ql-editor.ql-blank::before {
   color: hsl(var(--heroui-foreground-500)) !important; /* atau 600 */
-  opacity: 0.6;
-  font-size: var(--heroui-font-size-small);
+  font-style: normal !important;
+}
+
+.custom-quill.is-invalid .ql-editor.ql-blank::before {
+  color: hsl(var(--heroui-danger-400)) !important;
+}
+
+[data-focus-visible="true"] {
+  outline: none !important;
+  outline-offset: 0 !important;
+  box-shadow: none !important;
 }

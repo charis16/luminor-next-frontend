@@ -1,88 +1,184 @@
 "use client";
 
+import { useEffect, useRef } from "react";
+import { ControllerRenderProps } from "react-hook-form";
 import {
   Bold,
   Italic,
   Underline,
   Strikethrough,
-  Link,
   List,
   ListOrdered,
-  Heading1,
-  Heading2,
-  Heading3,
 } from "lucide-react";
-import dynamic from "next/dynamic";
-import { useEffect, useMemo } from "react";
-import { ControllerRenderProps } from "react-hook-form";
-import { renderToStaticMarkup } from "react-dom/server";
+import { Button } from "@heroui/button";
+import { Select, SelectItem } from "@heroui/select";
+import { cn } from "@heroui/theme";
 
-const ReactQuill = dynamic(() => import("react-quill-new"), {
-  ssr: false,
-  loading: () => <p>Loading editor...</p>,
-});
+import MyReactQuill from "./react-quill";
 
 interface RichTextEditorProps {
+  id: string;
   field: ControllerRenderProps<any, any>;
   label?: string;
   placeholder?: string;
+  isInvalid?: boolean;
+  errorMessage?: string;
 }
 
 export default function RichTextEditor({
+  id,
   field,
   label,
   placeholder = "Type here...",
+  isInvalid,
+  errorMessage,
 }: RichTextEditorProps) {
-  const modules = useMemo(() => {
-    return {
-      toolbar: [
-        [{ header: [1, 2, 3, false] }],
-        ["bold", "italic", "underline", "strike"],
-        [{ list: "ordered" }, { list: "bullet" }],
-      ],
-    };
-  }, []);
+  const editorRef = useRef<any>(null);
 
   useEffect(() => {
     if (field.value === null) {
       field.onChange("");
     }
-
-    if (typeof window !== "undefined") {
-      const Quill = require("react-quill-new").Quill;
-      const icons = Quill.import("ui/icons");
-
-      icons.bold = renderToStaticMarkup(<Bold size={16} />);
-      icons.italic = renderToStaticMarkup(<Italic size={16} />);
-      icons.underline = renderToStaticMarkup(<Underline size={16} />);
-      icons.strike = renderToStaticMarkup(<Strikethrough size={16} />);
-      icons.link = renderToStaticMarkup(<Link size={16} />);
-      icons.list = renderToStaticMarkup(<List size={16} />);
-      icons["list-ordered"] = renderToStaticMarkup(<ListOrdered size={16} />);
-
-      if (icons.header) {
-        icons.header["1"] = renderToStaticMarkup(<Heading1 size={16} />);
-        icons.header["2"] = renderToStaticMarkup(<Heading2 size={16} />);
-        icons.header["3"] = renderToStaticMarkup(<Heading3 size={16} />);
-      }
-    }
   }, [field]);
+
+  const formatText = (command: string, value: any = true) => {
+    const editor = editorRef.current?.getEditor();
+
+    if (editor) {
+      editor.format(command, value);
+    }
+  };
 
   return (
     <div className="flex flex-col gap-2">
       {label && (
-        <label className="text-sm font-medium text-white">{label}</label>
+        <label
+          className={cn(
+            "text-sm font-medium",
+            isInvalid ? "text-heroui-danger" : "text-white",
+          )}
+          htmlFor={id}
+        >
+          {label}
+        </label>
       )}
-      <div className="custom-quill">
-        <ReactQuill
-          className="text-white"
-          modules={modules}
+
+      <div
+        className={cn(
+          "custom-quill flex flex-col gap-2 bg-heroui-default-100 overflow-hidden rounded-md p-2",
+          isInvalid && "!bg-danger-50 hover:!border-danger-100 is-invalid",
+        )}
+      >
+        <div className="flex flex-wrap gap-1">
+          <Select
+            aria-label="Heading Format"
+            className={cn("w-[120px]")}
+            classNames={{
+              mainWrapper: "border-none ",
+              trigger: `border-none bg-transparent`,
+            }}
+            defaultSelectedKeys={["normal"]}
+            placeholder="Select Heading"
+            radius="full"
+            size="sm"
+            onSelectionChange={(keys) => {
+              const val = Array.from(keys)[0];
+
+              if (val === "normal") {
+                formatText("header", false);
+              } else {
+                formatText("header", Number(val));
+              }
+            }}
+          >
+            <SelectItem key="normal">Normal</SelectItem>
+            <SelectItem key="1">H1</SelectItem>
+            <SelectItem key="2">H2</SelectItem>
+            <SelectItem key="3">H3</SelectItem>
+          </Select>
+          <Button
+            isIconOnly
+            className="border-none"
+            radius="full"
+            size="sm"
+            type="button"
+            variant="ghost"
+            onPress={() => formatText("bold")}
+          >
+            <Bold size={16} />
+          </Button>
+          <Button
+            isIconOnly
+            className="border-none"
+            radius="full"
+            size="sm"
+            type="button"
+            variant="ghost"
+            onPress={() => formatText("italic")}
+          >
+            <Italic size={16} />
+          </Button>
+          <Button
+            isIconOnly
+            className="border-none"
+            radius="full"
+            size="sm"
+            type="button"
+            variant="ghost"
+            onPress={() => formatText("underline")}
+          >
+            <Underline size={16} />
+          </Button>
+          <Button
+            isIconOnly
+            className="border-none"
+            radius="full"
+            size="sm"
+            type="button"
+            variant="ghost"
+            onPress={() => formatText("strike")}
+          >
+            <Strikethrough size={16} />
+          </Button>
+          <Button
+            isIconOnly
+            className="border-none"
+            radius="full"
+            size="sm"
+            type="button"
+            variant="ghost"
+            onPress={() => formatText("list", "ordered")}
+          >
+            <ListOrdered size={16} />
+          </Button>
+          <Button
+            isIconOnly
+            className="border-none"
+            radius="full"
+            size="sm"
+            type="button"
+            variant="ghost"
+            onPress={() => formatText("list", "bullet")}
+          >
+            <List size={16} />
+          </Button>
+        </div>
+        <MyReactQuill
+          ref={editorRef}
+          classNames={{
+            placeholder: "text-heroui-default-300",
+          }}
+          modules={{ toolbar: false }}
           placeholder={placeholder}
           theme="snow"
           value={field.value}
           onChange={field.onChange}
         />
       </div>
+
+      {isInvalid && (
+        <span className="text-xs text-heroui-danger p-1">{errorMessage}</span>
+      )}
     </div>
   );
 }

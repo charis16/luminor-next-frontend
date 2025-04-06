@@ -132,8 +132,8 @@ export function Sidebar() {
                 className={cn(
                   "w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition",
                   isActive
-                    ? "bg-gray-700 text-white"
-                    : "text-gray-400 hover:bg-gray-700",
+                    ? "bg-foreground-200 text-white font-medium"
+                    : "text-white hover:bg-foreground-200",
                 )}
                 onClick={() => (children ? toggleMenu(label) : closeMobile())}
               >
@@ -167,8 +167,8 @@ export function Sidebar() {
                         className={cn(
                           "block text-sm px-3 py-1 rounded-md",
                           pathname.startsWith(sub.href)
-                            ? "bg-gray-600 text-white"
-                            : "text-gray-400 hover:bg-gray-600",
+                            ? "bg-foreground-200 text-white font-medium"
+                            : "text-white hover:bg-foreground-200",
                         )}
                         href={sub.href}
                         onClick={closeMobile}

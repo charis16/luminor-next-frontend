@@ -211,3 +211,61 @@ html {
   outline-offset: 0 !important;
   box-shadow: none !important;
 }
+
+.heroui-input-wrapper {
+  @apply border border-[hsl(var(--heroui-default-300))] text-[hsl(var(--heroui-foreground))] rounded-md px-3 py-2 text-sm focus-within:border-2 focus-within:border-white transition;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  min-height: 2.5rem;
+}
+
+.heroui-tag {
+  @apply bg-[hsl(var(--heroui-default-300))] text-[hsl(var(--heroui-foreground))] px-2 py-1 rounded-md text-sm;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.heroui-tag-remove {
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.ReactTags__tags {
+  all: unset; /* reset all bawaan */
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.ReactTags__selected {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding-left: 0.25rem; /* ← kasih jarak kiri */
+  padding-right: 0.25rem; /* ← kasih jarak kanan */
+}
+
+.ReactTags__tagInputField {
+  all: unset;
+  outline: none;
+  min-width: 300px;
+  flex: 1;
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  line-height: 1.5; /* <- bantu penyamaan vertikal */
+  padding-top: 0.25rem; /* <- atau sesuaikan manual jika masih miring */
+  padding-bottom: 0.25rem;
+  display: flex;
+  align-items: center;
+}
+
+/* Optional: hide accessibility <p role="alert"> if needed */
+.ReactTags__ariaLive {
+  display: none;
+}

@@ -14,7 +14,7 @@ import { AboutUsFormValues, AboutUsSchema, FormHandle } from "../_type";
 import { AlbumFormHandle } from "../../../portfolio/album/_type";
 import { useAboutUsContext } from "../_context/about-us-context";
 
-import RichTextEditor from "@/app/admin/_components/rich-text-editor";
+import { RichTextEditor } from "@/app/admin/_components";
 
 const AboutUsForm: ForwardRefRenderFunction<FormHandle> = () => {
   const form = useForm<AboutUsFormValues>({

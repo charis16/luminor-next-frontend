@@ -1,6 +1,4 @@
-import { Header } from "../_components/header";
-import { Sidebar } from "../_components/sidebar";
-
+import { Header, Sidebar } from "../_components";
 import { SidebarProvider } from "../_context/sidebar-context";
 
 export default function LayoutAdmin({

@@ -1,10 +1,10 @@
 import { ScrollShadow } from "@heroui/scroll-shadow";
 
-import AlbumForm from "../_components/form";
 import { AlbumProvider } from "../_context/album-context";
 import ButtonSave from "../_components/button-save";
+import Form from "../_components/form";
 
-import TitlePage from "@/app/admin/_components/title-page";
+import { TitlePage } from "@/app/admin/_components";
 
 export default async function AlbumCreatePage() {
   return (
@@ -22,7 +22,7 @@ export default async function AlbumCreatePage() {
           hideScrollBar
           className="md:h-[calc(100vh-15rem)] h-[calc(100vh-19rem)]"
         >
-          <AlbumForm />
+          <Form />
         </ScrollShadow>
       </div>
     </AlbumProvider>

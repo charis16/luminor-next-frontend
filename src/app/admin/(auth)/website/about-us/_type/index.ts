@@ -5,10 +5,6 @@ export interface FormHandle {
 }
 
 export type AboutUsContextType = {
-  aboutUsBriefHomeEn: string; // buat nampilin about us bahasa inggris di home
-  aboutUsBriefHomeId: string; // buat nampilin about us bahasa indonesia di home
-  aboutUsEn: string; // buat nampilin about us bahasa inggris di home
-  aboutUsId: string; // buat nampilin about us bahasa indonesia di home
   formRef: React.RefObject<FormHandle>;
 };
 

@@ -7,7 +7,8 @@ import { useSidebar } from "../_context/sidebar-context";
 
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useBreadcrumb } from "@/hooks/use-breadcrumb";
-export function Header() {
+
+export default function Header() {
   const { toggleSidebar, toggleMobile } = useSidebar();
   const isMobile = useIsMobile();
   const breadcrumbs = useBreadcrumb();

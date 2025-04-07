@@ -15,9 +15,11 @@ import { Switch } from "@heroui/switch";
 import { AlbumFormHandle, AlbumFormValues, AlbumSchema } from "../_type";
 import { useAlbumContext } from "../_context/album-context";
 
-import { Dropzone } from "@/app/admin/_components/dropzone";
-import RichTextEditor from "@/app/admin/_components/rich-text-editor";
-import InputText from "@/app/admin/_components/input-text";
+import {
+  DropzoneInput,
+  InputText,
+  RichTextEditor,
+} from "@/app/admin/_components";
 
 const AlbumForm: ForwardRefRenderFunction<AlbumFormHandle> = () => {
   const form = useForm<AlbumFormValues>({
@@ -41,7 +43,7 @@ const AlbumForm: ForwardRefRenderFunction<AlbumFormHandle> = () => {
     const formData = new FormData();
 
     formData.append("is_publish", data.isPublished ? "publish" : "draft");
-    formData.append("slug", data.slug);
+    formData.append("slug", data.slug ?? "untitled");
     formData.append("title", data.title);
     formData.append("category", data.category);
     formData.append("author", data.author);
@@ -102,16 +104,30 @@ const AlbumForm: ForwardRefRenderFunction<AlbumFormHandle> = () => {
         name="slug"
         render={({ field, fieldState }) => (
           <InputText
+            description="Slug is used for SEO and URL purposes. It should be unique and descriptive. If left empty, it will be generated from the title."
             error={fieldState.error}
-            field={field}
+            field={{
+              ...field,
+              onBlur: () => {
+                if (!field.value) {
+                  const generatedSlug = form
+                    .getValues("title")
+                    .toLowerCase()
+                    .replace(/\s+/g, "-")
+                    .replace(/[^a-z0-9-]/g, "");
+                  const timestamp = new Date().getTime();
+
+                  field.onChange(generatedSlug || `untitled-${timestamp}`);
+                }
+                field.onBlur();
+              },
+            }}
             label="Slug"
             labelPlacement="outside"
             placeholder="ex: nature-collection"
           />
         )}
       />
-
-      {/* Title */}
       <Controller
         control={form.control}
         name="title"
@@ -136,8 +152,9 @@ const AlbumForm: ForwardRefRenderFunction<AlbumFormHandle> = () => {
             isInvalid={!!fieldState.error}
             label="Category"
             labelPlacement="outside"
-            placeholder="Pilih kategori"
+            placeholder="Select Category"
             selectedKeys={[field.value]}
+            variant="bordered"
             onSelectionChange={(keys) =>
               field.onChange(Array.from(keys)[0] as string)
             }
@@ -165,8 +182,9 @@ const AlbumForm: ForwardRefRenderFunction<AlbumFormHandle> = () => {
             isInvalid={!!fieldState.error}
             label="Author"
             labelPlacement="outside"
-            placeholder="Pilih author"
+            placeholder="Select Author"
             selectedKeys={[field.value]}
+            variant="bordered"
             onSelectionChange={(keys) =>
               field.onChange(Array.from(keys)[0] as string)
             }
@@ -203,7 +221,7 @@ const AlbumForm: ForwardRefRenderFunction<AlbumFormHandle> = () => {
         control={form.control}
         name="images"
         render={({ field }) => (
-          <Dropzone
+          <DropzoneInput
             label="Album Images"
             onChange={(files) => field.onChange(files)}
             onSelectThumbnail={(file) =>

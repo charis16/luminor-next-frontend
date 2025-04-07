@@ -42,7 +42,7 @@ export const ALBUMS: Album[] = [
 
 export const AlbumSchema = z.object({
   isPublished: z.boolean(),
-  slug: z.string().min(1, "Slug is required"),
+  slug: z.string().optional(),
   title: z.string().min(1, "Title is required"),
   category: z.string().min(1, "Category is required"),
   author: z.string().min(1, "Author name is required"),

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ControllerRenderProps } from "react-hook-form";
 import {
   Bold,
@@ -34,6 +34,7 @@ export default function RichTextEditor({
   errorMessage,
 }: RichTextEditorProps) {
   const editorRef = useRef<any>(null);
+  const [isFocused, setIsFocused] = useState(false);
 
   useEffect(() => {
     if (field.value === null) {
@@ -65,11 +66,12 @@ export default function RichTextEditor({
 
       <div
         className={cn(
-          "custom-quill flex flex-col gap-2 bg-heroui-default-100 overflow-hidden rounded-md p-2",
+          "custom-quill flex flex-col gap-2 bg-heroui-default-100 overflow-hidden rounded-md p-2 rounded-md transition-all duration-150",
           isInvalid && "!bg-danger-50 hover:!border-danger-100 is-invalid",
+          isFocused && "border-2 border-white",
         )}
       >
-        <div className="flex flex-wrap gap-1">
+        <div className={cn("flex flex-wrap gap-1")}>
           <Select
             aria-label="Heading Format"
             className={cn("w-[120px]")}
@@ -172,7 +174,9 @@ export default function RichTextEditor({
           placeholder={placeholder}
           theme="snow"
           value={field.value}
+          onBlur={() => setIsFocused(false)}
           onChange={field.onChange}
+          onFocus={() => setIsFocused(true)}
         />
       </div>
 

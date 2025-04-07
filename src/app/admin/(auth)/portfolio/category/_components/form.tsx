@@ -18,8 +18,7 @@ import {
 } from "../_type";
 import { useCategoryContext } from "../_context/category-context";
 import { AlbumFormHandle } from "../../album/_type";
-
-import InputText from "@/app/admin/_components/input-text";
+import { InputText } from "@/app/admin/_components";
 
 const CategoryForm: ForwardRefRenderFunction<CategoryFormHandle> = () => {
   const form = useForm<CategoryFormValues>({

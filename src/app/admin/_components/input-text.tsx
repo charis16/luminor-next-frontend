@@ -22,13 +22,15 @@ export default function InputText({
       {...rest}
       ref={field?.ref}
       classNames={{
-        input: error ? "placeholder:!text-danger-400" : "",
+        inputWrapper: error && "bg-danger-50 hover:bg-danger-100",
+        input: error && "placeholder:!text-danger-400",
         ...rest.classNames,
       }}
       errorMessage={error?.message}
       isInvalid={!!error}
       name={field?.name ?? name}
       value={field?.value ?? value}
+      variant="bordered"
       onBlur={field?.onBlur ?? onBlur}
       onChange={field?.onChange ?? onChange}
     />

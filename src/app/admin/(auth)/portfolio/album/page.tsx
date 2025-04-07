@@ -1,9 +1,7 @@
-import ButtonAdd from "./_components/button-add";
+import { AlbumData, AlbumSearchInput, ButtonAdd } from "./_components";
 import { AlbumProvider } from "./_context/album-context";
-import AlbumDataPage from "./_components/album-data";
-import AlbumSearchInput from "./_components/album-search-input";
 
-import TitlePage from "@/app/admin/_components/title-page";
+import { TitlePage } from "@/app/admin/_components";
 
 export default function IndexPage() {
   return (
@@ -17,7 +15,7 @@ export default function IndexPage() {
         </TitlePage>
 
         <AlbumSearchInput />
-        <AlbumDataPage />
+        <AlbumData />
       </div>
     </AlbumProvider>
   );

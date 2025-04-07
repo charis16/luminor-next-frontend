@@ -1,10 +1,9 @@
 import { ScrollShadow } from "@heroui/scroll-shadow";
 
 import { AboutUsProvider } from "./_context/about-us-context";
-import ButtonSave from "./_components/button-save";
-import AboutUsForm from "./_components/form";
+import { ButtonSave, Form } from "./_components";
 
-import TitlePage from "@/app/admin/_components/title-page";
+import { TitlePage } from "@/app/admin/_components";
 
 export default function AboutPage() {
   return (
@@ -21,7 +20,7 @@ export default function AboutPage() {
           hideScrollBar
           className="md:h-[calc(100vh-15rem)] h-[calc(100vh-19rem)]"
         >
-          <AboutUsForm />
+          <Form />
         </ScrollShadow>
       </div>
     </AboutUsProvider>

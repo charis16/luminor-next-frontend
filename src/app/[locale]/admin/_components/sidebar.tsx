@@ -53,10 +53,7 @@ const navItems = [
   {
     label: "Setting",
     icon: Settings,
-    children: [
-      { label: "User", href: "/admin/setting/user" },
-      { label: "Team", href: "/admin/setting/team" },
-    ],
+    children: [{ label: "User", href: "/admin/setting/user" }],
   },
 ];
 
@@ -124,7 +121,8 @@ export default function Sidebar() {
       {/* Navigation */}
       <nav className="flex-1 px-2 space-y-1 mt-4 overflow-y-auto">
         {navItems.map(({ href, label, icon: Icon, children }) => {
-          const isActive = href && pathname.startsWith(href);
+          const isActive =
+            href && pathname.replace(/^\/(id|en)/, "").startsWith(href);
           const isOpen = openMenus[label];
 
           return (
@@ -167,7 +165,9 @@ export default function Sidebar() {
                         key={sub.href}
                         className={cn(
                           "block text-sm px-3 py-1 rounded-md",
-                          pathname.startsWith(sub.href)
+                          pathname
+                            .replace(/^\/(id|en)/, "")
+                            .startsWith(sub.href)
                             ? "bg-foreground-200 text-white font-medium"
                             : "text-white hover:bg-foreground-200",
                         )}

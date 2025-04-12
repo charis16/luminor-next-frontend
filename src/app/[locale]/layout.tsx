@@ -20,6 +20,17 @@ export const metadata: Metadata = {
   icons: {
     icon: "/favicon.ico",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: siteConfigPublic.name,
+    description: siteConfigPublic.description,
+    images: ["/og.png"],
+  },
+  openGraph: {
+    title: siteConfigPublic.name,
+    description: siteConfigPublic.description,
+    images: ["/og.png"],
+  },
 };
 
 export const viewport: Viewport = {

@@ -7,7 +7,7 @@ import {
 } from "@heroui/dropdown";
 import { Avatar } from "@heroui/avatar";
 import { Button } from "@heroui/button";
-import { UserCircle, LogOut, Settings } from "lucide-react";
+import { LogOut, Settings } from "lucide-react";
 
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -45,13 +45,6 @@ export default function UserDropdown({
 
         <DropdownMenu className="w-56" variant="faded">
           <DropdownSection showDivider title="Account">
-            <DropdownItem
-              key="profile"
-              startContent={<UserCircle className="w-4 h-4" />}
-            >
-              Profile
-            </DropdownItem>
-
             <DropdownItem
               key="setting"
               startContent={<Settings className="w-4 h-4" />}

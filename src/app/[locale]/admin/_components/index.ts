@@ -48,5 +48,9 @@ export const UserDropdown = dynamic(() => import("./user-dropdown"), {
   ssr: false,
 });
 
+export const SelectOption = dynamic(() => import("./select-option"), {
+  ssr: false,
+});
+
 export { default as Sidebar } from "./sidebar";
 export { default as Header } from "./header";

@@ -9,7 +9,6 @@ import {
 } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Select, SelectItem } from "@heroui/select";
 import { Switch } from "@heroui/switch";
 
 import { AlbumFormHandle, AlbumFormValues, AlbumSchema } from "../_type";
@@ -19,6 +18,7 @@ import {
   DropzoneInput,
   InputText,
   RichTextEditor,
+  SelectOption,
 } from "@/app/[locale]/admin/_components";
 
 const AlbumForm: ForwardRefRenderFunction<AlbumFormHandle> = () => {
@@ -145,27 +145,18 @@ const AlbumForm: ForwardRefRenderFunction<AlbumFormHandle> = () => {
         control={form.control}
         name="category"
         render={({ field, fieldState }) => (
-          <Select
-            errorMessage={fieldState.error?.message}
-            isInvalid={!!fieldState.error}
+          <SelectOption
+            error={fieldState.error}
+            field={field}
             label="Category"
             placeholder="Select Category"
-            selectedKeys={[field.value]}
-            variant="bordered"
-            onSelectionChange={(keys) =>
-              field.onChange(Array.from(keys)[0] as string)
-            }
-          >
-            <SelectItem key="Nature" className="outline-none">
-              Nature
-            </SelectItem>
-            <SelectItem key="Architecture" className="outline-none">
-              Architecture
-            </SelectItem>
-            <SelectItem key="People" className="outline-none">
-              People
-            </SelectItem>
-          </Select>
+            selectItems={[
+              { value: "nature", label: "Nature" },
+              { value: "architecture", label: "Architecture" },
+              { value: "people", label: "People" },
+            ]}
+            selectedValue={field.value}
+          />
         )}
       />
 
@@ -174,27 +165,18 @@ const AlbumForm: ForwardRefRenderFunction<AlbumFormHandle> = () => {
         control={form.control}
         name="author"
         render={({ field, fieldState }) => (
-          <Select
-            errorMessage={fieldState.error?.message}
-            isInvalid={!!fieldState.error}
+          <SelectOption
+            error={fieldState.error}
+            field={field}
             label="Author"
             placeholder="Select Author"
-            selectedKeys={[field.value]}
-            variant="bordered"
-            onSelectionChange={(keys) =>
-              field.onChange(Array.from(keys)[0] as string)
-            }
-          >
-            <SelectItem key="Alex Johnson" className="outline-none">
-              Alex Johnson
-            </SelectItem>
-            <SelectItem key="Emily Smith" className="outline-none">
-              Emily Smith
-            </SelectItem>
-            <SelectItem key="Michael Brown" className="outline-none">
-              Michael Brown
-            </SelectItem>
-          </Select>
+            selectItems={[
+              { value: "alex", label: "Alex Johnson" },
+              { value: "emily", label: "Emily Smith" },
+              { value: "michael", label: "Michael Brown" },
+            ]}
+            selectedValue={field.value}
+          />
         )}
       />
 

@@ -41,6 +41,7 @@ const navItems = [
     label: "Website",
     icon: Globe,
     children: [
+      { label: "Hero Video", href: "/admin/website/hero-video" },
       { label: "About us", href: "/admin/website/about-us" },
       { label: "SEO & Metadata", href: "/admin/website/seo-metadata" },
       {

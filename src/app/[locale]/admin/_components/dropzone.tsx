@@ -12,6 +12,7 @@ interface DropzoneProps {
   onChange: (images: File[]) => void;
   onSelectThumbnail?: (file: File | null) => void;
   maxFiles?: number;
+  type?: "image" | "video";
 }
 
 export default function Dropzone({
@@ -19,6 +20,7 @@ export default function Dropzone({
   onChange,
   onSelectThumbnail,
   maxFiles,
+  type,
 }: DropzoneProps) {
   const [files, setFiles] = useState<File[]>([]);
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
@@ -39,7 +41,7 @@ export default function Dropzone({
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop: handleDrop,
-    accept: { "image/*": [] },
+    accept: type === "video" ? { "video/*": [] } : { "image/*": [] },
     multiple: !maxFiles || maxFiles > 1,
     disabled: maxFiles !== undefined && files.length >= maxFiles,
   });
@@ -114,27 +116,45 @@ export default function Dropzone({
                 or drag and drop
               </p>
               <p className="text-xs text-[hsl(var(--heroui-foreground-400))] mt-1">
-                PNG, JPG, up to 5MB each
+                {type === "video"
+                  ? "MP4, MOV, WEBM, up to 100MB each"
+                  : "PNG, JPG, up to 5MB each"}
               </p>
             </div>
           )}
 
-          {/* Image previews */}
-          {files.map((_, index) => (
+          {files.map((file, index) => (
             <div
               key={index}
               className="relative rounded overflow-hidden bg-[hsl(var(--heroui-default-200))] border flex flex-col items-center"
             >
-              <Image
-                removeWrapper
-                alt={`preview-${index}`}
-                className="object-scale-down w-full h-40 sm:h-56 cursor-zoom-in"
-                src={previewUrls[index]}
-                onClick={() => setZoomedImage(previewUrls[index])}
-              />
+              {type === "video" ? (
+                <video
+                  controls
+                  className="object-scale-down w-full h-40 sm:h-56"
+                  src={previewUrls[index]}
+                >
+                  <track
+                    default
+                    kind="captions"
+                    label="English"
+                    src="captions.vtt"
+                    srcLang="en"
+                  />
+                </video>
+              ) : (
+                <Image
+                  removeWrapper
+                  alt={`preview-${index}`}
+                  className="object-scale-down w-full h-40 sm:h-56 cursor-zoom-in"
+                  src={previewUrls[index]}
+                  onClick={() => setZoomedImage(previewUrls[index])}
+                />
+              )}
+
+              {/* Tombol thumbnail dan hapus */}
               <div className="absolute top-2 right-2 flex gap-1 z-10">
-                {/* Show thumbnail toggle only if more than 1 allowed */}
-                {(!maxFiles || maxFiles > 1) && (
+                {(!maxFiles || maxFiles > 1) && type === "image" && (
                   <button
                     className="text-white bg-black/50 hover:bg-black/80 rounded-full p-1"
                     title="Set as thumbnail"
@@ -148,10 +168,9 @@ export default function Dropzone({
                     )}
                   </button>
                 )}
-
                 <button
                   className="text-white bg-red-500 hover:bg-red-600 rounded-full p-1"
-                  title="Remove image"
+                  title="Remove"
                   type="button"
                   onClick={() => handleRemove(index)}
                 >

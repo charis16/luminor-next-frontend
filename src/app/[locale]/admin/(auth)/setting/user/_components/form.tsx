@@ -165,6 +165,7 @@ const CategoryForm: ForwardRefRenderFunction<FormHandle> = () => {
           <DropzoneInput
             label="Photo"
             maxFiles={1}
+            type="image"
             onChange={(files) => field.onChange(files)}
           />
         )}

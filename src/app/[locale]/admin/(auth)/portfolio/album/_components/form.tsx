@@ -201,6 +201,7 @@ const AlbumForm: ForwardRefRenderFunction<AlbumFormHandle> = () => {
         render={({ field }) => (
           <DropzoneInput
             label="Album Images"
+            type="image"
             onChange={(files) => field.onChange(files)}
             onSelectThumbnail={(file) =>
               form.setValue("thumbnail", file, { shouldValidate: true })

@@ -15,7 +15,7 @@ export async function generateMetadata(props: {
 export default async function ServicePage(props: {
   params: Promise<{ name: string; category: string; albumId: string }>;
 }) {
-  const { name, category, albumId } = await props.params;
+  const { category, albumId } = await props.params;
 
   return (
     <div className="relative min-h-screen bg-black text-white flex flex-col md:flex-row">

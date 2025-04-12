@@ -31,6 +31,7 @@ const AboutUsForm: ForwardRefRenderFunction<FormHandle> = () => {
   const { formRef: sharedFormRef } = useAboutUsContext(); // ⬅️ Ambil dari context
 
   const onSubmit = (data: AboutUsFormValues) => {
+    // eslint-disable-next-line no-console
     console.log(data);
   };
 

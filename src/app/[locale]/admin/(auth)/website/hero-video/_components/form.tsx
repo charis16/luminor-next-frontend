@@ -26,6 +26,7 @@ export default function Form() {
   const { formRef: sharedFormRef } = useHeroVideoContext(); // ⬅️ Ambil dari context
 
   const onSubmit = (data: HeroVideoSchemaFormValue) => {
+    // eslint-disable-next-line no-console
     console.log(data);
   };
 

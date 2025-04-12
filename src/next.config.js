@@ -1,9 +1,16 @@
 /** @type {import('next').NextConfig} */
+const createBundleAnalyzer = require("@next/bundle-analyzer");
 const createNextIntlPlugin = require("next-intl/plugin");
 
 const withNextIntl = createNextIntlPlugin();
+const withBundleAnalyzer = createBundleAnalyzer({
+  enabled: process.env.ANALYZE === "true",
+});
 
 const nextConfig = {
+  poweredByHeader: false,
+  reactStrictMode: true,
+  output: "standalone",
   images: {
     remotePatterns: [
       {
@@ -16,4 +23,4 @@ const nextConfig = {
   },
 };
 
-module.exports = withNextIntl(nextConfig);
+module.exports = withBundleAnalyzer(withNextIntl(nextConfig));

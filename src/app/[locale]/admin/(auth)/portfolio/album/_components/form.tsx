@@ -58,6 +58,7 @@ const AlbumForm: ForwardRefRenderFunction<AlbumFormHandle> = () => {
     }
 
     Array.from(formData.entries()).forEach(([key, value]) => {
+      // eslint-disable-next-line no-console
       console.log(key, value);
     });
   };

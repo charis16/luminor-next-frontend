@@ -25,10 +25,6 @@ export const AboutUsProvider = ({
   return (
     <AboutUsContext.Provider
       value={{
-        aboutUsBriefHomeEn: "",
-        aboutUsBriefHomeId: "",
-        aboutUsEn: "",
-        aboutUsId: "",
         formRef,
       }}
     >

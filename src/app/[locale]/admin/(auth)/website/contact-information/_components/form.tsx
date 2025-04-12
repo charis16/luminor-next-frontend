@@ -31,6 +31,7 @@ export default function SeoForm() {
   const { formRef: sharedFormRef } = useContactInformationContext(); // ⬅️ Ambil dari context
 
   const onSubmit = (data: ContactInformationSchemaFormValue) => {
+    // eslint-disable-next-line no-console
     console.log(data);
   };
 

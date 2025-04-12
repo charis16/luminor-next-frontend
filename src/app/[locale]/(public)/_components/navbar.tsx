@@ -19,7 +19,6 @@ import { siteConfigPublic } from "@/config/site";
 
 export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
@@ -33,18 +32,6 @@ export const Navbar = () => {
       return () => clearTimeout(timeout);
     }
   }, [isMenuOpen]);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollThreshold = window.innerHeight * 0.6; // 60% dari tinggi layar
-
-      setIsScrolled(window.scrollY > scrollThreshold);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   return (
     <>

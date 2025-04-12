@@ -119,7 +119,6 @@ export const UserSchema = z
     urlYoutube: z.string().optional(),
   })
   .superRefine((data, ctx) => {
-    console.log(data);
     if (data.canLogin && (!data.password || data.password.length < 6)) {
       ctx.addIssue({
         code: "custom",

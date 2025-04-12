@@ -29,6 +29,7 @@ export default function SeoForm() {
   const { formRef: sharedFormRef } = useSeoMetadataContext(); // ⬅️ Ambil dari context
 
   const onSubmit = (data: SeoMetaDataFormValues) => {
+    // eslint-disable-next-line no-console
     console.log(data);
   };
 

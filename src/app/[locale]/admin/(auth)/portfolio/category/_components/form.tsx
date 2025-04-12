@@ -18,6 +18,7 @@ import {
 } from "../_type";
 import { useCategoryContext } from "../_context/category-context";
 import { AlbumFormHandle } from "../../album/_type";
+
 import { InputText } from "@/app/[locale]/admin/_components";
 
 const CategoryForm: ForwardRefRenderFunction<CategoryFormHandle> = () => {
@@ -33,6 +34,7 @@ const CategoryForm: ForwardRefRenderFunction<CategoryFormHandle> = () => {
   const { formRef: sharedFormRef } = useCategoryContext(); // ⬅️ Ambil dari context
 
   const onSubmit = (data: CategoryFormValues) => {
+    // eslint-disable-next-line no-console
     console.log(data);
   };
 

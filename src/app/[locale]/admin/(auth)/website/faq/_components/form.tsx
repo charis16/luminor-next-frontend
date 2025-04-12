@@ -32,6 +32,7 @@ const CategoryForm: ForwardRefRenderFunction<FormHandle> = () => {
   const { formRef: sharedFormRef } = useFaqContext(); // ⬅️ Ambil dari context
 
   const onSubmit = (data: FaqFormValues) => {
+    // eslint-disable-next-line no-console
     console.log(data);
   };
 

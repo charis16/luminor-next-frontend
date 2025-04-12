@@ -13,6 +13,7 @@ export default function FormLogin() {
 
   const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    // eslint-disable-next-line no-console
     console.log("Logging in with:", { email, password });
     router.push("/admin/dashboard");
   };

@@ -51,8 +51,8 @@ const CategoryForm: ForwardRefRenderFunction<FormHandle> = () => {
   const onSubmit = async (data: UserFormValues) => {
     const isValid = await form.trigger(); // 👈 ini penting
 
-    console.log({ isValid });
     if (!isValid) return;
+    // eslint-disable-next-line no-console
     console.log(data);
   };
 

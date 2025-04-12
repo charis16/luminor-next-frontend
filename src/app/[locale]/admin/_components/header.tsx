@@ -4,7 +4,7 @@ import { MenuIcon, BookA } from "lucide-react";
 import { Breadcrumbs, BreadcrumbItem } from "@heroui/breadcrumbs";
 import { Select, SelectItem } from "@heroui/select";
 import { useLocale } from "next-intl";
-import { useParams, usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 import { useSidebar } from "../_context/sidebar-context";
 
@@ -24,7 +24,6 @@ export default function Header() {
   const router = useRouter();
   const pathname = usePathname();
   const locale = useLocale();
-  const params = useParams();
 
   return (
     <header className="h-16 flex items-center justify-between px-4 border-b border-white/10">

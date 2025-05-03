@@ -5,17 +5,30 @@ import { Card, CardHeader, CardBody, CardFooter } from "@heroui/card";
 import { Input } from "@heroui/input";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { addToast } from "@heroui/toast";
+
+import { useLogin } from "@/hooks/use-login";
 
 export default function FormLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
+  const { mutateAsync, isPending } = useLogin();
 
-  const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // eslint-disable-next-line no-console
-    console.log("Logging in with:", { email, password });
-    router.push("/admin/dashboard");
+
+    try {
+      await mutateAsync({ email, password });
+
+      router.push("/admin/dashboard");
+    } catch (err: any) {
+      addToast({
+        title: "Login Failed",
+        description: err.message || "Login gagal",
+        color: "danger",
+      });
+    }
   };
 
   return (
@@ -47,6 +60,7 @@ export default function FormLogin() {
           />
           <Button
             className="w-full  text-white font-bold py-2 px-4 rounded-md"
+            isLoading={isPending}
             type="submit"
           >
             Login

@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Dropdown,
   DropdownTrigger,
@@ -8,8 +10,11 @@ import {
 import { Avatar } from "@heroui/avatar";
 import { Button } from "@heroui/button";
 import { LogOut, Settings } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { addToast } from "@heroui/toast";
 
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useLogout } from "@/hooks/use-logout";
 
 export default function UserDropdown({
   collapsed = false,
@@ -17,6 +22,23 @@ export default function UserDropdown({
   collapsed?: boolean;
 }) {
   const isMobile = useIsMobile();
+  const { mutate } = useLogout();
+  const router = useRouter();
+
+  const handleLogout = () => {
+    mutate(undefined, {
+      onSuccess: () => {
+        router.push("/admin");
+      },
+      onError: (err: { message?: string }) => {
+        addToast({
+          title: "Logout Failed",
+          description: err.message || "Logout gagal",
+          color: "danger",
+        });
+      },
+    });
+  };
 
   return (
     <div className="w-full px-4 py-4">
@@ -57,6 +79,7 @@ export default function UserDropdown({
               key="logout"
               className="text-red-500"
               startContent={<LogOut className="w-4 h-4" />}
+              onPress={handleLogout}
             >
               Log out
             </DropdownItem>

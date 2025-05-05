@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 
+export { ClientWrapper } from "./client-wrapper";
 // Export semua komponen dengan ssr: false
 export const ActionDropdown = dynamic(() => import("./action-dropdown"), {
   ssr: false,

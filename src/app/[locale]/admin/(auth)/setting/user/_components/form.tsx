@@ -10,6 +10,8 @@ import {
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Switch } from "@heroui/switch";
+import { addToast } from "@heroui/toast";
+import { useRouter } from "next/navigation";
 
 import { EnumRole, FormHandle, UserFormValues, UserSchema } from "../_type";
 import { useUserContext } from "../_context";
@@ -20,8 +22,12 @@ import {
   InputTextArea,
   SelectOption,
 } from "@/app/[locale]/admin/_components";
+import { useCreateUser } from "@/hooks/use-mutate-user";
 
-const CategoryForm: ForwardRefRenderFunction<FormHandle> = () => {
+const Form: ForwardRefRenderFunction<FormHandle> = () => {
+  const { onSetIsSubmitting } = useUserContext();
+  const { mutate, isPending } = useCreateUser();
+  const router = useRouter();
   const form = useForm<UserFormValues>({
     resolver: zodResolver(UserSchema),
     defaultValues: {
@@ -31,7 +37,7 @@ const CategoryForm: ForwardRefRenderFunction<FormHandle> = () => {
       name: "",
       role: undefined,
       password: "",
-      photo: null,
+      photo: undefined,
       urlInstagram: "",
       urlTikTok: "",
       urlFacebook: "",
@@ -52,8 +58,27 @@ const CategoryForm: ForwardRefRenderFunction<FormHandle> = () => {
     const isValid = await form.trigger(); // 👈 ini penting
 
     if (!isValid) return;
-    // eslint-disable-next-line no-console
-    console.log(data);
+
+    mutate(data, {
+      onSuccess: () => {
+        form.reset();
+        onSetIsSubmitting(false);
+        router.back();
+        addToast({
+          title: "Create User Success",
+          description: "User created successfully",
+          color: "success",
+        });
+      },
+      onError: (err: any) => {
+        onSetIsSubmitting(false);
+        addToast({
+          title: "Create User Failed",
+          description: err.message || "Failed to create user",
+          color: "danger",
+        });
+      },
+    });
   };
 
   useEffect(() => {
@@ -71,6 +96,12 @@ const CategoryForm: ForwardRefRenderFunction<FormHandle> = () => {
       form.setValue("password", "");
     }
   }, [canLogin, form]);
+
+  useEffect(() => {
+    if (isPending) {
+      onSetIsSubmitting(isPending);
+    }
+  }, [isPending]);
 
   return (
     <form
@@ -267,4 +298,4 @@ const CategoryForm: ForwardRefRenderFunction<FormHandle> = () => {
   );
 };
 
-export default forwardRef(CategoryForm);
+export default forwardRef(Form);

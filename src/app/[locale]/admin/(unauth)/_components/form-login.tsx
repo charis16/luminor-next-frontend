@@ -13,15 +13,20 @@ export default function FormLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
-  const { mutateAsync, isPending } = useLogin();
+  const { mutate, isPending } = useLogin();
 
-  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
-      await mutateAsync({ email, password });
-
-      router.push("/admin/dashboard");
+      mutate(
+        { email, password },
+        {
+          onSuccess: () => {
+            router.push("/admin/dashboard");
+          },
+        },
+      );
     } catch (err: any) {
       addToast({
         title: "Login Failed",

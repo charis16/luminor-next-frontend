@@ -20,7 +20,6 @@ export async function POST() {
     },
   });
 
-  // ✅ Pakai append untuk semua cookie yang dikembalikan backend
   const setCookie = backendRes.headers.getSetCookie();
 
   if (setCookie) {

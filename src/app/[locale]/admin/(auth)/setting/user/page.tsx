@@ -3,7 +3,7 @@ import { UserProvider } from "./_context";
 
 import { TitlePage } from "@/app/[locale]/admin/_components";
 
-export default function TeamPage() {
+export default function UserPage() {
   return (
     <UserProvider>
       <div className="flex flex-col gap-6">

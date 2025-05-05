@@ -1,18 +1,5 @@
-function getHeaders() {
-  return {
-    "Content-Type": "application/json",
-  };
-}
-
-function handleResponse<T>(res: Response): Promise<T> {
-  if (!res.ok) {
-    return res.json().then((data) => {
-      throw new Error(data?.error || "Something went wrong");
-    });
-  }
-
-  return res.json();
-}
+// lib/goFetcher.ts
+import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 
 function toUrl(url: string): string {
   return url.startsWith("http")
@@ -20,58 +7,69 @@ function toUrl(url: string): string {
     : `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}${url}`;
 }
 
-export const goFetcher = {
-  get: async <T = unknown>(url: string): Promise<T> => {
-    const res = await fetch(toUrl(url), {
-      method: "GET",
-      headers: getHeaders(),
-      credentials: "include",
-    });
+function createFetcher(defaultHeaders: Record<string, string> = {}) {
+  const instance = axios.create({
+    baseURL: process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000",
+    withCredentials: true,
+    headers: defaultHeaders,
+  });
 
-    return handleResponse<T>(res);
-  },
+  const handle = async <T>(config: AxiosRequestConfig): Promise<T> => {
+    try {
+      const res: AxiosResponse<T> = await instance.request(config);
 
-  post: async <T = unknown, D = any>(url: string, data: D): Promise<T> => {
-    const res = await fetch(toUrl(url), {
-      method: "POST",
-      headers: getHeaders(),
-      credentials: "include",
-      body: JSON.stringify(data),
-    });
+      return res.data;
+    } catch (err: any) {
+      const message =
+        err.response?.data?.error ||
+        err.response?.data?.message ||
+        err.message ||
+        "Something went wrong";
 
-    return handleResponse<T>(res);
-  },
+      throw new Error(message);
+    }
+  };
 
-  put: async <T = unknown, D = any>(url: string, data: D): Promise<T> => {
-    const res = await fetch(toUrl(url), {
-      method: "PUT",
-      headers: getHeaders(),
-      credentials: "include",
-      body: JSON.stringify(data),
-    });
+  return {
+    get: <T = any>(url: string, config?: AxiosRequestConfig) =>
+      handle<T>({ url: toUrl(url), method: "GET", ...config }),
 
-    return handleResponse<T>(res);
-  },
+    post: <T = any, D = any>(
+      url: string,
+      data: D,
+      config?: AxiosRequestConfig,
+    ) => handle<T>({ url: toUrl(url), method: "POST", data, ...config }),
 
-  patch: async <T = unknown, D = any>(url: string, data: D): Promise<T> => {
-    const res = await fetch(toUrl(url), {
-      method: "PATCH",
-      headers: getHeaders(),
-      credentials: "include",
-      body: JSON.stringify(data),
-    });
+    put: <T = any, D = any>(
+      url: string,
+      data: D,
+      config?: AxiosRequestConfig,
+    ) => handle<T>({ url: toUrl(url), method: "PUT", data, ...config }),
 
-    return handleResponse<T>(res);
-  },
+    patch: <T = any, D = any>(
+      url: string,
+      data: D,
+      config?: AxiosRequestConfig,
+    ) => handle<T>({ url: toUrl(url), method: "PATCH", data, ...config }),
 
-  delete: async <T = unknown, D = any>(url: string, data: D): Promise<T> => {
-    const res = await fetch(toUrl(url), {
-      method: "DELETE",
-      headers: getHeaders(),
-      credentials: "include",
-      body: JSON.stringify(data),
-    });
+    delete: <T = any, D = any>(
+      url: string,
+      data?: D,
+      config?: AxiosRequestConfig,
+    ) => handle<T>({ url: toUrl(url), method: "DELETE", data, ...config }),
 
-    return handleResponse<T>(res);
-  },
-};
+    raw: (url: string, method = "POST", config?: AxiosRequestConfig) => {
+      return axios.request({
+        url: toUrl(url),
+        method,
+        withCredentials: true,
+        ...config,
+      });
+    },
+  };
+}
+
+// ✅ Main fetcher
+export const goFetcher = Object.assign(createFetcher(), {
+  withHeaders: (headers: Record<string, string>) => createFetcher(headers),
+});

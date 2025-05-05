@@ -62,7 +62,7 @@ export default async function RootLayout({
           fontSans.variable,
         )}
       >
-        <NextIntlClientProvider>
+        <NextIntlClientProvider locale={locale}>
           <Providers
             themeProps={{
               attribute: "class",

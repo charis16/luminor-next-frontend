@@ -1,17 +1,12 @@
 import { z } from "zod";
 
+import { User } from "@/types/user-lists";
+
 export enum EnumRole {
   Photographer = "Photographer",
   Editor = "Editor",
   Assistant = "Assistant",
 }
-
-export type User = {
-  id: number;
-  name: string;
-  email: string;
-  role: EnumRole;
-};
 
 export const COLUMNS = [
   { name: "Name", uid: "name" },
@@ -22,47 +17,15 @@ export const COLUMNS = [
 
 export type ColumnKey = (typeof COLUMNS)[number]["uid"];
 
-export const TEAMS: User[] = [
-  {
-    id: 1,
-    name: "Ayla Hartanto",
-    email: "ayla.hartanto@example.com",
-    role: EnumRole.Photographer,
-  },
-  {
-    id: 2,
-    name: "Kevin Surya",
-    email: "kevin.surya@example.com",
-    role: EnumRole.Editor,
-  },
-  {
-    id: 3,
-    name: "Nina Ardiansyah",
-    email: "nina.ardiansyah@example.com",
-    role: EnumRole.Assistant,
-  },
-  {
-    id: 4,
-    name: "Dion Setiawan",
-    email: "dion.setiawan@example.com",
-    role: EnumRole.Photographer,
-  },
-  {
-    id: 5,
-    name: "Maya Prasetya",
-    email: "maya.prasetya@example.com",
-    role: EnumRole.Editor,
-  },
-];
-
 export interface FormHandle {
   submit: () => void;
 }
 
 export type UserContextType = {
   users: User[];
-  filteredUser: User[];
   search: string;
+  isSubmitting: boolean;
+  onSetIsSubmitting: (value: boolean) => void;
   setSearch: (value: string) => void;
   formRef: React.RefObject<FormHandle>;
   page: number;
@@ -77,23 +40,18 @@ const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
 const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/gif"];
 
 const PhotoSchema = z
-  .any()
-  .refine((file: FileList | null) => file?.length === 1, {
-    message: "Please upload a photo",
-  })
-  .refine(
-    (file: FileList | null) => file?.[0] && file[0].size <= MAX_FILE_SIZE,
-    {
-      message: "File size must be less than 2MB",
-    },
+  .array(
+    z
+      .instanceof(File)
+      .refine((file) => file.size <= MAX_FILE_SIZE, {
+        message: "File size must be less than 2MB",
+      })
+      .refine((file) => ALLOWED_IMAGE_TYPES.includes(file.type), {
+        message: "Only JPEG, PNG, and GIF formats are allowed",
+      }),
   )
-  .refine(
-    (file: FileList | null) =>
-      file?.[0] && ALLOWED_IMAGE_TYPES.includes(file[0].type),
-    {
-      message: "Only JPEG, PNG, and GIF formats are allowed",
-    },
-  );
+  .max(1, { message: "Only one image allowed" })
+  .optional();
 
 export const UserSchema = z
   .object({

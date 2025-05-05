@@ -1,39 +1,44 @@
 // app/api/auth/login/route.ts
 import { NextRequest, NextResponse } from "next/server";
 
+import { goFetcher } from "@/utils/api";
+
 export async function POST(req: NextRequest) {
   const body = await req.json();
 
-  const backendRes = await fetch(
-    `${process.env.API_BASE_URL}/v1/api/auth/login`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+  try {
+    const backendRes = await goFetcher.raw(
+      `${process.env.API_BASE_URL}/v1/api/auth/login`,
+      "POST",
+      {
+        headers: { "Content-Type": "application/json" },
+        data: body, // ⬅️ jangan pakai 'body', tapi 'data'
       },
-      body: JSON.stringify(body),
-      credentials: "include", // agar cookie dari backend bisa diterima
-    },
-  );
+    );
 
-  const resBody = await backendRes.text(); // bisa pakai .json() kalau yakin formatnya
+    const response = new NextResponse(JSON.stringify(backendRes.data), {
+      status: backendRes.status,
+      headers: {
+        "Content-Type":
+          backendRes.headers["content-type"] || "application/json",
+      },
+    });
 
-  const response = new NextResponse(resBody, {
-    status: backendRes.status,
-    headers: {
-      "Content-Type":
-        backendRes.headers.get("Content-Type") || "application/json",
-    },
-  });
+    const setCookie = backendRes.headers["set-cookie"];
 
-  // ✅ Gunakan append agar semua cookie ikut dikirim ke browser
-  const setCookie = backendRes.headers.getSetCookie();
+    if (setCookie) {
+      const cookies = Array.isArray(setCookie) ? setCookie : [setCookie];
 
-  if (setCookie) {
-    for (const cookie of setCookie) {
-      response.headers.append("Set-Cookie", cookie);
+      cookies.forEach((cookie) =>
+        response.headers.append("Set-Cookie", cookie),
+      );
     }
-  }
 
-  return response;
+    return response;
+  } catch (err: any) {
+    return new NextResponse(
+      JSON.stringify({ error: err.message || "Login failed" }),
+      { status: 500 },
+    );
+  }
 }

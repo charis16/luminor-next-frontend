@@ -1,15 +1,10 @@
 "use client";
 
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 
-import { FormHandle, PAGE_SIZE, TEAMS, UserContextType } from "../_type";
+import { FormHandle, UserContextType } from "../_type";
+
+import { useUserLists } from "@/hooks/use-user-lists";
 
 const UserContext = createContext<UserContextType | null>(null);
 
@@ -25,6 +20,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const formRef = useRef<FormHandle>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [page, setPage] = useState(1);
 
   useEffect(() => {
@@ -39,34 +35,25 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     setPage(1);
   }, [debouncedSearch]);
 
-  const result = useMemo(() => {
-    return TEAMS.filter((data) =>
-      data.name.toLowerCase().includes(debouncedSearch.toLowerCase()),
-    );
-  }, [debouncedSearch]);
-
-  const pages = useMemo(() => {
-    return result.length ? Math.ceil(result.length / PAGE_SIZE) : 0;
-  }, [result]);
-
-  const filteredUser = useMemo(() => {
-    const start = (page - 1) * PAGE_SIZE;
-
-    return result.slice(start, start + PAGE_SIZE);
-  }, [result, page]);
+  const { data, isLoading, isPending } = useUserLists(
+    page,
+    debouncedSearch,
+    10,
+  );
 
   return (
     <UserContext.Provider
       value={{
-        users: TEAMS,
-        filteredUser,
+        users: data?.data || [],
         search,
         setSearch,
         formRef,
+        isSubmitting,
         page,
         setPage,
-        pages,
-        isLoading: false,
+        onSetIsSubmitting: setIsSubmitting,
+        pages: data ? Math.ceil(data.total / data.limit) : 0,
+        isLoading: isLoading || isPending,
       }}
     >
       {children}

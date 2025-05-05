@@ -3,11 +3,13 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
 import { verifyJwtToken } from "@/utils/jwt";
+import { goFetcher } from "@/utils/api";
 
 export async function adminGuard(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const locale = pathname.split("/")[1];
   const accessToken = request.cookies.get("access_token")?.value;
+  const refreshToken = request.cookies.get("refresh_token")?.value;
 
   const isAdminRoot = new RegExp(`^/${locale}/admin$`).test(pathname);
   const isProtected = new RegExp(`^/${locale}/admin(/.*)?$`).test(pathname);
@@ -26,6 +28,34 @@ export async function adminGuard(request: NextRequest) {
       request.cookies.delete("access_token");
 
       return NextResponse.redirect(new URL(`/${locale}/admin`, request.url));
+    }
+  }
+
+  if (!accessToken && refreshToken) {
+    try {
+      const refreshRes = await goFetcher
+        .withHeaders({
+          Cookie: `refresh_token=${refreshToken}`,
+        })
+        .raw("/api/auth/refresh-token");
+
+      if (refreshRes.ok) {
+        const setCookies = refreshRes.headers.getSetCookie();
+
+        const response = NextResponse.redirect(
+          new URL(`/${locale}/admin/dashboard`, request.url),
+        );
+
+        if (setCookies) {
+          for (const cookie of setCookies) {
+            response.headers.append("Set-Cookie", cookie);
+          }
+        }
+
+        return response;
+      }
+    } catch (err) {
+      console.error("Error refreshing token:", err);
     }
   }
 

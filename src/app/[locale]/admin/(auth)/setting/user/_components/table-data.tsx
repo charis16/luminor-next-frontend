@@ -12,19 +12,14 @@ import {
 import { Spinner } from "@heroui/spinner";
 import { useCallback } from "react";
 
-import { ColumnKey, COLUMNS, User } from "../_type";
+import { ColumnKey, COLUMNS } from "../_type";
 import { useUserContext } from "../_context";
 
 import ActionDropdown from "@/app/[locale]/admin/_components/action-dropdown";
+import { User } from "@/types/user-lists";
 
 export default function TableData() {
-  const {
-    filteredUser: data,
-    pages,
-    page,
-    setPage,
-    isLoading,
-  } = useUserContext();
+  const { users: data, pages, page, setPage, isLoading } = useUserContext();
 
   const loadingState = isLoading || data?.length === 0 ? "loading" : "idle";
 
@@ -105,7 +100,7 @@ export default function TableData() {
         loadingState={loadingState}
       >
         {(item) => (
-          <TableRow key={item?.id}>
+          <TableRow key={item?.uuid}>
             {(columnKey) => (
               <TableCell>{renderCell(item, columnKey as ColumnKey)}</TableCell>
             )}

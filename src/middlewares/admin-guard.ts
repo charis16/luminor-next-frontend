@@ -39,17 +39,19 @@ export async function adminGuard(request: NextRequest) {
         })
         .raw("/api/auth/refresh-token");
 
-      if (refreshRes.ok) {
-        const setCookies = refreshRes.headers.getSetCookie();
+      const setCookie = refreshRes.headers["set-cookie"];
 
+      if (refreshRes.status === 200 && setCookie) {
         const response = NextResponse.redirect(
           new URL(`/${locale}/admin/dashboard`, request.url),
         );
 
-        if (setCookies) {
-          for (const cookie of setCookies) {
+        if (Array.isArray(setCookie)) {
+          for (const cookie of setCookie) {
             response.headers.append("Set-Cookie", cookie);
           }
+        } else {
+          response.headers.append("Set-Cookie", setCookie);
         }
 
         return response;

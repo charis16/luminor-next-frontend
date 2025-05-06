@@ -1,25 +1,32 @@
-// src/hooks/use-user-lists.ts
-import { useQuery } from "@tanstack/react-query";
+import { queryOptions, useQuery } from "@tanstack/react-query";
 
 import { goFetcher } from "@/utils/api";
-import { User } from "@/types/user-lists";
 
-type Response = {
-  data: User[];
-  total: number;
-  page: number;
-  limit: number;
-};
-
-export function useUserLists(page = 1, search = "", limit = 10) {
+export function getUserListsOptions(
+  page = 1,
+  search = "",
+  limit = 10,
+  headers?: Record<string, string>,
+) {
   const params = new URLSearchParams({
     page: String(page),
     limit: String(limit),
     search,
   });
 
-  return useQuery<Response>({
+  return queryOptions({
     queryKey: ["user-list", page, search],
-    queryFn: () => goFetcher.get(`/api/user/lists?${params}`),
+    queryFn: () =>
+      goFetcher.get(`/api/user/lists?${params.toString()}`, {
+        headers,
+      }),
+    placeholderData: (prev) => prev,
   });
 }
+
+export function useUserLists(page = 1, search = "", limit = 10) {
+  return useQuery(getUserListsOptions(page, search, limit));
+}
+
+// expose getOptions
+useUserLists.getOptions = getUserListsOptions;

@@ -26,6 +26,7 @@ function createFetcher(defaultHeaders: Record<string, string> = {}) {
         err.message ||
         "Something went wrong";
 
+      console.log(err);
       throw new Error(message);
     }
   };

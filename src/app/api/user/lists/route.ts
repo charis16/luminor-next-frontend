@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
 
   return fetchWithAutoRefresh({
     req,
-    input: `${backendBaseUrl}/v1/api/users${queryString}`, // <-- sambungkan
+    input: `${backendBaseUrl}/v1/api/users/lists${queryString}`, // <-- sambungkan
     init: {
       method: "GET",
     },

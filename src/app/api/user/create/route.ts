@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
 
   return fetchWithAutoRefresh({
     req,
-    input: `${process.env.API_BASE_URL}/v1/api/users`,
+    input: `${process.env.API_BASE_URL}/v1/api/users/submit`,
     init: {
       method: "POST",
       headers: form.getHeaders(),

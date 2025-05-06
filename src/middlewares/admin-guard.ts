@@ -23,8 +23,6 @@ export async function adminGuard(request: NextRequest) {
 
       role = decoded.role;
     } catch (err) {
-      console.error("JWT verification failed:", err);
-
       request.cookies.delete("access_token");
 
       return NextResponse.redirect(new URL(`/${locale}/admin`, request.url));

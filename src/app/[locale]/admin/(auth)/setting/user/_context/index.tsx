@@ -35,11 +35,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     setPage(1);
   }, [debouncedSearch]);
 
-  const { data, isLoading, isPending } = useUserLists(
-    page,
-    debouncedSearch,
-    10,
-  );
+  const { data, isLoading, isPending } = useUserLists(page, search, 10);
 
   return (
     <UserContext.Provider

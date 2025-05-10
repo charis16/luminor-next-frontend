@@ -13,7 +13,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@heroui/theme";
 
 import { useSidebar } from "../_context/sidebar-context";
@@ -59,6 +59,9 @@ const navItems = [
 ];
 
 export default function Sidebar() {
+  const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => setHydrated(true), []);
   const isMobile = useIsMobile();
   const { isCollapsed, isMobileOpen, closeMobile } = useSidebar();
   const pathname = usePathname();
@@ -204,7 +207,7 @@ export default function Sidebar() {
 
       {/* Mobile Sidebar */}
       <AnimatePresence>
-        {isMobileOpen && (
+        {hydrated && isMobileOpen && (
           <motion.div
             animate={{ opacity: 1 }}
             className="fixed inset-0 z-50 flex md:hidden"

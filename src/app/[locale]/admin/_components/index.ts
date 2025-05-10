@@ -55,3 +55,7 @@ export const SelectOption = dynamic(() => import("./select-option"), {
 
 export { default as Sidebar } from "./sidebar";
 export { default as Header } from "./header";
+
+export const LanguageSwitcher = dynamic(() => import("./language-switcher"), {
+  ssr: false,
+});

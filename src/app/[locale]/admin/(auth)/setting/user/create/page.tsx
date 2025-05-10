@@ -21,7 +21,7 @@ export default function CreatePage() {
 
           <ScrollShadow
             hideScrollBar
-            className="max-h-[calc(100dvh-35dvh)] md:max-h-[calc(100dvh-25dvh)]"
+            className="max-h-[calc(100dvh-40dvh)] md:max-h-[calc(100dvh-25dvh)]"
           >
             <Form />
           </ScrollShadow>

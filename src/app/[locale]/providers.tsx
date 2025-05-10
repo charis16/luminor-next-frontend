@@ -1,5 +1,4 @@
 "use client";
-
 import type { ThemeProviderProps } from "next-themes";
 
 import * as React from "react";
@@ -9,6 +8,7 @@ import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { ToastProvider } from "@heroui/toast";
+import { useState } from "react";
 
 export interface ProvidersProps {
   children: React.ReactNode;
@@ -23,9 +23,9 @@ declare module "@react-types/shared" {
   }
 }
 
-export function Providers({ children, themeProps }: ProvidersProps) {
+function Providers({ children, themeProps }: ProvidersProps) {
   const router = useRouter();
-  const [queryClient] = React.useState(() => new QueryClient());
+  const [queryClient] = useState(() => new QueryClient());
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -39,3 +39,5 @@ export function Providers({ children, themeProps }: ProvidersProps) {
     </QueryClientProvider>
   );
 }
+
+export default Providers;

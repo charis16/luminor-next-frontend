@@ -1,7 +1,11 @@
-import { NextRequest, NextResponse } from "next/server";
+// app/api/auth/refresh-token/route.ts
+import { cookies } from "next/headers";
+import { NextResponse } from "next/server";
 
-export async function POST(req: NextRequest) {
-  const refreshToken = req.cookies.get("refresh_token")?.value;
+import { goFetcher, safeRawCall } from "@/utils/api";
+
+export async function POST() {
+  const refreshToken = (await cookies()).get("refresh_token")?.value;
 
   if (!refreshToken) {
     return NextResponse.json(
@@ -10,34 +14,41 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const backendRes = await fetch(
-    `${process.env.API_BASE_URL}/v1/api/auth/refresh-token`,
-    {
-      method: "POST",
-      headers: {
-        Cookie: `refresh_token=${refreshToken}`,
+  const [backendRes, err] = await safeRawCall(
+    goFetcher.raw(
+      `${process.env.API_BASE_URL}/v1/api/auth/refresh-token`,
+      "POST",
+      {
+        headers: {
+          Cookie: `refresh_token=${refreshToken}`,
+        },
       },
-      credentials: "include",
-    },
+    ),
   );
 
-  const body = await backendRes.text();
+  if (err || !backendRes) {
+    return NextResponse.json(
+      { error: "Failed to refresh token" },
+      { status: 401 },
+    );
+  }
 
-  const response = new NextResponse(body, {
+  const res = NextResponse.json(backendRes.data, {
     status: backendRes.status,
     headers: {
-      "Content-Type":
-        backendRes.headers.get("Content-Type") || "application/json",
+      "Content-Type": backendRes.headers["content-type"] || "application/json",
     },
   });
 
-  const setCookies = backendRes.headers.getSetCookie();
+  const setCookies = backendRes.headers["set-cookie"];
 
   if (setCookies) {
-    for (const cookie of setCookies) {
-      response.headers.append("Set-Cookie", cookie);
-    }
+    const cookiesArray = Array.isArray(setCookies) ? setCookies : [setCookies];
+
+    cookiesArray.forEach((cookie) => {
+      res.headers.append("Set-Cookie", cookie);
+    });
   }
 
-  return response;
+  return res;
 }

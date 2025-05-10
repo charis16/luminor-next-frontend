@@ -1,7 +1,7 @@
-// server/fetch-with-auto-refresh.ts
 import { NextRequest, NextResponse } from "next/server";
-import axios from "axios";
 import { parse, serialize } from "cookie";
+
+import { goFetcher, safeRawCall } from "@/utils/api";
 
 interface FetchWithRefreshOptions {
   req: NextRequest;
@@ -11,6 +11,8 @@ interface FetchWithRefreshOptions {
     body?: any;
     headers?: Record<string, string>;
   };
+  retryBody?: any;
+  retryHeaders?: Record<string, string>;
   retry?: boolean;
 }
 
@@ -28,69 +30,90 @@ export async function fetchWithAutoRefresh({
   req,
   input,
   init = {},
+  retryBody,
+  retryHeaders,
   retry = true,
 }: FetchWithRefreshOptions): Promise<NextResponse> {
   const accessCookie = getFilteredCookie(req, ["access_token"]);
   const refreshCookie = getFilteredCookie(req, ["refresh_token"]);
 
-  const makeRequest = async () => {
-    const headers = {
-      ...init.headers,
-      Cookie: accessCookie,
-      ...(typeof init.body?.getHeaders === "function"
-        ? init.body.getHeaders()
-        : {}),
-    };
-
-    return axios.request({
-      url: input.toString(),
-      method: init.method || "GET",
-      data: init.body,
-      headers,
-      withCredentials: true,
+  const makeRequest = (cookieHeader: string, body: any, headers: any) => {
+    return goFetcher.raw(input.toString(), init.method || "GET", {
+      data: body,
+      headers: {
+        ...headers,
+        Cookie: cookieHeader,
+      },
     });
   };
 
-  try {
-    const res = await makeRequest();
+  // === First attempt
+  const [res, reqErr] = await safeRawCall(
+    makeRequest(accessCookie, init.body, init.headers || {}),
+  );
 
+  if (res && res.status !== 401) {
     return new NextResponse(JSON.stringify(res.data), {
       status: res.status,
-      headers: { "Content-Type": "application/json" },
-    });
-  } catch (err: any) {
-    if (err.response?.status === 401 && retry) {
-      try {
-        await axios.post(
-          `${process.env.API_BASE_URL}/v1/api/auth/refresh`,
-          null,
-          {
-            headers: {
-              Cookie: refreshCookie,
-            },
-            withCredentials: true,
-          },
-        );
-
-        return fetchWithAutoRefresh({ req, input, init, retry: false });
-      } catch {
-        const res = new NextResponse("Unauthorized", { status: 401 });
-
-        res.headers.append(
-          "Set-Cookie",
-          "refresh_token=; Path=/; HttpOnly; Max-Age=0",
-        );
-        res.headers.append(
-          "Set-Cookie",
-          "access_token=; Path=/; HttpOnly; Max-Age=0",
-        );
-
-        return res;
-      }
-    }
-
-    return new NextResponse(err.message || "Fetch failed", {
-      status: err.response?.status || 500,
+      headers: {
+        "Content-Type": res.headers["content-type"] || "application/json",
+      },
     });
   }
+
+  // === Refresh token attempt
+  if (reqErr?.status === 401 && retry) {
+    const [refreshRes, refreshErr] = await safeRawCall(
+      goFetcher.raw(
+        `${process.env.API_BASE_URL}/v1/api/auth/refresh-token`,
+        "POST",
+        { headers: { Cookie: refreshCookie } },
+      ),
+    );
+
+    if (refreshErr || !refreshRes || refreshRes.status !== 200) {
+      return NextResponse.json(
+        { error: "Failed to refresh token" },
+        { status: 401 },
+      );
+    }
+
+    const newCookies = refreshRes.headers["set-cookie"];
+    const cookiesArray = Array.isArray(newCookies) ? newCookies : [newCookies];
+    const refreshedCookieHeader = cookiesArray
+      .map((c) => (c ?? "").split(";")[0])
+      .join("; ");
+
+    const [retryRes, retryErr] = await safeRawCall(
+      makeRequest(refreshedCookieHeader, retryBody, retryHeaders || {}),
+    );
+
+    if (retryErr || !retryRes) {
+      return NextResponse.json(
+        {
+          error: retryErr?.message || "Retry after refresh failed",
+          status: retryErr?.status || 500,
+        },
+        { status: retryErr?.status || 500 },
+      );
+    }
+
+    const finalRes = new NextResponse(JSON.stringify(retryRes.data), {
+      status: retryRes.status,
+      headers: {
+        "Content-Type": retryRes.headers["content-type"] || "application/json",
+      },
+    });
+
+    cookiesArray.forEach((cookie) => {
+      if (cookie) finalRes.headers.append("Set-Cookie", cookie);
+    });
+
+    return finalRes;
+  }
+
+  return NextResponse.json(
+    { error: reqErr?.message || "Fetch failed" },
+    { status: reqErr?.status || 500 },
+  );
 }

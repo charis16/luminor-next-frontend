@@ -1,7 +1,5 @@
 import { Image } from "@heroui/image";
 
-import { ClientWrapper } from "../_components";
-
 import FormLogin from "./_components/form-login";
 
 export default function AdminPage() {
@@ -21,9 +19,7 @@ export default function AdminPage() {
           </h2>
         </div>
         <div className="flex-1  w-full md:w-1/2">
-          <ClientWrapper>
-            <FormLogin />
-          </ClientWrapper>
+          <FormLogin />
         </div>
       </div>
     </div>

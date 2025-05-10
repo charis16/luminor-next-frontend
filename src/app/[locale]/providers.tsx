@@ -1,4 +1,5 @@
 "use client";
+
 import type { ThemeProviderProps } from "next-themes";
 
 import * as React from "react";
@@ -9,6 +10,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { ToastProvider } from "@heroui/toast";
 import { useState } from "react";
+
+import { useIsMounted } from "@/hooks/use-is-mounted";
 
 export interface ProvidersProps {
   children: React.ReactNode;
@@ -26,6 +29,9 @@ declare module "@react-types/shared" {
 function Providers({ children, themeProps }: ProvidersProps) {
   const router = useRouter();
   const [queryClient] = useState(() => new QueryClient());
+  const isMounted = useIsMounted();
+
+  if (!isMounted) return null;
 
   return (
     <QueryClientProvider client={queryClient}>

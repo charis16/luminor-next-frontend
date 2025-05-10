@@ -1,10 +1,9 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 
+import { goFetcher, safeRawCall } from "@/utils/api";
 import { UserFormValues } from "@/app/[locale]/admin/(auth)/setting/user/_type";
 
 export function useCreateUser() {
-  const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: async (data: UserFormValues) => {
       const formData = new FormData();
@@ -26,18 +25,17 @@ export function useCreateUser() {
         formData.append("photo", data.photo[0]);
       }
 
-      const res = await fetch("/api/user/create", {
-        method: "POST",
-        body: formData,
-      });
+      const [res, err] = await safeRawCall(
+        goFetcher.raw("/api/user/create", "POST", {
+          data: formData,
+        }),
+      );
 
-      if (!res.ok) {
-        const error = await res.json();
-
-        throw new Error(error?.error || "Failed to create user");
+      if (err || !res?.data) {
+        throw new Error(err?.message || "Failed to create user");
       }
 
-      return res.json(); // { data: user }
+      return res.data; // misalnya { data: user }
     },
   });
 }

@@ -25,7 +25,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 const navItems = [
   {
     label: "Dashboard",
-    href: "/admin/dashboard",
+    href: "/admin",
     icon: LayoutDashboard,
   },
   {
@@ -131,28 +131,54 @@ export default function Sidebar() {
 
           return (
             <div key={label}>
-              <button
-                className={cn(
-                  "w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition",
-                  isActive
-                    ? "bg-foreground-200 text-white font-medium"
-                    : "text-white hover:bg-foreground-200",
-                )}
-                onClick={() => (children ? toggleMenu(label) : closeMobile())}
-              >
-                <Icon size={20} />
-                {!isCollapsed && (
-                  <>
-                    <span className="flex-1 text-left">{label}</span>
-                    {children &&
-                      (isOpen ? (
-                        <ChevronDown size={16} />
-                      ) : (
-                        <ChevronRight size={16} />
-                      ))}
-                  </>
-                )}
-              </button>
+              {href ? (
+                <Link
+                  className={cn(
+                    "w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition",
+                    isActive
+                      ? "bg-foreground-200 text-white font-medium"
+                      : "text-white hover:bg-foreground-200",
+                  )}
+                  href={href}
+                  onClick={closeMobile}
+                >
+                  <Icon size={20} />
+                  {!isCollapsed && (
+                    <>
+                      <span className="flex-1 text-left">{label}</span>
+                      {children &&
+                        (isOpen ? (
+                          <ChevronDown size={16} />
+                        ) : (
+                          <ChevronRight size={16} />
+                        ))}
+                    </>
+                  )}
+                </Link>
+              ) : (
+                <button
+                  className={cn(
+                    "w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition",
+                    isActive
+                      ? "bg-foreground-200 text-white font-medium"
+                      : "text-white hover:bg-foreground-200",
+                  )}
+                  onClick={() => toggleMenu(label)}
+                >
+                  <Icon size={20} />
+                  {!isCollapsed && (
+                    <>
+                      <span className="flex-1 text-left">{label}</span>
+                      {children &&
+                        (isOpen ? (
+                          <ChevronDown size={16} />
+                        ) : (
+                          <ChevronRight size={16} />
+                        ))}
+                    </>
+                  )}
+                </button>
+              )}
 
               {/* Submenu */}
               <AnimatePresence initial={false}>

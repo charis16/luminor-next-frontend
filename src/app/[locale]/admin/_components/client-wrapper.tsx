@@ -1,20 +1,18 @@
 // components/ClientWrapper.tsx
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
+
+import { useIsMounted } from "@/hooks/use-is-mounted";
 
 interface ClientWrapperProps {
   children: React.ReactNode;
 }
 
 export const ClientWrapper = ({ children }: ClientWrapperProps) => {
-  const [hasMounted, setHasMounted] = useState(false);
+  const isMounted = useIsMounted();
 
-  useEffect(() => {
-    setHasMounted(true);
-  }, []);
-
-  if (!hasMounted) return null;
+  if (!isMounted) return null;
 
   return <>{children}</>;
 };

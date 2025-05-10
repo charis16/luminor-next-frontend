@@ -1,4 +1,3 @@
-// lib/goFetcher.ts
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 
 function toUrl(url: string): string {
@@ -69,7 +68,6 @@ function createFetcher(defaultHeaders: Record<string, string> = {}) {
         url: toUrl(url),
         method,
         withCredentials: true,
-        validateStatus: () => true, // ✅ Jangan lempar error apapun, biar kita handle sendiri
         ...config,
       });
     },
@@ -80,3 +78,48 @@ function createFetcher(defaultHeaders: Record<string, string> = {}) {
 export const goFetcher = Object.assign(createFetcher(), {
   withHeaders: (headers: Record<string, string>) => createFetcher(headers),
 });
+
+// ✅ Untuk dapatkan data saja
+export async function safeCall<T extends { status: number; data: any }>(
+  promise: Promise<T>,
+): Promise<[T, null] | [null, any]> {
+  try {
+    const res = await promise;
+
+    if (res.status >= 400) {
+      throw {
+        status: res.status,
+        data: res.data,
+        message: res.data?.error || "Request failed",
+      };
+    }
+
+    return [res, null];
+  } catch (err) {
+    return [null, err];
+  }
+}
+
+// ✅ Untuk akses headers, status, dsb
+export async function safeRawCall<T = any>(
+  promise: Promise<AxiosResponse<T>>,
+): Promise<[AxiosResponse<T>, null] | [null, any]> {
+  try {
+    const res = await promise;
+
+    return [res, null];
+  } catch (err) {
+    if (axios.isAxiosError(err)) {
+      return [
+        null,
+        {
+          status: err.response?.status,
+          message: err.response?.data?.error || err.message,
+          data: err.response?.data,
+        },
+      ];
+    }
+
+    return [null, { status: 500, message: "Unknown error", data: null }];
+  }
+}

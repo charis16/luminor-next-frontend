@@ -34,6 +34,10 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "white" },
     { media: "(prefers-color-scheme: dark)", color: "black" },
@@ -58,7 +62,7 @@ export default async function RootLayout({
       <head />
       <body
         className={clsx(
-          "min-h-dvh bg-background font-sans antialiased relative",
+          "min-h-dvh bg-background font-sans antialiased",
           fontSans.variable,
         )}
       >
@@ -70,9 +74,7 @@ export default async function RootLayout({
               forcedTheme: "dark",
             }}
           >
-            <div className="relative flex flex-col h-screen">
-              <main className="flex-grow">{children}</main>
-            </div>
+            <main className="h-full">{children}</main>
           </Providers>
         </NextIntlClientProvider>
       </body>

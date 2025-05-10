@@ -1,7 +1,7 @@
 import { ScrollShadow } from "@heroui/scroll-shadow";
 
-import { ButtonSave, Form } from "../_components";
-import { UserProvider } from "../_context";
+import { ButtonSave, Form } from "../../_components";
+import { UserProvider } from "../../_context";
 
 import { ClientWrapper, TitlePage } from "@/app/[locale]/admin/_components";
 
@@ -13,15 +13,15 @@ export default function CreatePage() {
           <TitlePage
             withBackButton
             description="Easily create and customize your user"
-            title="Create a New User"
-            urlBack="/admin/setting/user"
+            title="Edit User"
+            urlBack={"/admin/setting/user"}
           >
             <ButtonSave />
           </TitlePage>
 
           <ScrollShadow
             hideScrollBar
-            className="max-h-[calc(100dvh-35dvh)] md:max-h-[calc(100dvh-25dvh)]"
+            className="md:h-[calc(100vh-15rem)] h-[calc(100vh-19rem)]"
           >
             <Form />
           </ScrollShadow>

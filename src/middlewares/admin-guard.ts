@@ -7,13 +7,12 @@ import { goFetcher } from "@/utils/api";
 
 export async function adminGuard(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const locale = pathname.split("/")[1];
   const accessToken = request.cookies.get("access_token")?.value;
   const refreshToken = request.cookies.get("refresh_token")?.value;
 
-  const isAdminRoot = new RegExp(`^/${locale}/admin$`).test(pathname);
-  const isProtected = new RegExp(`^/${locale}/admin(/.*)?$`).test(pathname);
-  const isLoginPage = pathname === `/${locale}/admin`;
+  const isAdminRoot = new RegExp(`^/admin$`).test(pathname);
+  const isProtected = new RegExp(`^/admin(/.*)?$`).test(pathname);
+  const isLoginPage = pathname === `/admin`;
 
   let role: string | null = null;
 
@@ -25,7 +24,7 @@ export async function adminGuard(request: NextRequest) {
     } catch (err) {
       request.cookies.delete("access_token");
 
-      return NextResponse.redirect(new URL(`/${locale}/admin`, request.url));
+      return NextResponse.redirect(new URL(`/admin`, request.url));
     }
   }
 
@@ -41,7 +40,7 @@ export async function adminGuard(request: NextRequest) {
 
       if (refreshRes.status === 200 && setCookie) {
         const response = NextResponse.redirect(
-          new URL(`/${locale}/admin/dashboard`, request.url),
+          new URL(`/admin/dashboard`, request.url),
         );
 
         if (Array.isArray(setCookie)) {
@@ -61,14 +60,12 @@ export async function adminGuard(request: NextRequest) {
 
   // 🔁 Kalau akses /admin (login page), tapi sudah login → redirect ke dashboard
   if (isAdminRoot && role === "admin") {
-    return NextResponse.redirect(
-      new URL(`/${locale}/admin/dashboard`, request.url),
-    );
+    return NextResponse.redirect(new URL(`/admin/dashboard`, request.url));
   }
 
   // 🔐 Kalau akses halaman admin tapi belum login → redirect ke login
   if (isProtected && !accessToken && !isLoginPage) {
-    return NextResponse.redirect(new URL(`/${locale}/admin`, request.url));
+    return NextResponse.redirect(new URL(`/admin`, request.url));
   }
 
   return null; // lanjutkan ke middleware berikutnya (intl, dll)

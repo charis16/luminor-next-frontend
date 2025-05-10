@@ -20,14 +20,19 @@ function createFetcher(defaultHeaders: Record<string, string> = {}) {
 
       return res.data;
     } catch (err: any) {
-      const message =
-        err.response?.data?.error ||
-        err.response?.data?.message ||
-        err.message ||
-        "Something went wrong";
+      const response = err.response;
 
-      console.log(err);
-      throw new Error(message);
+      const customError = {
+        status: response?.status || 500,
+        data: response?.data || {},
+        message:
+          response?.data?.error ||
+          response?.data?.message ||
+          err.message ||
+          "Something went wrong",
+      };
+
+      throw customError;
     }
   };
 
@@ -64,6 +69,7 @@ function createFetcher(defaultHeaders: Record<string, string> = {}) {
         url: toUrl(url),
         method,
         withCredentials: true,
+        validateStatus: () => true, // ✅ Jangan lempar error apapun, biar kita handle sendiri
         ...config,
       });
     },

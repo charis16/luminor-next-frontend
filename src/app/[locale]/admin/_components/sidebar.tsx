@@ -81,7 +81,7 @@ export default function Sidebar() {
   const SidebarContent = (
     <div
       className={cn(
-        "flex flex-col h-screen bg-black text-white transition-all duration-300 ease-in-out",
+        "flex flex-col h-full bg-black text-white transition-all duration-300 ease-in-out",
         isCollapsed && !isMobileOpen ? "w-16" : "w-64",
         isMobileOpen && "w-full",
       )}
@@ -196,7 +196,7 @@ export default function Sidebar() {
       {/* Desktop Sidebar */}
       <motion.div
         layout
-        className="hidden md:flex h-screen"
+        className="hidden md:flex min-h-dvh"
         transition={{ type: "tween", duration: 0.3 }}
       >
         {SidebarContent}
@@ -223,7 +223,7 @@ export default function Sidebar() {
             {/* Slide-in Sidebar */}
             <motion.div
               animate={{ x: 0 }}
-              className="relative z-10 w-full h-screen bg-black flex flex-col"
+              className="relative z-10 size-full bg-black flex flex-col"
               exit={{ x: "-100%" }}
               initial={{ x: "-100%" }}
               transition={{ type: "tween", duration: 0.3 }}

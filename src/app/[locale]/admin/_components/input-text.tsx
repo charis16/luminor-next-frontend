@@ -21,6 +21,7 @@ export default function InputText({
     <Input
       {...rest}
       ref={field?.ref}
+      className="scroll-mb-32"
       classNames={{
         inputWrapper: error && "bg-danger-50 hover:bg-danger-100",
         input: error && "placeholder:!text-danger-400",
@@ -34,6 +35,17 @@ export default function InputText({
       variant="bordered"
       onBlur={field?.onBlur ?? onBlur}
       onChange={field?.onChange ?? onChange}
+      onFocus={(e) => {
+        console.log("onFocus", e.currentTarget);
+        setTimeout(() => {
+          if (e.currentTarget) {
+            e.currentTarget.scrollIntoView({
+              behavior: "smooth",
+              block: "center",
+            });
+          }
+        }, 200);
+      }}
     />
   );
 }

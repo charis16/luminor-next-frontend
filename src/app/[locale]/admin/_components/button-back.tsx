@@ -4,9 +4,12 @@ import { Button } from "@heroui/button";
 import { ChevronLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-export default function ButtonBack() {
+interface ButtonBackProps {
+  urlBack?: string;
+}
+export default function ButtonBack({ urlBack }: ButtonBackProps) {
   const router = useRouter();
-  const handleBack = () => router.back();
+  const handleBack = () => (urlBack ? router.push(urlBack) : router.back());
 
   return (
     <Button

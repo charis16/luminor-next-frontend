@@ -11,6 +11,8 @@ import {
 } from "@heroui/table";
 import { Spinner } from "@heroui/spinner";
 import { useCallback } from "react";
+import { useRouter } from "next/navigation";
+import { useLocale } from "next-intl";
 
 import { ColumnKey, COLUMNS } from "../_type";
 import { useUserContext } from "../_context";
@@ -20,6 +22,8 @@ import { User } from "@/types/user-lists";
 
 export default function TableData() {
   const { users: data, pages, page, setPage, isLoading } = useUserContext();
+  const router = useRouter();
+  const locale = useLocale();
 
   const loadingState = isLoading || data?.length === 0 ? "loading" : "idle";
 
@@ -39,7 +43,7 @@ export default function TableData() {
             actions={["view", "edit", "delete"]}
             onAction={(action) => {
               if (action === "edit") {
-                // buka modal, redirect, dll
+                router.push(`/${locale}/admin/setting/user/edit/${data.uuid}`);
               }
               if (action === "delete") {
                 // konfirmasi delete
@@ -56,57 +60,65 @@ export default function TableData() {
   }, []);
 
   return (
-    <Table
-      removeWrapper
-      aria-label="team table"
-      bottomContent={
-        pages > 1 ? (
-          <div className="flex w-full justify-center">
-            <Pagination
-              isCompact
-              showControls
-              showShadow
-              color="default"
-              page={page}
-              size="sm"
-              total={pages}
-              onChange={(page) => setPage(page)}
-            />
-          </div>
-        ) : null
-      }
-    >
-      <TableHeader columns={[...COLUMNS]}>
-        {(column) => (
-          <TableColumn
-            key={column.uid}
-            align={column.uid === "actions" ? "center" : "start"}
-            className="!text-white !font-semibold text-base"
-          >
-            {column.name}
-          </TableColumn>
-        )}
-      </TableHeader>
-
-      <TableBody
-        items={data}
-        loadingContent={
-          <Spinner
-            classNames={{ label: "text-foreground mt-4" }}
-            color="white"
-            variant="simple"
-          />
-        }
-        loadingState={loadingState}
-      >
-        {(item) => (
-          <TableRow key={item?.uuid}>
-            {(columnKey) => (
-              <TableCell>{renderCell(item, columnKey as ColumnKey)}</TableCell>
+    <div className="w-full overflow-x-auto">
+      <div className="min-w-[100px] ">
+        <Table
+          isHeaderSticky
+          removeWrapper
+          aria-label="team table"
+          bottomContent={
+            pages > 1 ? (
+              <div className="flex w-full justify-center">
+                <Pagination
+                  isCompact
+                  showControls
+                  showShadow
+                  color="default"
+                  page={page}
+                  size="sm"
+                  total={pages}
+                  onChange={(page) => setPage(page)}
+                />
+              </div>
+            ) : null
+          }
+          className="table-fixed w-full max-w-1 md:max-w-full"
+        >
+          <TableHeader columns={[...COLUMNS]}>
+            {(column) => (
+              <TableColumn
+                key={column.uid}
+                align={column.uid === "actions" ? "center" : "start"}
+                className="!text-white !font-semibold text-base"
+              >
+                {column.name}
+              </TableColumn>
             )}
-          </TableRow>
-        )}
-      </TableBody>
-    </Table>
+          </TableHeader>
+
+          <TableBody
+            items={data}
+            loadingContent={
+              <Spinner
+                classNames={{ label: "text-foreground mt-4" }}
+                color="white"
+                variant="simple"
+              />
+            }
+            loadingState={loadingState}
+          >
+            {(item) => (
+              <TableRow key={item?.uuid}>
+                {(columnKey) => (
+                  <TableCell>
+                    {renderCell(item, columnKey as ColumnKey)}
+                  </TableCell>
+                )}
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
+    </div>
   );
 }

@@ -1,10 +1,10 @@
 "use client";
 
-import { MenuIcon, BookA } from "lucide-react";
+import { MenuIcon } from "lucide-react";
 import { Breadcrumbs, BreadcrumbItem } from "@heroui/breadcrumbs";
-import { Select, SelectItem } from "@heroui/select";
 import { useLocale } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
+import { Select, SelectItem } from "@heroui/select";
 
 import { useSidebar } from "../_context/sidebar-context";
 
@@ -26,7 +26,7 @@ export default function Header() {
   const locale = useLocale();
 
   return (
-    <header className="h-16 flex items-center justify-between px-4 border-b border-white/10">
+    <header className="h-16 flex items-center justify-between px-4 border-b border-white/10 gap-4">
       {/* Left: menu & breadcrumbs */}
       <div className="flex items-center gap-4">
         <button
@@ -35,7 +35,7 @@ export default function Header() {
         >
           <MenuIcon size={20} />
         </button>
-        <nav className="text-sm text-gray-400">
+        <nav className="text-sm text-gray-400 ">
           <Breadcrumbs>
             {breadcrumbs.slice(1).map((crumb, index, arr) => (
               <BreadcrumbItem
@@ -51,12 +51,11 @@ export default function Header() {
 
       {/* Right: Language Selector */}
       <div className="flex items-center gap-2 text-white">
-        <BookA className="w-4 h-4 text-gray-400" />
         <Select
           aria-label="Select Language"
-          className="w-16"
+          className="min-w-14" // atau w-20 agar cukup tampilkan bendera
           classNames={{
-            value: "w-fit",
+            popoverContent: "min-w-24 ml-[-50%]", // dropdown panel
           }}
           selectedKeys={[locale]}
           size="sm"
@@ -64,12 +63,18 @@ export default function Header() {
           onSelectionChange={(key) => {
             const newLocale = String(Array.from(key)[0]);
 
-            if (typeof pathname === "string") {
+            if (newLocale !== locale && typeof pathname === "string") {
+              // Set cookie LUMINOR_LOCALE agar dibaca middleware/server
+              document.cookie = `LUMINOR_LOCALE=${newLocale}; path=/`;
+
+              // Ganti path URL sesuai bahasa yang dipilih
               router.replace(switchLocalePath(pathname, locale, newLocale));
             }
           }}
         >
-          <SelectItem key="id">🇮🇩</SelectItem>
+          <SelectItem key="id" className="inline-flex">
+            🇮🇩
+          </SelectItem>
           <SelectItem key="en">🇺🇸</SelectItem>
         </Select>
       </div>

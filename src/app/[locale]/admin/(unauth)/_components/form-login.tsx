@@ -1,70 +1,93 @@
 "use client";
 
+import { useForm } from "react-hook-form";
 import { Button } from "@heroui/button";
 import { Card, CardHeader, CardBody, CardFooter } from "@heroui/card";
 import { Input } from "@heroui/input";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { addToast } from "@heroui/toast";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useLogin } from "@/hooks/use-login";
 
+export const loginSchema = z.object({
+  email: z
+    .string()
+    .trim()
+    .min(1, "Email wajib diisi")
+    .email("Email tidak valid"),
+  password: z.string().trim().min(1, "Password wajib diisi"),
+});
+
+export type LoginFormData = z.infer<typeof loginSchema>;
+
 export default function FormLogin() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const router = useRouter();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+  });
+
   const { mutate, isPending } = useLogin();
+  const router = useRouter();
 
-  const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    try {
-      mutate(
-        { email, password },
-        {
-          onSuccess: () => {
-            router.push("/admin/dashboard");
-          },
-        },
-      );
-    } catch (err: any) {
-      addToast({
-        title: "Login Failed",
-        description: err.message || "Login gagal",
-        color: "danger",
-      });
-    }
+  const onSubmit = (data: LoginFormData) => {
+    mutate(data, {
+      onSuccess: () => router.push("/admin/dashboard"),
+      onError: (err: any) => {
+        addToast({
+          title: "Login Failed",
+          description: err.message || "Login gagal",
+          color: "danger",
+        });
+      },
+    });
   };
 
   return (
     <Card className="w-full max-w-md p-6 bg-transparent" shadow="none">
-      <CardHeader className="text-center text-2xl font-bold flex justify-center">
+      <CardHeader className="text-center text-2xl font-bold flex justify-center text-white">
         Welcome, Admin
       </CardHeader>
       <CardBody>
-        <form className="flex flex-col gap-4" onSubmit={handleLogin}>
+        <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
           <Input
-            required
+            {...register("email", { required: "Email wajib diisi" })}
+            classNames={{
+              inputWrapper: "bg-transparent",
+              input: "text-white placeholder:text-gray-400",
+              label: "text-white",
+            }}
+            errorMessage={errors.email?.message}
+            isInvalid={!!errors.email}
             label="Email"
             labelPlacement="outside"
             placeholder="Enter your email"
             type="email"
-            value={email}
             variant="bordered"
-            onChange={(e) => setEmail(e.target.value)}
           />
+
           <Input
-            required
+            {...register("password", { required: "Password wajib diisi" })}
+            classNames={{
+              inputWrapper: "bg-transparent",
+              input: "text-white placeholder:text-gray-400",
+              label: "text-white",
+            }}
+            errorMessage={errors.password?.message}
+            isInvalid={!!errors.password}
             label="Password"
             labelPlacement="outside"
             placeholder="Enter your password"
             type="password"
-            value={password}
             variant="bordered"
-            onChange={(e) => setPassword(e.target.value)}
           />
+
           <Button
-            className="w-full  text-white font-bold py-2 px-4 rounded-md"
+            className="w-full text-white font-bold py-2 px-4 rounded-md"
             isLoading={isPending}
             type="submit"
           >
@@ -73,8 +96,8 @@ export default function FormLogin() {
         </form>
       </CardBody>
       <CardFooter className="text-center text-sm text-gray-400 flex flex-col gap-2">
-        <p> &copy; 2024 Admin Portal.</p>
-        <p> All rights reserved.</p>
+        <p>&copy; 2024 Admin Portal.</p>
+        <p>All rights reserved.</p>
       </CardFooter>
     </Card>
   );

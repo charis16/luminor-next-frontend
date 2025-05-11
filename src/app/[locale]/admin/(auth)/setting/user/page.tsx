@@ -4,10 +4,10 @@ import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 
 import { UserProvider } from "./_context";
 import { ButtonAdd, TableData, TeamSearchInput } from "./_components";
+import { getUserListsOptions } from "./_hooks/use-user-lists";
 
 import { TitlePage } from "@/app/[locale]/admin/_components";
 import getQueryClient from "@/utils/react-query";
-import { getUserListsOptions } from "@/hooks/use-user-lists";
 import { getAuthCookieHeader } from "@/utils/get-cookies-server";
 
 export default async function UserPage() {
@@ -19,7 +19,7 @@ export default async function UserPage() {
   );
 
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
+    <HydrationBoundary key="user-list" state={dehydrate(queryClient)}>
       <UserProvider>
         <div className="flex flex-col gap-6">
           <TitlePage

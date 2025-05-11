@@ -3,8 +3,9 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 
 import { FormHandle, UserContextType } from "../_type";
+import { useUserLists } from "../_hooks/use-user-lists";
 
-import { useUserLists } from "@/hooks/use-user-lists";
+import { useIsMounted } from "@/hooks/use-is-mounted";
 
 const UserContext = createContext<UserContextType | null>(null);
 
@@ -22,6 +23,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const formRef = useRef<FormHandle>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [page, setPage] = useState(1);
+  const isMounted = useIsMounted();
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -35,7 +37,13 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     setPage(1);
   }, [debouncedSearch]);
 
-  const { data, isLoading, isPending } = useUserLists(page, search, 10);
+  const { data, isLoading, isPending, refetch } = useUserLists(
+    page,
+    search,
+    10,
+  );
+
+  if (!isMounted) return null;
 
   return (
     <UserContext.Provider
@@ -50,6 +58,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
         onSetIsSubmitting: setIsSubmitting,
         pages: data ? Math.ceil(data.total / data.limit) : 0,
         isLoading: isLoading || isPending,
+        onRefetch: refetch,
       }}
     >
       {children}

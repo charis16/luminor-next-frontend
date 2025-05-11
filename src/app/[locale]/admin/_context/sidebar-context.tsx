@@ -2,6 +2,8 @@
 
 import { createContext, useContext, useState } from "react";
 
+import { useIsMounted } from "@/hooks/use-is-mounted";
+
 type SidebarContextType = {
   isCollapsed: boolean;
   toggleSidebar: () => void;
@@ -15,10 +17,13 @@ const SidebarContext = createContext<SidebarContextType | undefined>(undefined);
 export function SidebarProvider({ children }: { children: React.ReactNode }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const isMounted = useIsMounted();
 
   const toggleSidebar = () => setIsCollapsed((prev) => !prev);
   const toggleMobile = () => setIsMobileOpen((prev) => !prev);
   const closeMobile = () => setIsMobileOpen(false);
+
+  if (!isMounted) return null;
 
   return (
     <SidebarContext.Provider

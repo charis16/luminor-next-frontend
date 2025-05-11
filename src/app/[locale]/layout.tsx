@@ -4,8 +4,6 @@ import { Metadata, Viewport } from "next";
 import clsx from "clsx";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
-import { ToastProvider } from "@heroui/toast";
-import { HeroUIProvider } from "@heroui/system";
 
 import Providers from "./providers";
 
@@ -69,16 +67,14 @@ export default async function RootLayout({
         )}
       >
         <NextIntlClientProvider locale={locale}>
-          <HeroUIProvider>
-            <Providers
-              themeProps={{
-                forcedTheme: "dark",
-              }}
-            >
-              <main className="h-full">{children}</main>
-              <ToastProvider />
-            </Providers>
-          </HeroUIProvider>
+          <Providers
+            themeProps={{
+              attribute: "class",
+              forcedTheme: "dark",
+            }}
+          >
+            <main className="h-full">{children}</main>
+          </Providers>
         </NextIntlClientProvider>
       </body>
     </html>

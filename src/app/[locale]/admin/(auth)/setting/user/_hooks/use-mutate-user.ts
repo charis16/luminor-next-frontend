@@ -3,9 +3,14 @@ import { useMutation } from "@tanstack/react-query";
 import { goFetcher, safeRawCall } from "@/utils/api";
 import { UserFormValues } from "@/app/[locale]/admin/(auth)/setting/user/_type";
 
-export function useCreateUser() {
+interface MutateUserInput {
+  uuid?: string;
+  data: UserFormValues;
+}
+
+export function useMutateUser() {
   return useMutation({
-    mutationFn: async (data: UserFormValues) => {
+    mutationFn: async ({ uuid, data }: MutateUserInput) => {
       const formData = new FormData();
 
       formData.append("name", data.name);
@@ -25,17 +30,20 @@ export function useCreateUser() {
         formData.append("photo", data.photo[0]);
       }
 
+      const url = uuid ? `/api/user/${uuid}` : "/api/user/submit";
+      const method = uuid ? "PUT" : "POST";
+
       const [res, err] = await safeRawCall(
-        goFetcher.raw("/api/user/create", "POST", {
+        goFetcher.raw(url, method, {
           data: formData,
         }),
       );
 
       if (err || !res?.data) {
-        throw new Error(err?.message || "Failed to create user");
+        throw new Error(err?.message || "Failed to save user");
       }
 
-      return res.data; // misalnya { data: user }
+      return res.data;
     },
   });
 }

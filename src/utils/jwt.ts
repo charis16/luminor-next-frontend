@@ -16,7 +16,7 @@ export function verifyJwtToken(token: string): JwtPayload {
     }
 
     return decoded.payload as JwtPayload;
-  } catch (err) {
+  } catch {
     throw new Error("Token invalid or expired");
   }
 }

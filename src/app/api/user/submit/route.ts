@@ -8,19 +8,17 @@ export async function POST(req: NextRequest) {
   const clone1 = new FormData();
   const clone2 = new FormData();
 
-  incomingForm.forEach((value, key) => {
+  for (const [key, value] of Array.from(incomingForm.entries())) {
     if (typeof value === "string") {
       clone1.append(key, value);
       clone2.append(key, value);
     } else if (value instanceof File) {
-      value.arrayBuffer().then((buffer) => {
-        const file = Buffer.from(buffer);
+      const buffer = Buffer.from(await value.arrayBuffer());
 
-        clone1.append(key, file, value.name);
-        clone2.append(key, file, value.name);
-      });
+      clone1.append(key, buffer, value.name);
+      clone2.append(key, buffer, value.name);
     }
-  });
+  }
 
   return fetchWithAutoRefresh({
     req,

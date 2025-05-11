@@ -32,6 +32,7 @@ export type UserContextType = {
   setPage: (page: number) => void;
   pages: number;
   isLoading: boolean;
+  onRefetch: () => void;
 };
 
 export const PAGE_SIZE = 10;
@@ -60,7 +61,10 @@ export const UserSchema = z
     photo: PhotoSchema,
 
     name: z.string().min(1, { message: "Name is required" }),
-    email: z.string().min(1, { message: "Email is required" }),
+    email: z
+      .string()
+      .min(1, { message: "Email is required" })
+      .email({ message: "Invalid email format" }),
 
     description: z.string().optional(),
     phoneNumber: z.string().optional(),

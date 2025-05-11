@@ -37,7 +37,7 @@ function Providers({ children, themeProps }: ProvidersProps) {
     <QueryClientProvider client={queryClient}>
       <HeroUIProvider navigate={router.push}>
         <NextThemesProvider {...themeProps}>{children}</NextThemesProvider>
-        <ToastProvider />
+        <ToastProvider placement="top-right" toastOffset={60} />
       </HeroUIProvider>
       {process.env.NODE_ENV === "development" && (
         <ReactQueryDevtools initialIsOpen={false} position="right" />

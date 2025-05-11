@@ -36,7 +36,6 @@ export default function InputText({
       onBlur={field?.onBlur ?? onBlur}
       onChange={field?.onChange ?? onChange}
       onFocus={(e) => {
-        console.log("onFocus", e.currentTarget);
         setTimeout(() => {
           if (e.currentTarget) {
             e.currentTarget.scrollIntoView({

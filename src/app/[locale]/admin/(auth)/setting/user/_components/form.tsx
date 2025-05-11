@@ -11,10 +11,12 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Switch } from "@heroui/switch";
 import { addToast } from "@heroui/toast";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 import { EnumRole, FormHandle, UserFormValues, UserSchema } from "../_type";
 import { useUserContext } from "../_context";
+import { useMutateUser } from "../_hooks/use-mutate-user";
+import { useUserByUUID } from "../_hooks/use-user-by-uuid";
 
 import {
   DropzoneInput,
@@ -22,11 +24,15 @@ import {
   InputTextArea,
   SelectOption,
 } from "@/app/[locale]/admin/_components";
-import { useCreateUser } from "@/hooks/use-mutate-user";
 
 const Form: ForwardRefRenderFunction<FormHandle> = () => {
+  const params = useParams();
+  const uuid = params?.id as string | undefined;
+
+  const { data: user } = useUserByUUID(uuid);
+
   const { onSetIsSubmitting } = useUserContext();
-  const { mutate, isPending } = useCreateUser();
+  const { mutate, isPending } = useMutateUser();
   const router = useRouter();
   const form = useForm<UserFormValues>({
     resolver: zodResolver(UserSchema),
@@ -59,26 +65,36 @@ const Form: ForwardRefRenderFunction<FormHandle> = () => {
 
     if (!isValid) return;
 
-    mutate(data, {
-      onSuccess: () => {
-        form.reset();
-        onSetIsSubmitting(false);
-        router.back();
-        addToast({
-          title: "Create User Success",
-          description: "User created successfully",
-          color: "success",
-        });
+    mutate(
+      {
+        uuid: undefined,
+        data,
       },
-      onError: (err: any) => {
-        onSetIsSubmitting(false);
-        addToast({
-          title: "Create User Failed",
-          description: err.message || "Failed to create user",
-          color: "danger",
-        });
+      {
+        onSuccess: () => {
+          form.reset();
+          onSetIsSubmitting(false);
+          router.back();
+          addToast({
+            title: "Create User Success",
+            description: "User created successfully",
+            color: "success",
+          });
+        },
+        onError: (err: any) => {
+          onSetIsSubmitting(false);
+          addToast({
+            title: "Create User Failed",
+            description: err.message || "Failed to create user",
+            color: "danger",
+          });
+        },
       },
-    });
+    );
+  };
+
+  const onError = (error: any) => {
+    console.error("Form error", error);
   };
 
   useEffect(() => {
@@ -103,11 +119,28 @@ const Form: ForwardRefRenderFunction<FormHandle> = () => {
     }
   }, [isPending]);
 
+  useEffect(() => {
+    if (user) {
+      form.reset({
+        isPublished: user.is_published,
+        email: user.email,
+        name: user.name,
+        role: user.role as EnumRole,
+        urlInstagram: user.url_instagram,
+        urlTikTok: user.url_tiktok,
+        urlFacebook: user.url_facebook,
+        urlYoutube: user.url_youtube,
+        description: user.description,
+        phoneNumber: user.phone_number,
+      });
+    }
+  }, [user]);
+
   return (
     <form
       ref={formRef}
       className="flex flex-col gap-4"
-      onSubmit={form.handleSubmit(onSubmit)}
+      onSubmit={form.handleSubmit(onSubmit, onError)}
     >
       <Controller
         control={form.control}
@@ -192,12 +225,28 @@ const Form: ForwardRefRenderFunction<FormHandle> = () => {
       <Controller
         control={form.control}
         name="photo"
-        render={({ field }) => (
+        render={({ field, fieldState }) => (
           <DropzoneInput
+            error={fieldState.error?.message}
             label="Photo"
             maxFiles={1}
+            maxSize={2}
             type="image"
-            onChange={(files) => field.onChange(files)}
+            onChange={(files) => {
+              const file = files?.[0];
+
+              if (file && file.size > 2 * 1024 * 1024) {
+                form.setError("photo", {
+                  type: "manual",
+                  message: "Maximum file size is 2MB",
+                });
+
+                return;
+              }
+
+              field.onChange(files);
+              form.clearErrors("photo");
+            }}
           />
         )}
       />

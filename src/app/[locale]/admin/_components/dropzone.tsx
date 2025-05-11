@@ -13,6 +13,8 @@ interface DropzoneProps {
   onSelectThumbnail?: (file: File | null) => void;
   maxFiles?: number;
   type?: "image" | "video";
+  error?: string;
+  maxSize?: number;
 }
 
 export default function Dropzone({
@@ -21,6 +23,8 @@ export default function Dropzone({
   onSelectThumbnail,
   maxFiles,
   type,
+  error,
+  maxSize,
 }: DropzoneProps) {
   const [files, setFiles] = useState<File[]>([]);
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
@@ -89,10 +93,24 @@ export default function Dropzone({
   return (
     <div className="flex flex-col gap-2">
       {label && (
-        <label className="text-sm font-medium text-white">{label}</label>
+        <label
+          className={cn(
+            "text-sm font-medium ",
+            error ? "text-danger" : "text-white",
+          )}
+        >
+          {label}
+        </label>
       )}
 
-      <div className="rounded-md bg-[hsl(var(--heroui-default-100))] p-4 group relative">
+      <div
+        className={cn(
+          "rounded-md  p-4 group relative",
+          error
+            ? "border-danger  bg-danger-50 hover:bg-danger-100 transition-all"
+            : "border-[hsl(var(--heroui-default-300))]",
+        )}
+      >
         <div
           className={cn(
             "grid gap-4",
@@ -105,7 +123,9 @@ export default function Dropzone({
           {(!maxFiles || files.length < maxFiles) && (
             <div
               {...getRootProps()}
-              className="flex flex-col items-center justify-center w-full h-56 cursor-pointer rounded-md border-2 border-dashed border-[hsl(var(--heroui-default-300))] bg-[hsl(var(--heroui-default-100))] hover:bg-[hsl(var(--heroui-default-200))] transition text-center"
+              className={cn(
+                "flex flex-col items-center justify-center w-full h-56 cursor-pointer rounded-md border-2 border-dashed border-[hsl(var(--heroui-default-300))] bg-[hsl(var(--heroui-default-100))] hover:bg-[hsl(var(--heroui-default-200))] transition text-center",
+              )}
             >
               <input {...getInputProps()} />
               <UploadCloud className="w-10 h-10 text-[hsl(var(--heroui-foreground-500))] mb-3" />
@@ -118,7 +138,7 @@ export default function Dropzone({
               <p className="text-xs text-[hsl(var(--heroui-foreground-400))] mt-1">
                 {type === "video"
                   ? "MP4, MOV, WEBM, up to 100MB each"
-                  : "PNG, JPG, up to 5MB each"}
+                  : `PNG, JPG, up to ${maxSize ? maxSize : "5"}MB each `}
               </p>
             </div>
           )}
@@ -179,6 +199,7 @@ export default function Dropzone({
               </div>
             </div>
           ))}
+          {error && <p className="mt-2 text-tiny text-danger">{error}</p>}
         </div>
 
         {/* Zoom Modal */}

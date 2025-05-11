@@ -1,6 +1,5 @@
 "use client";
 
-import { Pagination } from "@heroui/pagination";
 import {
   Table,
   TableBody,
@@ -10,23 +9,36 @@ import {
   TableRow,
 } from "@heroui/table";
 import { Spinner } from "@heroui/spinner";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
+import { Pagination } from "@heroui/pagination";
+import { addToast } from "@heroui/toast";
 
 import { ColumnKey, COLUMNS } from "../_type";
 import { useUserContext } from "../_context";
+import { useDeleteUser } from "../_hooks/use-delete-user";
 
 import ActionDropdown from "@/app/[locale]/admin/_components/action-dropdown";
 import { User } from "@/types/user-lists";
+import { ConfirmDialog } from "@/app/[locale]/admin/_components/confirmation-dialog";
 
 export default function TableData() {
-  const { users: data, pages, page, setPage, isLoading } = useUserContext();
+  const {
+    users: data,
+    pages,
+    page,
+    setPage,
+    isLoading,
+    onRefetch,
+  } = useUserContext();
   const router = useRouter();
   const locale = useLocale();
+  const [selectedId, setSelectedId] = useState<User["uuid"]>("");
+  const { mutate: deleteUser } = useDeleteUser();
 
   const loadingState = isLoading || data?.length === 0 ? "loading" : "idle";
-
+  const isOpen = selectedId !== "";
   const renderCell = useCallback((data: User, columnKey: ColumnKey) => {
     const cellValue = data[columnKey as keyof User];
 
@@ -40,16 +52,13 @@ export default function TableData() {
       case "actions":
         return (
           <ActionDropdown
-            actions={["view", "edit", "delete"]}
+            actions={["edit", "delete"]}
             onAction={(action) => {
               if (action === "edit") {
                 router.push(`/${locale}/admin/setting/user/edit/${data.uuid}`);
               }
               if (action === "delete") {
-                // konfirmasi delete
-              }
-              if (action === "view") {
-                // tampilkan detail
+                setSelectedId(data.uuid);
               }
             }}
           />
@@ -60,65 +69,93 @@ export default function TableData() {
   }, []);
 
   return (
-    <div className="w-full overflow-x-auto">
-      <div className="min-w-[100px] ">
-        <Table
-          isHeaderSticky
-          removeWrapper
-          aria-label="team table"
-          bottomContent={
-            pages > 1 ? (
-              <div className="flex w-full justify-center">
-                <Pagination
-                  isCompact
-                  showControls
-                  showShadow
-                  color="default"
-                  page={page}
-                  size="sm"
-                  total={pages}
-                  onChange={(page) => setPage(page)}
-                />
-              </div>
-            ) : null
-          }
-          className="table-fixed w-full max-w-1 md:max-w-full"
-        >
-          <TableHeader columns={[...COLUMNS]}>
-            {(column) => (
-              <TableColumn
-                key={column.uid}
-                align={column.uid === "actions" ? "center" : "start"}
-                className="!text-white !font-semibold text-base"
-              >
-                {column.name}
-              </TableColumn>
-            )}
-          </TableHeader>
+    <>
+      <Table
+        fullWidth
+        isHeaderSticky
+        removeWrapper
+        aria-label="user table"
+        classNames={{
+          base: "max-h-[480px] overflow-scroll max-w-[350px] md:max-w-full md:max-h-[700x]",
+        }}
+        rowHeight={10}
+      >
+        <TableHeader columns={[...COLUMNS]}>
+          {(column) => (
+            <TableColumn
+              key={column.uid}
+              align={column.uid === "actions" ? "center" : "start"}
+              className="!text-white !font-semibold text-base"
+            >
+              {column.name}
+            </TableColumn>
+          )}
+        </TableHeader>
 
-          <TableBody
-            items={data}
-            loadingContent={
-              <Spinner
-                classNames={{ label: "text-foreground mt-4" }}
-                color="white"
-                variant="simple"
-              />
-            }
-            loadingState={loadingState}
-          >
-            {(item) => (
-              <TableRow key={item?.uuid}>
-                {(columnKey) => (
-                  <TableCell>
-                    {renderCell(item, columnKey as ColumnKey)}
-                  </TableCell>
-                )}
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
-    </div>
+        <TableBody
+          items={data}
+          loadingContent={
+            <Spinner
+              classNames={{ label: "text-foreground mt-4" }}
+              color="white"
+              variant="simple"
+            />
+          }
+          loadingState={loadingState}
+        >
+          {(item) => (
+            <TableRow key={item?.uuid}>
+              {(columnKey) => (
+                <TableCell>
+                  {renderCell(item, columnKey as ColumnKey)}
+                </TableCell>
+              )}
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+      {pages > 1 && (
+        <div className="flex w-full justify-center">
+          <Pagination
+            isCompact
+            showControls
+            showShadow
+            color="default"
+            page={page}
+            size="sm"
+            total={pages}
+            onChange={(page) => setPage(page)}
+          />
+        </div>
+      )}
+      <ConfirmDialog
+        isOpen={isOpen}
+        loading={false}
+        onClose={() => setSelectedId("")}
+        onConfirm={() =>
+          deleteUser(
+            { uuid: selectedId },
+            {
+              onSuccess: () => {
+                addToast({
+                  title: "User deleted",
+                  description: "User has been deleted successfully",
+                  color: "success",
+                });
+                setSelectedId("");
+                onRefetch();
+              },
+              onError: (error) => {
+                addToast({
+                  title: "Error deleting user",
+                  description: error.message,
+                  color: "danger",
+                });
+              },
+            },
+          )
+        }
+      />
+    </>
   );
 }

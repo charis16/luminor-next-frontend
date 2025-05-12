@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 import { goFetcher, safeRawCall } from "@/utils/api";
 
 export async function POST() {
-  const refreshToken = (await cookies()).get("refresh_token")?.value;
+  const refreshToken = (await cookies()).get("admin_refresh_token")?.value;
 
   if (!refreshToken) {
     return NextResponse.json(
@@ -16,11 +16,11 @@ export async function POST() {
 
   const [backendRes, err] = await safeRawCall(
     goFetcher.raw(
-      `${process.env.API_BASE_URL}/v1/api/auth/refresh-token`,
+      `${process.env.API_BASE_URL}/v1/api/auth/admin-refresh-token`,
       "POST",
       {
         headers: {
-          Cookie: `refresh_token=${refreshToken}`,
+          Cookie: `admin_refresh_token=${refreshToken}`,
         },
       },
     ),

@@ -8,7 +8,7 @@ export default function LayoutHome({
   return (
     <div className="relative">
       <Navbar />
-      <main>{children}</main>
+      <div>{children}</div>
     </div>
   );
 }

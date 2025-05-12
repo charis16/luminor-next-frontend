@@ -34,8 +34,8 @@ export async function fetchWithAutoRefresh({
   retryHeaders,
   retry = true,
 }: FetchWithRefreshOptions): Promise<NextResponse> {
-  const accessCookie = getFilteredCookie(req, ["access_token"]);
-  const refreshCookie = getFilteredCookie(req, ["refresh_token"]);
+  const accessCookie = getFilteredCookie(req, ["admin_access_token"]);
+  const refreshCookie = getFilteredCookie(req, ["admin_refresh_token"]);
 
   const makeRequest = (cookieHeader: string, body: any, headers: any) => {
     return goFetcher.raw(input.toString(), init.method || "GET", {
@@ -65,7 +65,7 @@ export async function fetchWithAutoRefresh({
   if (reqErr?.status === 401 && retry) {
     const [refreshRes, refreshErr] = await safeRawCall(
       goFetcher.raw(
-        `${process.env.API_BASE_URL}/v1/api/auth/refresh-token`,
+        `${process.env.API_BASE_URL}/v1/api/auth/admin/refresh-token`,
         "POST",
         { headers: { Cookie: refreshCookie } },
       ),

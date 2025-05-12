@@ -1,7 +1,7 @@
 // hooks/useLogin.ts
 import { useMutation } from "@tanstack/react-query";
 
-import { goFetcher } from "@/utils/api";
+import { goFetcher, safeCall } from "@/utils/api";
 
 interface LoginInput {
   email: string;
@@ -11,10 +11,16 @@ interface LoginInput {
 export function useLogin() {
   return useMutation({
     mutationFn: async (data: LoginInput): Promise<LoginResponse> => {
-      return await goFetcher.post<LoginResponse, LoginInput>(
-        "/api/auth/login",
-        data,
+      const [res, err] = await safeCall(
+        goFetcher.post("/api/auth/admin/login", data),
       );
+
+      if (err) {
+        // Biar bisa ditangani di onError React Query
+        throw new Error(err.message || "Login failed");
+      }
+
+      return res.data;
     },
   });
 }

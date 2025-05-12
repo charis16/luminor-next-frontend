@@ -1,7 +1,7 @@
 import { Header, Sidebar } from "../_components";
 import { SidebarProvider } from "../_context/sidebar-context";
 
-export default function LayoutAdmin({
+export default function LayoutAuthenticatedAdmin({
   children,
 }: {
   children: React.ReactNode;

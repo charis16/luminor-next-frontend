@@ -32,11 +32,14 @@ export default function FormLogin() {
   });
 
   const { mutate, isPending } = useLogin();
+
   const router = useRouter();
 
   const onSubmit = (data: LoginFormData) => {
     mutate(data, {
-      onSuccess: () => router.push("/admin/dashboard"),
+      onSuccess: () => {
+        router.push("/admin/dashboard");
+      },
       onError: (err: any) => {
         addToast({
           title: "Login Failed",

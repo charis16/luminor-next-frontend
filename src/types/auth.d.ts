@@ -1,6 +1,6 @@
 type LoginResponse = {
   user: {
-    id: string;
+    uuid: string;
     name: string;
     email: string;
     role: string;

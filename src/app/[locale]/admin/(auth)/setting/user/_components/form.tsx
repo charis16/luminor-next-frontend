@@ -17,6 +17,7 @@ import { EnumRole, FormHandle, UserFormValues, UserSchema } from "../_type";
 import { useUserContext } from "../_context";
 import { useMutateUser } from "../_hooks/use-mutate-user";
 import { useUserByUUID } from "../_hooks/use-user-by-uuid";
+import { useDeleteImageUser } from "../_hooks/use-delete-user";
 
 import {
   DropzoneInput,
@@ -30,7 +31,7 @@ const Form: ForwardRefRenderFunction<FormHandle> = () => {
   const uuid = params?.id as string | undefined;
 
   const { data: user } = useUserByUUID(uuid);
-
+  const { mutate: mutateDeleteImageUser } = useDeleteImageUser();
   const { onSetIsSubmitting } = useUserContext();
   const { mutate, isPending } = useMutateUser();
   const router = useRouter();
@@ -67,7 +68,7 @@ const Form: ForwardRefRenderFunction<FormHandle> = () => {
 
     mutate(
       {
-        uuid: undefined,
+        uuid: user?.uuid,
         data,
       },
       {
@@ -75,17 +76,20 @@ const Form: ForwardRefRenderFunction<FormHandle> = () => {
           form.reset();
           onSetIsSubmitting(false);
           router.back();
+
           addToast({
-            title: "Create User Success",
-            description: "User created successfully",
+            title: `${user ? "Edit" : "Create"} User Success`,
+            description: `User ${user ? "edited" : "created"} successfully`,
             color: "success",
           });
         },
         onError: (err: any) => {
           onSetIsSubmitting(false);
+
           addToast({
-            title: "Create User Failed",
-            description: err.message || "Failed to create user",
+            title: `${user ? "Edit" : "Create"} User failed`,
+            description:
+              err.message || `Failed to ${user ? "Edit" : "Create"} user`,
             color: "danger",
           });
         },
@@ -94,7 +98,7 @@ const Form: ForwardRefRenderFunction<FormHandle> = () => {
   };
 
   const onError = (error: any) => {
-    console.error("Form error", error);
+    console.log("Form error", error);
   };
 
   useEffect(() => {
@@ -132,8 +136,10 @@ const Form: ForwardRefRenderFunction<FormHandle> = () => {
         urlYoutube: user.url_youtube,
         description: user.description,
         phoneNumber: user.phone_number,
+        canLogin: user.can_login,
       });
     }
+    console.log("user", user);
   }, [user]);
 
   return (
@@ -149,8 +155,7 @@ const Form: ForwardRefRenderFunction<FormHandle> = () => {
           <Switch
             ref={field.ref}
             aria-label="published"
-            checked={field.value}
-            defaultSelected={field.value}
+            isSelected={field.value}
             name={field.name}
             size="md"
             onBlur={field.onBlur}
@@ -211,6 +216,7 @@ const Form: ForwardRefRenderFunction<FormHandle> = () => {
         name="description"
         render={({ field, fieldState }) => (
           <InputTextArea
+            defaultValue={field.value}
             error={fieldState.error}
             field={field}
             label="Description"
@@ -227,6 +233,7 @@ const Form: ForwardRefRenderFunction<FormHandle> = () => {
         name="photo"
         render={({ field, fieldState }) => (
           <DropzoneInput
+            defaultMedia={[{ id: user?.uuid, url: user?.photo_url || "" }]}
             error={fieldState.error?.message}
             label="Photo"
             maxFiles={1}
@@ -247,6 +254,11 @@ const Form: ForwardRefRenderFunction<FormHandle> = () => {
               field.onChange(files);
               form.clearErrors("photo");
             }}
+            onDeleteDefault={() => {
+              mutateDeleteImageUser({
+                uuid: user?.uuid,
+              });
+            }}
           />
         )}
       />
@@ -259,8 +271,7 @@ const Form: ForwardRefRenderFunction<FormHandle> = () => {
             <Switch
               ref={field.ref}
               aria-label="can-login"
-              checked={field.value}
-              defaultSelected={field.value}
+              isSelected={field.value}
               name={field.name}
               size="md"
               onBlur={field.onBlur}

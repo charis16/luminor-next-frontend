@@ -13,6 +13,8 @@ import { LogOut, Settings } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { addToast } from "@heroui/toast";
 
+import { useAuth } from "../_context/auth-context";
+
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useLogout } from "@/hooks/use-logout";
 
@@ -24,10 +26,12 @@ export default function UserDropdown({
   const isMobile = useIsMobile();
   const { mutate } = useLogout();
   const router = useRouter();
+  const { user, onSetUser } = useAuth();
 
   const handleLogout = () => {
     mutate(undefined, {
       onSuccess: () => {
+        onSetUser(null);
         router.push("/admin");
       },
       onError: (err: { message?: string }) => {
@@ -48,18 +52,23 @@ export default function UserDropdown({
             trigger: "border-none",
           }}
         >
-          <Button className="w-full justify-start gap-3 bg-transparent hover:bg-foreground-200 text-white py-6 rounded-md">
+          <Button className="w-full justify-start items-center gap-3 bg-transparent hover:bg-foreground-200 text-white py-2 rounded-md !h-auto">
             <Avatar
               alt="Profile"
+              className="shrink-0"
               fallback="SC"
               radius="full"
               size="sm"
-              src="/profile.jpg"
+              src={user?.photo}
             />
             {!collapsed && (
-              <div className="flex flex-col text-left leading-tight">
-                <span className="text-sm font-medium">shadcn</span>
-                <span className="text-xs text-gray-400">m@example.com</span>
+              <div className="flex flex-col text-left leading-tight min-w-0">
+                <span className="text-sm font-medium truncate">
+                  {user?.name}
+                </span>
+                <span className="text-xs text-gray-400 truncate">
+                  {user?.email}
+                </span>
               </div>
             )}
           </Button>

@@ -23,7 +23,7 @@ export function useMutateUser() {
       formData.append("url_facebook", data.urlFacebook || "");
       formData.append("url_youtube", data.urlYoutube || "");
       formData.append("is_published", data.isPublished ? "true" : "false");
-      formData.append("canLogin", data.canLogin ? "true" : "false");
+      formData.append("can_login", data.canLogin ? "true" : "false");
       formData.append("password", data.password || "");
 
       if (Array.isArray(data.photo) && data.photo[0] instanceof File) {

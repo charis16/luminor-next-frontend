@@ -1,6 +1,7 @@
 // app/[locale]/admin/users/page.tsx
 
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import { notFound } from "next/navigation";
 
 import { UserProvider } from "./_context";
 import { ButtonAdd, TableData, TeamSearchInput } from "./_components";
@@ -14,9 +15,17 @@ export default async function UserPage() {
   const queryClient = getQueryClient();
   const cookieHeader = await getAuthCookieHeader();
 
-  await queryClient.ensureQueryData(
-    getUserListsOptions(1, "", 10, cookieHeader),
-  );
+  try {
+    await queryClient.ensureQueryData(
+      getUserListsOptions(1, "", 10, cookieHeader),
+    );
+  } catch (err: any) {
+    if (err?.status === 403) {
+      return notFound(); // ⬅️ Redirect ke halaman 404
+    }
+
+    throw err; // lempar error lainnya
+  }
 
   return (
     <HydrationBoundary key="user-list" state={dehydrate(queryClient)}>

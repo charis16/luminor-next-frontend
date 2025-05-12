@@ -42,9 +42,15 @@ export function getUserListsOptions(
 }
 
 // For client
-export function useUserLists(page = 1, search = "", limit = 10) {
+export function useUserLists(
+  page = 1,
+  search = "",
+  limit = 10,
+  isMounted = true,
+) {
   return useQuery({
     ...getUserListsOptions(page, search, limit),
     placeholderData: (prev) => prev,
+    enabled: isMounted,
   });
 }

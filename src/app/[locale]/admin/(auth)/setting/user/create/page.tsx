@@ -7,7 +7,7 @@ import { TitlePage } from "@/app/[locale]/admin/_components";
 
 export default function CreatePage() {
   return (
-    <UserProvider>
+    <UserProvider key="create" enabled={false}>
       <div className="flex flex-col gap-6">
         <TitlePage
           withBackButton

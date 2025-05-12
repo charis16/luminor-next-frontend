@@ -10,11 +10,11 @@ export async function refreshTokenAndSetCookies(
 
   try {
     const refreshRes = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/api/auth/refresh-token`,
+      `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/api/auth/admin/refresh-token`,
       {
         method: "POST",
         headers: {
-          cookie: `refresh_token=${refreshToken}`,
+          cookie: `admin_refresh_token=${refreshToken}`,
         },
       },
     );
@@ -37,8 +37,9 @@ export async function refreshTokenAndSetCookies(
     response.headers.set(
       "Set-Cookie",
       [
-        `access_token=; Path=/; HttpOnly; Max-Age=0; SameSite=Lax`,
-        `refresh_token=; Path=/; HttpOnly; Max-Age=0; SameSite=Lax`,
+        `admin_access_token=; Path=/; HttpOnly; Max-Age=0; SameSite=Lax`,
+        `admin_refresh_token=; Path=/; HttpOnly; Max-Age=0; SameSite=Lax`,
+        `admin_user=; Path=/; HttpOnly; Max-Age=0; SameSite=Lax`,
       ].join(", "),
     );
 

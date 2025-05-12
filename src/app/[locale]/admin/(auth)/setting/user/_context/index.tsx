@@ -17,7 +17,13 @@ export function useUserContext() {
   return ctx;
 }
 
-export const UserProvider = ({ children }: { children: React.ReactNode }) => {
+export const UserProvider = ({
+  children,
+  enabled = true,
+}: {
+  children: React.ReactNode;
+  enabled?: boolean;
+}) => {
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const formRef = useRef<FormHandle>(null);
@@ -41,6 +47,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     page,
     search,
     10,
+    isMounted && enabled,
   );
 
   if (!isMounted) return null;

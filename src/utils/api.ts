@@ -114,7 +114,10 @@ export async function safeRawCall<T = any>(
         null,
         {
           status: err.response?.status,
-          message: err.response?.data?.error || err.message,
+          message:
+            err.response?.data?.error ||
+            err.response?.data?.message ||
+            err.message,
           data: err.response?.data,
         },
       ];

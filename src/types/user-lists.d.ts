@@ -3,6 +3,7 @@ export type User = {
   name: string;
   email: string;
   role: EnumRole;
+  photo: string;
 };
 
 export interface UserDetail {
@@ -18,6 +19,7 @@ export interface UserDetail {
   url_youtube: string;
   is_published: boolean;
   photo_url: string; // presigned proxy URL
+  can_login: boolean;
 }
 
 export interface UserListResponse {

@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 export async function POST() {
   const backendRes = await fetch(
-    `${process.env.API_BASE_URL}/v1/api/auth/logout`,
+    `${process.env.API_BASE_URL}/v1/api/auth/admin-logout`,
     {
       method: "POST",
       credentials: "include", // agar cookie dari browser dikirim ke backend

@@ -22,7 +22,7 @@ export default async function EditPage({ params }: PageProps) {
 
   return (
     <HydrationBoundary key={id} state={dehydrate(queryClient)}>
-      <UserProvider>
+      <UserProvider key={id} enabled={false}>
         <div className="flex flex-col gap-6">
           <TitlePage
             withBackButton

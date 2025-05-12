@@ -13,58 +13,68 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { cn } from "@heroui/theme";
 
 import { useSidebar } from "../_context/sidebar-context";
+import { useAuth } from "../_context/auth-context";
 
 import { UserDropdown } from ".";
 
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useIsMounted } from "@/hooks/use-is-mounted";
 
 const navItems = [
   {
     label: "Dashboard",
     href: "/admin",
     icon: LayoutDashboard,
+    role: "all",
   },
   {
     label: "Portfolio",
     icon: GalleryVertical,
-    children: [
-      { label: "Album", href: "/admin/portfolio/album" },
-      { label: "Category", href: "/admin/portfolio/category" },
-    ],
+    children: [{ label: "Album", href: "/admin/portfolio/album", role: "all" }],
   },
 
   {
     label: "Website",
     icon: Globe,
+    role: "admin",
     children: [
-      { label: "Hero Video", href: "/admin/website/hero-video" },
-      { label: "About us", href: "/admin/website/about-us" },
-      { label: "SEO & Metadata", href: "/admin/website/seo-metadata" },
+      { label: "Hero Video", href: "/admin/website/hero-video", role: "admin" },
+      { label: "About us", href: "/admin/website/about-us", role: "admin" },
+      {
+        label: "SEO & Metadata",
+        href: "/admin/website/seo-metadata",
+        role: "admin",
+      },
       {
         label: "Contact Information",
         href: "/admin/website/contact-information",
+        role: "admin",
       },
-      { label: "FAQ", href: "/admin/website/faq" },
+      { label: "FAQ", href: "/admin/website/faq", role: "admin" },
     ],
   },
   {
     label: "Setting",
     icon: Settings,
-    children: [{ label: "User", href: "/admin/setting/user" }],
+    role: "admin",
+    children: [
+      { label: "Category", href: "/admin/portfolio/category", role: "admin" },
+      { label: "User", href: "/admin/setting/user", role: "admin" },
+    ],
   },
 ];
 
 export default function Sidebar() {
-  const [hydrated, setHydrated] = useState(false);
-
-  useEffect(() => setHydrated(true), []);
+  const isMounted = useIsMounted();
   const isMobile = useIsMobile();
   const { isCollapsed, isMobileOpen, closeMobile } = useSidebar();
   const pathname = usePathname();
+  const { user: authUser } = useAuth();
+  const roleAdmin = authUser?.role === "admin";
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>(() => {
     const initialState: Record<string, boolean> = {};
 
@@ -124,95 +134,112 @@ export default function Sidebar() {
 
       {/* Navigation */}
       <nav className="flex-1 px-2 space-y-1 mt-4 overflow-y-auto">
-        {navItems.map(({ href, label, icon: Icon, children }) => {
-          const isActive =
-            href && pathname.replace(/^\/(id|en)/, "").startsWith(href);
-          const isOpen = openMenus[label];
+        {navItems
+          .filter((item) => {
+            if (item.role === "admin" && !roleAdmin) return false;
 
-          return (
-            <div key={label}>
-              {href ? (
-                <Link
-                  className={cn(
-                    "w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition",
-                    isActive
-                      ? "bg-foreground-200 text-white font-medium"
-                      : "text-white hover:bg-foreground-200",
-                  )}
-                  href={href}
-                  onClick={closeMobile}
-                >
-                  <Icon size={20} />
-                  {!isCollapsed && (
-                    <>
-                      <span className="flex-1 text-left">{label}</span>
-                      {children &&
-                        (isOpen ? (
-                          <ChevronDown size={16} />
-                        ) : (
-                          <ChevronRight size={16} />
-                        ))}
-                    </>
-                  )}
-                </Link>
-              ) : (
-                <button
-                  className={cn(
-                    "w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition",
-                    isActive
-                      ? "bg-foreground-200 text-white font-medium"
-                      : "text-white hover:bg-foreground-200",
-                  )}
-                  onClick={() => toggleMenu(label)}
-                >
-                  <Icon size={20} />
-                  {!isCollapsed && (
-                    <>
-                      <span className="flex-1 text-left">{label}</span>
-                      {children &&
-                        (isOpen ? (
-                          <ChevronDown size={16} />
-                        ) : (
-                          <ChevronRight size={16} />
-                        ))}
-                    </>
-                  )}
-                </button>
-              )}
+            if (item.children) {
+              const filteredChildren = item.children.filter(
+                (child) =>
+                  child.role === "all" || (child.role === "admin" && roleAdmin),
+              );
 
-              {/* Submenu */}
-              <AnimatePresence initial={false}>
-                {children && isOpen && !isCollapsed && (
-                  <motion.div
-                    animate={{ height: "auto", opacity: 1 }}
-                    className="pl-4 ml-[1.40rem] space-y-1 mt-1 border-l border-gray-600 overflow-hidden"
-                    exit={{ height: 0, opacity: 0 }}
-                    initial={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.2 }}
+              if (!item.href && filteredChildren.length === 0) return false;
+
+              item.children = filteredChildren;
+            }
+
+            return true;
+          })
+          .map(({ href, label, icon: Icon, children }) => {
+            const isActive =
+              href && pathname.replace(/^\/(id|en)/, "").startsWith(href);
+            const isOpen = openMenus[label];
+
+            return (
+              <div key={label}>
+                {href ? (
+                  <Link
+                    className={cn(
+                      "w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition",
+                      isActive
+                        ? "bg-foreground-200 text-white font-medium"
+                        : "text-white hover:bg-foreground-200",
+                    )}
+                    href={href}
+                    onClick={closeMobile}
                   >
-                    {children.map((sub) => (
-                      <Link
-                        key={sub.href}
-                        className={cn(
-                          "block text-sm px-3 py-1 rounded-md",
-                          pathname
-                            .replace(/^\/(id|en)/, "")
-                            .startsWith(sub.href)
-                            ? "bg-foreground-200 text-white font-medium"
-                            : "text-white hover:bg-foreground-200",
-                        )}
-                        href={sub.href}
-                        onClick={closeMobile}
-                      >
-                        {sub.label}
-                      </Link>
-                    ))}
-                  </motion.div>
+                    <Icon size={20} />
+                    {!isCollapsed && (
+                      <>
+                        <span className="flex-1 text-left">{label}</span>
+                        {children &&
+                          (isOpen ? (
+                            <ChevronDown size={16} />
+                          ) : (
+                            <ChevronRight size={16} />
+                          ))}
+                      </>
+                    )}
+                  </Link>
+                ) : (
+                  <button
+                    className={cn(
+                      "w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition",
+                      isActive
+                        ? "bg-foreground-200 text-white font-medium"
+                        : "text-white hover:bg-foreground-200",
+                    )}
+                    onClick={() => toggleMenu(label)}
+                  >
+                    <Icon size={20} />
+                    {!isCollapsed && (
+                      <>
+                        <span className="flex-1 text-left">{label}</span>
+                        {children &&
+                          (isOpen ? (
+                            <ChevronDown size={16} />
+                          ) : (
+                            <ChevronRight size={16} />
+                          ))}
+                      </>
+                    )}
+                  </button>
                 )}
-              </AnimatePresence>
-            </div>
-          );
-        })}
+
+                {/* Submenu */}
+                <AnimatePresence initial={false}>
+                  {children && isOpen && !isCollapsed && (
+                    <motion.div
+                      animate={{ height: "auto", opacity: 1 }}
+                      className="pl-4 ml-[1.40rem] space-y-1 mt-1 border-l border-gray-600 overflow-hidden"
+                      exit={{ height: 0, opacity: 0 }}
+                      initial={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      {children.map((sub) => (
+                        <Link
+                          key={sub.href}
+                          className={cn(
+                            "block text-sm px-3 py-1 rounded-md",
+                            pathname
+                              .replace(/^\/(id|en)/, "")
+                              .startsWith(sub.href)
+                              ? "bg-foreground-200 text-white font-medium"
+                              : "text-white hover:bg-foreground-200",
+                          )}
+                          href={sub.href}
+                          onClick={closeMobile}
+                        >
+                          {sub.label}
+                        </Link>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            );
+          })}
       </nav>
 
       {/* Bottom profile */}
@@ -233,7 +260,7 @@ export default function Sidebar() {
 
       {/* Mobile Sidebar */}
       <AnimatePresence>
-        {hydrated && isMobileOpen && (
+        {isMounted && isMobileOpen && (
           <motion.div
             animate={{ opacity: 1 }}
             className="fixed inset-0 z-50 flex md:hidden"

@@ -22,6 +22,7 @@ import { useDeleteUser } from "../_hooks/use-delete-user";
 import ActionDropdown from "@/app/[locale]/admin/_components/action-dropdown";
 import { User } from "@/types/user-lists";
 import { ConfirmDialog } from "@/app/[locale]/admin/_components/confirmation-dialog";
+import { useAuth } from "@/app/[locale]/admin/_context/auth-context";
 
 export default function TableData() {
   const {
@@ -34,9 +35,11 @@ export default function TableData() {
   } = useUserContext();
   const router = useRouter();
   const locale = useLocale();
+  const { user: authUser } = useAuth();
   const [selectedId, setSelectedId] = useState<User["uuid"]>("");
   const { mutate: deleteUser } = useDeleteUser();
 
+  console.log({ authUser });
   const loadingState = isLoading || data?.length === 0 ? "loading" : "idle";
   const isOpen = selectedId !== "";
   const renderCell = useCallback((data: User, columnKey: ColumnKey) => {
@@ -52,7 +55,11 @@ export default function TableData() {
       case "actions":
         return (
           <ActionDropdown
-            actions={["edit", "delete"]}
+            actions={
+              authUser?.role === "admin" && authUser?.uuid !== data.uuid
+                ? ["edit", "delete"]
+                : ["edit"]
+            }
             onAction={(action) => {
               if (action === "edit") {
                 router.push(`/${locale}/admin/setting/user/edit/${data.uuid}`);

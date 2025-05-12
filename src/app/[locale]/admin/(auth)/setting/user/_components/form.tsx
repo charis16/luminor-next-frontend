@@ -32,7 +32,7 @@ const Form: ForwardRefRenderFunction<FormHandle> = () => {
 
   const { data: user } = useUserByUUID(uuid);
   const { mutate: mutateDeleteImageUser } = useDeleteImageUser();
-  const { onSetIsSubmitting } = useUserContext();
+  const { formRef: sharedFormRef, onSetIsSubmitting } = useUserContext();
   const { mutate, isPending } = useMutateUser();
   const router = useRouter();
   const form = useForm<UserFormValues>({
@@ -60,7 +60,6 @@ const Form: ForwardRefRenderFunction<FormHandle> = () => {
   const canLogin = watch("canLogin");
 
   const formRef = useRef<HTMLFormElement | null>(null);
-  const { formRef: sharedFormRef } = useUserContext(); // ⬅️ Ambil dari context
 
   const onSubmit = async (data: UserFormValues) => {
     const isValid = await form.trigger(); // 👈 ini penting

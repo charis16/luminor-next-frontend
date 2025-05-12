@@ -2,6 +2,7 @@ import "quill/dist/quill.snow.css";
 import "@/styles/globals.css";
 import { Metadata, Viewport } from "next";
 import clsx from "clsx";
+import { HeroUIProvider } from "@heroui/system";
 
 import { fontSans } from "@/config/fonts";
 import { siteConfigPublic } from "@/config/site";
@@ -53,7 +54,7 @@ export default function RootLayout({
           fontSans.variable,
         )}
       >
-        {children}
+        <HeroUIProvider>{children}</HeroUIProvider>
       </body>
     </html>
   );

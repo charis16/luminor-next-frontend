@@ -928,6 +928,20 @@
     tailwind-merge "2.5.4"
     tailwind-variants "0.3.0"
 
+"@heroui/theme@2.4.15":
+  version "2.4.15"
+  resolved "https://registry.yarnpkg.com/@heroui/theme/-/theme-2.4.15.tgz#bb1614b414a87812552c051b90452b195898a4be"
+  integrity sha512-cP1N9Rqj5wzsKLpEzNdJQRjX2g9AuCZbRNaIuIGnztqmmGtP3Yykt1RzeQ4ukCdSDjk/PmV8XneTu8OC8Cs8HA==
+  dependencies:
+    "@heroui/shared-utils" "2.1.9"
+    clsx "^1.2.1"
+    color "^4.2.3"
+    color2k "^2.0.3"
+    deepmerge "4.3.1"
+    flat "^5.0.2"
+    tailwind-merge "2.5.4"
+    tailwind-variants "0.3.0"
+
 "@heroui/theme@2.4.9":
   version "2.4.9"
   resolved "https://registry.yarnpkg.com/@heroui/theme/-/theme-2.4.9.tgz#c4ae165b666b89196dfb2e7bb647f456f1a578d7"

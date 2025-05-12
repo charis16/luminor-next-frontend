@@ -1,6 +1,6 @@
 "use client";
 
-import { useCategoryContext } from "../_context/category-context";
+import { useCategoryContext } from "../_context";
 
 import InputSearch from "@/app/[locale]/admin/_components/input-search";
 

@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function refreshTokenAndSetCookies(
   request: NextRequest,
 ): Promise<NextResponse | null> {
-  const refreshToken = request.cookies.get("refresh_token")?.value;
+  const refreshToken = request.cookies.get("admin_refresh_token")?.value;
 
   if (!refreshToken) return null;
 

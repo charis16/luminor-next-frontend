@@ -1,20 +1,11 @@
 "use client";
 
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 
-import {
-  CategoryContextType,
-  CategoryFormHandle,
-  CATEGORIES,
-  PAGE_SIZE,
-} from "../_type";
+import { CategoryContextType, CategoryFormHandle } from "../_type";
+import { useCategoryLists } from "../_hooks/use-category-lists";
+
+import { useIsMounted } from "@/hooks/use-is-mounted";
 
 const CategoryContext = createContext<CategoryContextType | null>(null);
 
@@ -29,13 +20,17 @@ export function useCategoryContext() {
 
 export const CategoryProvider = ({
   children,
+  enabled = true,
 }: {
   children: React.ReactNode;
+  enabled?: boolean;
 }) => {
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const formRef = useRef<CategoryFormHandle>(null);
   const [page, setPage] = useState(1);
+  const isMounted = useIsMounted();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -49,34 +44,27 @@ export const CategoryProvider = ({
     setPage(1);
   }, [debouncedSearch]);
 
-  const result = useMemo(() => {
-    return CATEGORIES.filter((album) =>
-      album.category.toLowerCase().includes(debouncedSearch.toLowerCase()),
-    );
-  }, [debouncedSearch]);
-
-  const pages = useMemo(() => {
-    return result.length ? Math.ceil(result.length / PAGE_SIZE) : 0;
-  }, [result]);
-
-  const filteredCategories = useMemo(() => {
-    const start = (page - 1) * PAGE_SIZE;
-
-    return result.slice(start, start + PAGE_SIZE);
-  }, [result, page]);
+  const { data, isLoading, isPending, refetch } = useCategoryLists(
+    page,
+    search,
+    10,
+    isMounted && enabled,
+  );
 
   return (
     <CategoryContext.Provider
       value={{
-        categories: CATEGORIES,
-        filteredCategories,
+        categories: data?.data || [],
         search,
+        isSubmitting,
         setSearch,
         formRef,
         page,
         setPage,
-        pages,
-        isLoading: false,
+        onSetIsSubmitting: setIsSubmitting,
+        pages: data ? Math.ceil(data.total / data.limit) : 0,
+        isLoading: isLoading || isPending,
+        onRefetch: refetch,
       }}
     >
       {children}

@@ -39,8 +39,7 @@ export default function TableData() {
   const [selectedId, setSelectedId] = useState<User["uuid"]>("");
   const { mutate: deleteUser } = useDeleteUser();
 
-  console.log({ authUser });
-  const loadingState = isLoading || data?.length === 0 ? "loading" : "idle";
+  const loadingState = isLoading ? "loading" : "idle";
   const isOpen = selectedId !== "";
   const renderCell = useCallback((data: User, columnKey: ColumnKey) => {
     const cellValue = data[columnKey as keyof User];
@@ -99,27 +98,31 @@ export default function TableData() {
           )}
         </TableHeader>
 
-        <TableBody
-          items={data}
-          loadingContent={
-            <Spinner
-              classNames={{ label: "text-foreground mt-4" }}
-              color="white"
-              variant="simple"
-            />
-          }
-          loadingState={loadingState}
-        >
-          {(item) => (
-            <TableRow key={item?.uuid}>
-              {(columnKey) => (
-                <TableCell>
-                  {renderCell(item, columnKey as ColumnKey)}
-                </TableCell>
-              )}
-            </TableRow>
-          )}
-        </TableBody>
+        {data.length === 0 ? (
+          <TableBody emptyContent={"No rows to display."}>{[]}</TableBody>
+        ) : (
+          <TableBody
+            items={data}
+            loadingContent={
+              <Spinner
+                classNames={{ label: "text-foreground mt-4" }}
+                color="white"
+                variant="simple"
+              />
+            }
+            loadingState={loadingState}
+          >
+            {(item) => (
+              <TableRow key={item?.uuid}>
+                {(columnKey) => (
+                  <TableCell>
+                    {renderCell(item, columnKey as ColumnKey)}
+                  </TableCell>
+                )}
+              </TableRow>
+            )}
+          </TableBody>
+        )}
       </Table>
       {pages > 1 && (
         <div className="flex w-full justify-center">

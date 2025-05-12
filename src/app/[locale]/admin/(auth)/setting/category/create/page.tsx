@@ -1,6 +1,6 @@
 import { ScrollShadow } from "@heroui/scroll-shadow";
 
-import { CategoryProvider } from "../_context/category-context";
+import { CategoryProvider } from "../_context";
 import ButtonSave from "../_components/button-save";
 import CategoryForm from "../_components/form";
 
@@ -8,7 +8,7 @@ import TitlePage from "@/app/[locale]/admin/_components/title-page";
 
 export default function CreateCategoryPage() {
   return (
-    <CategoryProvider>
+    <CategoryProvider key="create category" enabled={false}>
       <div className="flex flex-col gap-6">
         <TitlePage
           withBackButton

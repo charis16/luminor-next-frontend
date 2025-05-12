@@ -1,5 +1,5 @@
 import { ButtonAdd, CategorySearchInput, TableData } from "./_components";
-import { CategoryProvider } from "./_context/category-context";
+import { CategoryProvider } from "./_context";
 
 import { TitlePage } from "@/app/[locale]/admin/_components";
 

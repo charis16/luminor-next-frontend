@@ -65,7 +65,7 @@ export async function fetchWithAutoRefresh({
   if (reqErr?.status === 401 && retry) {
     const [refreshRes, refreshErr] = await safeRawCall(
       goFetcher.raw(
-        `${process.env.API_BASE_URL}/v1/api/auth/admin/refresh-token`,
+        `${process.env.API_BASE_URL}/v1/api/auth/admin-refresh-token`,
         "POST",
         { headers: { Cookie: refreshCookie } },
       ),

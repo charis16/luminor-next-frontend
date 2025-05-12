@@ -10,104 +10,161 @@ import {
   TableRow,
 } from "@heroui/table";
 import { Spinner } from "@heroui/spinner";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useLocale } from "next-intl";
+import { addToast } from "@heroui/toast";
 
-import { useCategoryContext } from "../_context/category-context";
-import { Category, ColumnKey, COLUMNS } from "../_type";
+import { useCategoryContext } from "../_context";
+import { ColumnKey, COLUMNS } from "../_type";
+import { useDeleteCategory } from "../_hooks/use-delete-category";
 
 import ActionDropdown from "@/app/[locale]/admin/_components/action-dropdown";
+import { useAuth } from "@/app/[locale]/admin/_context/auth-context";
+import { CategoryDetail } from "@/types/category-lists";
+import { ConfirmDialog } from "@/app/[locale]/admin/_components/confirmation-dialog";
 
 export default function TableData() {
   const {
-    filteredCategories: data,
+    categories: data,
     pages,
     page,
     setPage,
     isLoading,
+    onRefetch,
   } = useCategoryContext();
+  const { user: authUser } = useAuth();
+  const { mutate: deleteCategory } = useDeleteCategory();
+  const loadingState = isLoading ? "loading" : "idle";
+  const router = useRouter();
+  const locale = useLocale();
+  const [selectedId, setSelectedId] = useState<CategoryDetail["uuid"]>("");
 
-  const loadingState = isLoading || data?.length === 0 ? "loading" : "idle";
+  const isOpen = selectedId !== "";
 
-  const renderCell = useCallback((data: Category, columnKey: ColumnKey) => {
-    const cellValue = data[columnKey as keyof Category];
+  const renderCell = useCallback(
+    (data: CategoryDetail, columnKey: ColumnKey) => {
+      const cellValue = data[columnKey as keyof CategoryDetail];
 
-    switch (columnKey) {
-      case "category":
-        return <p> {data.category}</p>;
-      case "actions":
-        return (
-          <ActionDropdown
-            actions={["view", "edit", "delete"]}
-            onAction={(action) => {
-              if (action === "edit") {
-                // buka modal, redirect, dll
+      switch (columnKey) {
+        case "category":
+          return <p> {data.name}</p>;
+        case "actions":
+          return (
+            <ActionDropdown
+              actions={
+                authUser?.role === "admin" ? ["edit", "delete"] : ["edit"]
               }
-              if (action === "delete") {
-                // konfirmasi delete
-              }
-              if (action === "view") {
-                // tampilkan detail
-              }
-            }}
-          />
-        );
-      default:
-        return cellValue;
-    }
-  }, []);
+              onAction={(action) => {
+                if (action === "edit") {
+                  router.push(
+                    `/${locale}/admin/setting/category/edit/${data.uuid}`,
+                  );
+                }
+                if (action === "delete") {
+                  setSelectedId(data.uuid);
+                }
+              }}
+            />
+          );
+        default:
+          return cellValue;
+      }
+    },
+    [],
+  );
 
   return (
-    <Table
-      removeWrapper
-      aria-label="Example table with client async pagination"
-      bottomContent={
-        pages > 1 ? (
-          <div className="flex w-full justify-center">
-            <Pagination
-              isCompact
-              showControls
-              showShadow
-              color="default"
-              page={page}
-              size="sm"
-              total={pages}
-              onChange={(page) => setPage(page)}
-            />
-          </div>
-        ) : null
-      }
-    >
-      <TableHeader columns={[...COLUMNS]}>
-        {(column) => (
-          <TableColumn
-            key={column.uid}
-            align={column.uid === "actions" ? "center" : "start"}
-            className="!text-white !font-semibold text-base"
-          >
-            {column.name}
-          </TableColumn>
-        )}
-      </TableHeader>
-
-      <TableBody
-        items={data}
-        loadingContent={
-          <Spinner
-            classNames={{ label: "text-foreground mt-4" }}
-            color="white"
-            variant="simple"
-          />
-        }
-        loadingState={loadingState}
+    <>
+      <Table
+        fullWidth
+        isHeaderSticky
+        removeWrapper
+        aria-label="category table"
+        classNames={{
+          base: "max-h-[480px] overflow-scroll max-w-[350px] md:max-w-full md:max-h-[700x]",
+        }}
+        rowHeight={10}
       >
-        {(item) => (
-          <TableRow key={item?.id}>
-            {(columnKey) => (
-              <TableCell>{renderCell(item, columnKey as ColumnKey)}</TableCell>
+        <TableHeader columns={[...COLUMNS]}>
+          {(column) => (
+            <TableColumn
+              key={column.uid}
+              align={column.uid === "actions" ? "center" : "start"}
+              className="!text-white !font-semibold text-base"
+            >
+              {column.name}
+            </TableColumn>
+          )}
+        </TableHeader>
+        {data.length === 0 ? (
+          <TableBody emptyContent={"No rows to display."}>{[]}</TableBody>
+        ) : (
+          <TableBody
+            items={data}
+            loadingContent={
+              <Spinner
+                classNames={{ label: "text-foreground mt-4" }}
+                color="white"
+                variant="simple"
+              />
+            }
+            loadingState={loadingState}
+          >
+            {(item) => (
+              <TableRow key={item?.uuid}>
+                {(columnKey) => (
+                  <TableCell>
+                    {renderCell(item, columnKey as ColumnKey)}
+                  </TableCell>
+                )}
+              </TableRow>
             )}
-          </TableRow>
+          </TableBody>
         )}
-      </TableBody>
-    </Table>
+      </Table>
+      {pages > 1 && (
+        <div className="flex w-full justify-center">
+          <Pagination
+            isCompact
+            showControls
+            showShadow
+            color="default"
+            page={page}
+            size="sm"
+            total={pages}
+            onChange={(page) => setPage(page)}
+          />
+        </div>
+      )}
+      <ConfirmDialog
+        isOpen={isOpen}
+        loading={false}
+        onClose={() => setSelectedId("")}
+        onConfirm={() =>
+          deleteCategory(
+            { uuid: selectedId },
+            {
+              onSuccess: () => {
+                addToast({
+                  title: "Category deleted",
+                  description: "Category has been deleted successfully",
+                  color: "success",
+                });
+                setSelectedId("");
+                onRefetch();
+              },
+              onError: (error) => {
+                addToast({
+                  title: "Error deleting category",
+                  description: error.message,
+                  color: "danger",
+                });
+              },
+            },
+          )
+        }
+      />
+    </>
   );
 }

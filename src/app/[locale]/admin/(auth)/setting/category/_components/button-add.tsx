@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 
 export default function ButtonAdd() {
   const router = useRouter();
-  const handleAddNew = () => router.push("/admin/portfolio/category/create");
+  const handleAddNew = () => router.push("/admin/setting/category/create");
 
   return (
     <Button className="w-full md:w-fit" type="button" onPress={handleAddNew}>

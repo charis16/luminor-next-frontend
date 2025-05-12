@@ -62,7 +62,7 @@ const navItems = [
     icon: Settings,
     role: "admin",
     children: [
-      { label: "Category", href: "/admin/portfolio/category", role: "admin" },
+      { label: "Category", href: "/admin/setting/category", role: "admin" },
       { label: "User", href: "/admin/setting/user", role: "admin" },
     ],
   },

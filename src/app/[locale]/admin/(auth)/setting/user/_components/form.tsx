@@ -42,6 +42,7 @@ const Form: ForwardRefRenderFunction<FormHandle> = () => {
       canLogin: false,
       email: "",
       name: "",
+      id: "",
       role: undefined,
       password: "",
       photo: undefined,
@@ -126,6 +127,7 @@ const Form: ForwardRefRenderFunction<FormHandle> = () => {
   useEffect(() => {
     if (user) {
       form.reset({
+        id: user.uuid,
         isPublished: user.is_published,
         email: user.email,
         name: user.name,
@@ -139,7 +141,6 @@ const Form: ForwardRefRenderFunction<FormHandle> = () => {
         canLogin: user.can_login,
       });
     }
-    console.log("user", user);
   }, [user]);
 
   return (

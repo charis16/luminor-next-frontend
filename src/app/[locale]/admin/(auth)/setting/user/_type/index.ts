@@ -59,7 +59,7 @@ export const UserSchema = z
     isPublished: z.boolean(),
     canLogin: z.boolean(),
     photo: PhotoSchema,
-
+    id: z.string().optional(),
     name: z.string().min(1, { message: "Name is required" }),
     email: z
       .string()
@@ -81,7 +81,11 @@ export const UserSchema = z
     urlYoutube: z.string().optional(),
   })
   .superRefine((data, ctx) => {
-    if (data.canLogin && (!data.password || data.password.length < 6)) {
+    if (
+      data.canLogin &&
+      !data.id &&
+      (!data.password || data.password.length < 6)
+    ) {
       ctx.addIssue({
         code: "custom",
         path: ["password"],

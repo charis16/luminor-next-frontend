@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import { forwardRef, useImperativeHandle, useRef } from "react";
 
 const ReactQuill = dynamic(() => import("react-quill-new"), {
-  ssr: false,
+  ssr: true,
   loading: () => <Spinner color="white" variant="simple" />,
 });
 

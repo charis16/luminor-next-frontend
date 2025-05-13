@@ -60,7 +60,6 @@ export default function RootLayout({
             {children}
           </NextThemesProvider>
         </HeroUIProvider>
-        {children}
       </body>
     </html>
   );

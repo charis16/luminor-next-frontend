@@ -3,24 +3,24 @@
 import dynamic from "next/dynamic";
 
 export const ButtonAdd = dynamic(() => import("./button-add"), {
-  ssr: false,
+  ssr: true,
 });
 
 export const ButtonSave = dynamic(() => import("./button-save"), {
-  ssr: false,
+  ssr: true,
 });
 
 export const CategorySearchInput = dynamic(
   () => import("./category-search-input"),
   {
-    ssr: false,
+    ssr: true,
   },
 );
 
 export const Form = dynamic(() => import("./form"), {
-  ssr: false,
+  ssr: true,
 });
 
 export const TableData = dynamic(() => import("./table-data"), {
-  ssr: false,
+  ssr: true,
 });

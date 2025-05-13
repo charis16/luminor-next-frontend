@@ -3,64 +3,64 @@
 import dynamic from "next/dynamic";
 
 export { ClientWrapper } from "./client-wrapper";
-// Export semua komponen dengan ssr: false
+// Export semua komponen dengan ssr: true
 export const ActionDropdown = dynamic(() => import("./action-dropdown"), {
-  ssr: false,
+  ssr: true,
 });
 
 export const ButtonBack = dynamic(() => import("./button-back"), {
-  ssr: false,
+  ssr: true,
 });
 
 export const DropzoneInput = dynamic(
   () => import("./dropzone").then((mod) => mod.default), // named export
-  { ssr: false },
+  { ssr: true },
 );
 
 export const InputSearch = dynamic(() => import("./input-search"), {
-  ssr: false,
+  ssr: true,
 });
 
 export const InputText = dynamic(() => import("./input-text"), {
-  ssr: false,
+  ssr: true,
 });
 
 export const InputTextArea = dynamic(() => import("./input-textarea"), {
-  ssr: false,
+  ssr: true,
 });
 
 export const ReactQuillEditor = dynamic(() => import("./react-quill"), {
-  ssr: false,
+  ssr: true,
 });
 
 export const RichTextEditor = dynamic(() => import("./rich-text-editor"), {
-  ssr: false,
+  ssr: true,
 });
 
 export const FormTagInput = dynamic(() => import("./tag-input"), {
-  ssr: false,
+  ssr: true,
 });
 
 export const TitlePage = dynamic(() => import("./title-page"), {
-  ssr: false,
+  ssr: true,
 });
 
 export const UserDropdown = dynamic(() => import("./user-dropdown"), {
-  ssr: false,
+  ssr: true,
 });
 
 export const SelectOption = dynamic(() => import("./select-option"), {
-  ssr: false,
+  ssr: true,
 });
 
 export const Sidebar = dynamic(() => import("./sidebar"), {
-  ssr: false,
+  ssr: true,
 });
 
 export const Header = dynamic(() => import("./header"), {
-  ssr: false,
+  ssr: true,
 });
 
 export const LanguageSwitcher = dynamic(() => import("./language-switcher"), {
-  ssr: false,
+  ssr: true,
 });

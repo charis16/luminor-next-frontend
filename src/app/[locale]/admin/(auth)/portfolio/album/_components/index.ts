@@ -3,21 +3,21 @@
 import dynamic from "next/dynamic";
 
 export const AlbumData = dynamic(() => import("./album-data"), {
-  ssr: false,
+  ssr: true,
 });
 
 export const AlbumSearchInput = dynamic(() => import("./album-search-input"), {
-  ssr: false,
+  ssr: true,
 });
 
 export const ButtonAdd = dynamic(() => import("./button-add"), {
-  ssr: false,
+  ssr: true,
 });
 
 export const ButtonEdit = dynamic(() => import("./button-edit"), {
-  ssr: false,
+  ssr: true,
 });
 
 export const SeoForm = dynamic(() => import("./form"), {
-  ssr: false,
+  ssr: true,
 });

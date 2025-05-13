@@ -5,7 +5,7 @@ import { TitlePage } from "@/app/[locale]/admin/_components";
 
 export default function FaqPage() {
   return (
-    <FaqProvider>
+    <FaqProvider key="faq list" enabled>
       <div className="flex flex-col gap-6">
         <TitlePage
           description="Easily manage frequently asked questions for your website"

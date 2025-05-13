@@ -1,34 +1,35 @@
 import { useMutation } from "@tanstack/react-query";
 
-import { CategoryFormValues } from "../_type";
+import { FaqFormValues } from "../_type";
 
 import { goFetcher, safeRawCall } from "@/utils/api";
 
-interface MutateCategoryInput {
+interface MutateFaqInput {
   uuid?: string;
-  data: CategoryFormValues;
+  data: FaqFormValues;
 }
 
-export function useMutateCategory() {
+export function useMutateFaq() {
   return useMutation({
-    mutationFn: async ({ uuid, data }: MutateCategoryInput) => {
-      const url = uuid
-        ? `/api/admin/category/${uuid}`
-        : "/api/admin/category/submit";
+    mutationFn: async ({ uuid, data }: MutateFaqInput) => {
+      const url = uuid ? `/api/admin/faq/${uuid}` : "/api/admin/faq/submit";
       const method = uuid ? "PUT" : "POST";
 
       const [res, err] = await safeRawCall(
         goFetcher.raw(url, method, {
           headers: { "Content-Type": "application/json" },
           data: JSON.stringify({
-            name: data.category,
+            question_id: data.questionID,
+            question_en: data.questionEN,
+            answer_id: data.answerID,
+            answer_en: data.answerEN,
             is_published: data.isPublished,
           }),
         }),
       );
 
       if (err || !res?.data) {
-        throw new Error(err?.message || "Failed to save category");
+        throw new Error(err?.message || "Failed to save faq");
       }
 
       return res.data;

@@ -10,16 +10,26 @@ import {
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Switch } from "@heroui/switch";
+import { useParams, useRouter } from "next/navigation";
+import { addToast } from "@heroui/toast";
 
 import { useFaqContext } from "../_context";
 import { FaqFormValues, FaqSchema, FormHandle } from "../_type";
+import { useMutateFaq } from "../_hooks/use-mutate-faq";
+import { useFaqByUUID } from "../_hooks/use-faq-by-uuid";
 
 import { InputText, InputTextArea } from "@/app/[locale]/admin/_components";
 
 const CategoryForm: ForwardRefRenderFunction<FormHandle> = () => {
+  const params = useParams();
+  const uuid = params?.id as string | undefined;
+  const { mutate, isPending } = useMutateFaq();
+  const { data: faq } = useFaqByUUID(uuid);
+  const router = useRouter();
   const form = useForm<FaqFormValues>({
     resolver: zodResolver(FaqSchema),
     defaultValues: {
+      id: "",
       isPublished: true,
       answerID: "",
       questionID: "",
@@ -29,11 +39,38 @@ const CategoryForm: ForwardRefRenderFunction<FormHandle> = () => {
   });
 
   const formRef = useRef<HTMLFormElement | null>(null);
-  const { formRef: sharedFormRef } = useFaqContext(); // ⬅️ Ambil dari context
+  const { formRef: sharedFormRef, onSetIsSubmitting } = useFaqContext(); // ⬅️ Ambil dari context
 
   const onSubmit = (data: FaqFormValues) => {
-    // eslint-disable-next-line no-console
-    console.log(data);
+    mutate(
+      {
+        uuid: faq?.uuid,
+        data,
+      },
+      {
+        onSuccess: () => {
+          form.reset();
+          onSetIsSubmitting(false);
+          router.back();
+
+          addToast({
+            title: `${faq ? "Edit" : "Create"} Faq Success`,
+            description: `Faq ${faq ? "edited" : "created"} successfully`,
+            color: "success",
+          });
+        },
+        onError: (err: any) => {
+          onSetIsSubmitting(false);
+
+          addToast({
+            title: `${faq ? "Edit" : "Create"} Faq failed`,
+            description:
+              err.message || `Failed to ${faq ? "Edit" : "Create"} faq`,
+            color: "danger",
+          });
+        },
+      },
+    );
   };
 
   useEffect(() => {
@@ -45,6 +82,25 @@ const CategoryForm: ForwardRefRenderFunction<FormHandle> = () => {
       }
     }
   }, [sharedFormRef]);
+
+  useEffect(() => {
+    if (isPending) {
+      onSetIsSubmitting(isPending);
+    }
+  }, [isPending]);
+
+  useEffect(() => {
+    if (faq) {
+      form.reset({
+        id: faq.uuid,
+        isPublished: faq.is_published,
+        answerEN: faq.answer_en,
+        questionEN: faq.question_en,
+        answerID: faq.answer_id,
+        questionID: faq.question_id,
+      });
+    }
+  }, [faq]);
 
   return (
     <form
@@ -59,8 +115,7 @@ const CategoryForm: ForwardRefRenderFunction<FormHandle> = () => {
           <Switch
             ref={field.ref}
             aria-label="published"
-            checked={field.value}
-            defaultSelected={field.value}
+            isSelected={field.value}
             name={field.name}
             size="md"
             onBlur={field.onBlur}

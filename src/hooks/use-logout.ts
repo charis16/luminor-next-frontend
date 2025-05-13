@@ -6,7 +6,7 @@ import { goFetcher } from "@/utils/api";
 export function useLogout() {
   return useMutation({
     mutationFn: async () => {
-      await goFetcher.post("/api/auth/admin/logout", {});
+      await goFetcher.post("/api/admin/auth/logout", {});
     },
   });
 }

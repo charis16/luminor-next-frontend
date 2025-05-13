@@ -1,15 +1,11 @@
 "use client";
 
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 
-import { FaqContextType, FAQS, FormHandle, PAGE_SIZE } from "../_type";
+import { FaqContextType, FormHandle } from "../_type";
+import { useFaqLists } from "../_hooks/use-faq-lists";
+
+import { useIsMounted } from "@/hooks/use-is-mounted";
 
 const FaqContext = createContext<FaqContextType | null>(null);
 
@@ -21,11 +17,19 @@ export function useFaqContext() {
   return ctx;
 }
 
-export const FaqProvider = ({ children }: { children: React.ReactNode }) => {
+export const FaqProvider = ({
+  children,
+  enabled = true,
+}: {
+  children: React.ReactNode;
+  enabled?: boolean;
+}) => {
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const formRef = useRef<FormHandle>(null);
   const [page, setPage] = useState(1);
+  const isMounted = useIsMounted();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -39,34 +43,27 @@ export const FaqProvider = ({ children }: { children: React.ReactNode }) => {
     setPage(1);
   }, [debouncedSearch]);
 
-  const result = useMemo(() => {
-    return FAQS.filter((faq) =>
-      faq.question.toLowerCase().includes(debouncedSearch.toLowerCase()),
-    );
-  }, [debouncedSearch]);
-
-  const pages = useMemo(() => {
-    return result.length ? Math.ceil(result.length / PAGE_SIZE) : 0;
-  }, [result]);
-
-  const filteredFaq = useMemo(() => {
-    const start = (page - 1) * PAGE_SIZE;
-
-    return result.slice(start, start + PAGE_SIZE);
-  }, [result, page]);
+  const { data, isLoading, isPending, refetch } = useFaqLists(
+    page,
+    search,
+    10,
+    isMounted && enabled,
+  );
 
   return (
     <FaqContext.Provider
       value={{
-        faq: FAQS,
-        filteredFaq,
+        faq: data?.data || [],
         search,
+        isSubmitting,
         setSearch,
         formRef,
         page,
         setPage,
-        pages,
-        isLoading: false,
+        onSetIsSubmitting: setIsSubmitting,
+        pages: data ? Math.ceil(data.total / data.limit) : 0,
+        isLoading: isLoading || isPending,
+        onRefetch: refetch,
       }}
     >
       {children}

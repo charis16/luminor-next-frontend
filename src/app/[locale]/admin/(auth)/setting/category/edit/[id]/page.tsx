@@ -35,7 +35,7 @@ export default async function EditPage({ params }: PageProps) {
 
           <ScrollShadow
             hideScrollBar
-            className="md:h-[calc(100vh-15rem)] h-[calc(100vh-19rem)]"
+            className="max-h-[calc(100dvh-40dvh)] md:max-h-[calc(100dvh-25dvh)]"
           >
             <Form />
           </ScrollShadow>

@@ -15,14 +15,7 @@ export default async function LocaleLayout({
 
   return (
     <NextIntlClientProvider locale={locale}>
-      <Providers
-        themeProps={{
-          attribute: "class",
-          forcedTheme: "dark",
-        }}
-      >
-        {children}
-      </Providers>
+      <Providers>{children}</Providers>
     </NextIntlClientProvider>
   );
 }

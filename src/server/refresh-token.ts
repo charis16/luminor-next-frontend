@@ -10,7 +10,7 @@ export async function refreshTokenAndSetCookies(
 
   try {
     const refreshRes = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/api/auth/admin/refresh-token`,
+      `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/api/admin/auth/refresh-token`,
       {
         method: "POST",
         headers: {

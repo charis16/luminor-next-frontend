@@ -4,7 +4,7 @@ import { goFetcher } from "@/utils/api";
 import { CategoryListResponse } from "@/types/category-lists";
 
 export function getCategoryListsQueryKey(page: number, search: string) {
-  return ["category-list", page, search];
+  return ["admin-category-list", page, search];
 }
 
 export async function fetchCategoryLists(
@@ -20,7 +20,7 @@ export async function fetchCategoryLists(
   });
 
   const res = await goFetcher.get<CategoryListResponse>(
-    `/api/category/lists?${params.toString()}`,
+    `/api/admin/category/lists?${params.toString()}`,
     { headers },
   );
 

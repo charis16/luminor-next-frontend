@@ -30,7 +30,7 @@ export function useMutateUser() {
         formData.append("photo", data.photo[0]);
       }
 
-      const url = uuid ? `/api/user/${uuid}` : "/api/user/submit";
+      const url = uuid ? `/api/admin/user/${uuid}` : "/api/admin/user/submit";
       const method = uuid ? "PUT" : "POST";
 
       const [res, err] = await safeRawCall(

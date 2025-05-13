@@ -3,6 +3,7 @@ import "@/styles/globals.css";
 import { Metadata, Viewport } from "next";
 import clsx from "clsx";
 import { HeroUIProvider } from "@heroui/system";
+import { ThemeProvider as NextThemesProvider } from "next-themes";
 
 import { fontSans } from "@/config/fonts";
 import { siteConfigPublic } from "@/config/site";
@@ -54,7 +55,12 @@ export default function RootLayout({
           fontSans.variable,
         )}
       >
-        <HeroUIProvider>{children}</HeroUIProvider>
+        <HeroUIProvider>
+          <NextThemesProvider attribute="class" forcedTheme="dark">
+            {children}
+          </NextThemesProvider>
+        </HeroUIProvider>
+        {children}
       </body>
     </html>
   );

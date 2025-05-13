@@ -5,7 +5,7 @@ import { UserDetail } from "@/types/user-lists";
 
 // Key generator
 export function getUserByUUIDKey(uuid: string) {
-  return ["user", uuid];
+  return ["admin-user", uuid];
 }
 
 // Fetch function
@@ -13,9 +13,12 @@ export async function fetchUserByUUID(
   uuid: string,
   headers?: Record<string, string>,
 ): Promise<UserDetail> {
-  const res = await goFetcher.get<{ data: UserDetail }>(`/api/user/${uuid}`, {
-    headers,
-  });
+  const res = await goFetcher.get<{ data: UserDetail }>(
+    `/api/admin/user/${uuid}`,
+    {
+      headers,
+    },
+  );
 
   return res.data;
 }

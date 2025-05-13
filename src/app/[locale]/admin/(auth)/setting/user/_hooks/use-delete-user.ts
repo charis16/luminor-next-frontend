@@ -12,7 +12,7 @@ export function useDeleteUser() {
       if (!uuid) throw new Error("UUID is required to delete user");
 
       const [res, err] = await safeRawCall(
-        goFetcher.raw(`/api/user/${uuid}`, "DELETE"),
+        goFetcher.raw(`/api/admin/user/${uuid}`, "DELETE"),
       );
 
       if (err || !res?.data) {
@@ -30,7 +30,7 @@ export function useDeleteImageUser() {
       if (!uuid) throw new Error("UUID is required to delete image user");
 
       const [res, err] = await safeCall(
-        goFetcher.patch(`/api/user/${uuid}`, {}),
+        goFetcher.patch(`/api/admin/user/${uuid}`, {}),
       );
 
       if (err || !res?.data) {

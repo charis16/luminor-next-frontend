@@ -5,7 +5,7 @@ import { goFetcher } from "@/utils/api";
 import { UserListResponse } from "@/types/user-lists";
 
 export function getUserListsQueryKey(page: number, search: string) {
-  return ["user-list", page, search];
+  return ["admin-user-list", page, search];
 }
 
 export async function fetchUserLists(
@@ -21,7 +21,7 @@ export async function fetchUserLists(
   });
 
   const res = await goFetcher.get<UserListResponse>(
-    `/api/user/lists?${params.toString()}`,
+    `/api/admin/user/lists?${params.toString()}`,
     { headers },
   );
 

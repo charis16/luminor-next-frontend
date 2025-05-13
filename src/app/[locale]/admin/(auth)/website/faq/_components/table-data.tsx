@@ -1,6 +1,5 @@
 "use client";
 
-import { Pagination } from "@heroui/pagination";
 import {
   Table,
   TableBody,
@@ -10,45 +9,64 @@ import {
   TableRow,
 } from "@heroui/table";
 import { Spinner } from "@heroui/spinner";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
+import { useLocale } from "next-intl";
+import { Pagination } from "@heroui/pagination";
+import { addToast } from "@heroui/toast";
+import { useRouter } from "next/navigation";
 
 import { useFaqContext } from "../_context";
-import { ColumnKey, COLUMNS, Faq } from "../_type";
+import { ColumnKey, COLUMNS } from "../_type";
+import { useDeleteFaq } from "../_hooks/use-delete-faq";
 
 import ActionDropdown from "@/app/[locale]/admin/_components/action-dropdown";
+import { FaqDetail } from "@/types/faq-lists";
+import { useAuth } from "@/app/[locale]/admin/_context/auth-context";
+import { ConfirmDialog } from "@/app/[locale]/admin/_components/confirmation-dialog";
 
 export default function TableData() {
+  const locale = useLocale();
+  const { user: authUser } = useAuth();
   const {
-    filteredFaq: data,
+    faq: data,
     pages,
     page,
     setPage,
     isLoading,
+    onRefetch,
   } = useFaqContext();
-
+  const [selectedId, setSelectedId] = useState<FaqDetail["uuid"]>("");
+  const { mutate: deleteFaq } = useDeleteFaq();
+  const router = useRouter();
   const loadingState = isLoading || data?.length === 0 ? "loading" : "idle";
-
-  const renderCell = useCallback((data: Faq, columnKey: ColumnKey) => {
-    const cellValue = data[columnKey as keyof Faq];
+  const isOpen = selectedId !== "";
+  const renderCell = useCallback((data: FaqDetail, columnKey: ColumnKey) => {
+    const cellValue = data[columnKey as keyof FaqDetail];
 
     switch (columnKey) {
       case "Answer":
-        return <p> {data.answer}</p>;
+        if (locale === "en") {
+          return <p> {data.answer_en}</p>;
+        }
+
+        return <p> {data.answer_id}</p>;
+
       case "Question":
-        return <p> {data.question}</p>;
+        if (locale === "en") {
+          return <p> {data.question_en}</p>;
+        }
+
+        return <p> {data.question_id}</p>;
       case "actions":
         return (
           <ActionDropdown
-            actions={["view", "edit", "delete"]}
+            actions={authUser?.role === "admin" ? ["edit", "delete"] : ["edit"]}
             onAction={(action) => {
               if (action === "edit") {
-                // buka modal, redirect, dll
+                router.push(`/${locale}/admin/setting/faq/edit/${data.uuid}`);
               }
               if (action === "delete") {
-                // konfirmasi delete
-              }
-              if (action === "view") {
-                // tampilkan detail
+                setSelectedId(data.uuid);
               }
             }}
           />
@@ -59,57 +77,96 @@ export default function TableData() {
   }, []);
 
   return (
-    <Table
-      removeWrapper
-      aria-label="Example table with client async pagination"
-      bottomContent={
-        pages > 1 ? (
-          <div className="flex w-full justify-center">
-            <Pagination
-              isCompact
-              showControls
-              showShadow
-              color="default"
-              page={page}
-              size="sm"
-              total={pages}
-              onChange={(page) => setPage(page)}
-            />
-          </div>
-        ) : null
-      }
-    >
-      <TableHeader columns={[...COLUMNS]}>
-        {(column) => (
-          <TableColumn
-            key={column.uid}
-            align={column.uid === "actions" ? "center" : "start"}
-            className="!text-white !font-semibold text-base"
-          >
-            {column.name}
-          </TableColumn>
-        )}
-      </TableHeader>
-
-      <TableBody
-        items={data}
-        loadingContent={
-          <Spinner
-            classNames={{ label: "text-foreground mt-4" }}
-            color="white"
-            variant="simple"
-          />
-        }
-        loadingState={loadingState}
+    <>
+      <Table
+        fullWidth
+        isHeaderSticky
+        removeWrapper
+        aria-label="category table"
+        classNames={{
+          base: "max-h-[480px] overflow-scroll max-w-[350px] md:max-w-full md:max-h-[700x]",
+        }}
+        rowHeight={10}
       >
-        {(item) => (
-          <TableRow key={item?.id}>
-            {(columnKey) => (
-              <TableCell>{renderCell(item, columnKey as ColumnKey)}</TableCell>
+        <TableHeader columns={[...COLUMNS]}>
+          {(column) => (
+            <TableColumn
+              key={column.uid}
+              align={column.uid === "actions" ? "center" : "start"}
+              className="!text-white !font-semibold text-base"
+            >
+              {column.name}
+            </TableColumn>
+          )}
+        </TableHeader>
+        {data.length === 0 ? (
+          <TableBody emptyContent={"No rows to display."}>{[]}</TableBody>
+        ) : (
+          <TableBody
+            items={data}
+            loadingContent={
+              <Spinner
+                classNames={{ label: "text-foreground mt-4" }}
+                color="white"
+                variant="simple"
+              />
+            }
+            loadingState={loadingState}
+          >
+            {(item) => (
+              <TableRow key={item?.uuid}>
+                {(columnKey) => (
+                  <TableCell>
+                    {renderCell(item, columnKey as ColumnKey)}
+                  </TableCell>
+                )}
+              </TableRow>
             )}
-          </TableRow>
+          </TableBody>
         )}
-      </TableBody>
-    </Table>
+      </Table>
+      {pages > 1 && (
+        <div className="flex w-full justify-center">
+          <Pagination
+            isCompact
+            showControls
+            showShadow
+            color="default"
+            page={page}
+            size="sm"
+            total={pages}
+            onChange={(page) => setPage(page)}
+          />
+        </div>
+      )}
+      <ConfirmDialog
+        isOpen={isOpen}
+        loading={false}
+        onClose={() => setSelectedId("")}
+        onConfirm={() =>
+          deleteFaq(
+            { uuid: selectedId },
+            {
+              onSuccess: () => {
+                addToast({
+                  title: "Faq deleted",
+                  description: "Faq has been deleted successfully",
+                  color: "success",
+                });
+                setSelectedId("");
+                onRefetch();
+              },
+              onError: (error) => {
+                addToast({
+                  title: "Error deleting Faq",
+                  description: error.message,
+                  color: "danger",
+                });
+              },
+            },
+          )
+        }
+      />
+    </>
   );
 }

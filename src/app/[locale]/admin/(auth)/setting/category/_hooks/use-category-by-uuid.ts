@@ -5,7 +5,7 @@ import { CategoryDetail } from "@/types/category-lists";
 
 // Key generator
 export function getCategoryByUUIDKey(uuid: string) {
-  return ["user", uuid];
+  return ["admin-category", uuid];
 }
 
 // Fetch function
@@ -14,7 +14,7 @@ export async function fetchCategoryByUUID(
   headers?: Record<string, string>,
 ): Promise<CategoryDetail> {
   const res = await goFetcher.get<{ data: CategoryDetail }>(
-    `/api/category/${uuid}`,
+    `/api/admin/category/${uuid}`,
     {
       headers,
     },

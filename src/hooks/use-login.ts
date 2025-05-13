@@ -12,7 +12,7 @@ export function useLogin() {
   return useMutation({
     mutationFn: async (data: LoginInput): Promise<LoginResponse> => {
       const [res, err] = await safeCall(
-        goFetcher.post("/api/auth/admin/login", data),
+        goFetcher.post("/api/admin/auth/login", data),
       );
 
       if (err) {

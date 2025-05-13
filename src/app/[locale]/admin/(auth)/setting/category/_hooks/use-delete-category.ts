@@ -12,7 +12,7 @@ export function useDeleteCategory() {
       if (!uuid) throw new Error("UUID is required to delete category");
 
       const [res, err] = await safeRawCall(
-        goFetcher.raw(`/api/category/${uuid}`, "DELETE"),
+        goFetcher.raw(`/api/admin/category/${uuid}`, "DELETE"),
       );
 
       if (err || !res?.data) {

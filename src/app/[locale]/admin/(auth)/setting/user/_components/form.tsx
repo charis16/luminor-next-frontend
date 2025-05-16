@@ -221,6 +221,7 @@ const Form: ForwardRefRenderFunction<FormHandle> = () => {
             field={field}
             label="Description"
             placeholder="Ex: Provide a brief description about the user, their role, or responsibilities."
+            value={field.value}
             onClear={() => {
               field.onChange("");
             }}

@@ -1,0 +1,46 @@
+import { ScrollShadow } from "@heroui/scroll-shadow";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+
+import { ButtonSave, Form } from "../../_components";
+import { getFaqByUUIDOptions } from "../../_hooks/use-faq-by-uuid";
+import { FaqProvider } from "../../_context";
+
+import { TitlePage } from "@/app/[locale]/admin/_components";
+import getQueryClient from "@/utils/react-query";
+import { getAuthCookieHeader } from "@/utils/get-cookies-server";
+
+interface PageProps {
+  params: Promise<{ id: string }>;
+}
+
+export default async function EditPage({ params }: PageProps) {
+  const { id } = await params;
+  const queryClient = getQueryClient();
+  const cookieHeader = await getAuthCookieHeader();
+
+  await queryClient.ensureQueryData(getFaqByUUIDOptions(id, cookieHeader));
+
+  return (
+    <HydrationBoundary key={id} state={dehydrate(queryClient)}>
+      <FaqProvider key={id} enabled={false}>
+        <div className="flex flex-col gap-6">
+          <TitlePage
+            withBackButton
+            description="Easily create and customize your faq"
+            title="Edit User"
+            urlBack={"/admin/website/faq"}
+          >
+            <ButtonSave />
+          </TitlePage>
+
+          <ScrollShadow
+            hideScrollBar
+            className="md:h-[calc(100vh-15rem)] h-[calc(100vh-19rem)]"
+          >
+            <Form />
+          </ScrollShadow>
+        </div>
+      </FaqProvider>
+    </HydrationBoundary>
+  );
+}

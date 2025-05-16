@@ -148,10 +148,12 @@ const CategoryForm: ForwardRefRenderFunction<FormHandle> = () => {
             name="answerID"
             render={({ field, fieldState }) => (
               <InputTextArea
+                defaultValue={field.value}
                 error={fieldState.error}
                 field={field}
                 label="Answer (ID)"
                 placeholder="Provide a detailed answer here..."
+                value={field.value}
                 onClear={() => {
                   field.onChange("");
                 }}
@@ -181,10 +183,12 @@ const CategoryForm: ForwardRefRenderFunction<FormHandle> = () => {
             name="answerEN"
             render={({ field, fieldState }) => (
               <InputTextArea
+                defaultValue={field.value}
                 error={fieldState.error}
                 field={field}
                 label="Answer (EN)"
                 placeholder="Provide a detailed answer here..."
+                value={field.value}
                 onClear={() => {
                   field.onChange("");
                 }}

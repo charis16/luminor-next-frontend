@@ -63,7 +63,7 @@ export default function TableData() {
             actions={authUser?.role === "admin" ? ["edit", "delete"] : ["edit"]}
             onAction={(action) => {
               if (action === "edit") {
-                router.push(`/${locale}/admin/setting/faq/edit/${data.uuid}`);
+                router.push(`/${locale}/admin/website/faq/edit/${data.uuid}`);
               }
               if (action === "delete") {
                 setSelectedId(data.uuid);

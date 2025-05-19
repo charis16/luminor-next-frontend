@@ -2,10 +2,15 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
-import { MutableRefObject, useEffect, useRef } from "react";
+import { MutableRefObject, useCallback, useEffect, useRef } from "react";
+import { addToast } from "@heroui/toast";
 
 import { FormHandle, SeoMetaDataFormValues, SeoMetaDataSchema } from "../_type";
 import { useSeoMetadataContext } from "../_context";
+import {
+  useDeleteOgImageMetaData,
+  useMutateSeoMetaData,
+} from "../_hooks/use-mutate-seo-metadata";
 
 import {
   DropzoneInput,
@@ -15,6 +20,15 @@ import {
 import InputTextArea from "@/app/[locale]/admin/_components/input-textarea";
 
 export default function SeoForm() {
+  const {
+    formRef: sharedFormRef,
+    data: website,
+    isLoading,
+    onRefetch,
+    onSetIsSubmitting,
+  } = useSeoMetadataContext();
+  const { mutate } = useMutateSeoMetaData();
+  const { mutate: mutateDeleteOgImage } = useDeleteOgImageMetaData();
   const form = useForm<SeoMetaDataFormValues>({
     resolver: zodResolver(SeoMetaDataSchema),
     defaultValues: {
@@ -26,12 +40,45 @@ export default function SeoForm() {
   });
 
   const formRef = useRef<HTMLFormElement | null>(null);
-  const { formRef: sharedFormRef } = useSeoMetadataContext(); // ⬅️ Ambil dari context
 
-  const onSubmit = (data: SeoMetaDataFormValues) => {
-    // eslint-disable-next-line no-console
-    console.log(data);
-  };
+  const onSubmit = useCallback(
+    async (data: SeoMetaDataFormValues) => {
+      const isValid = await form.trigger(); // 👈 ini penting
+
+      if (!isValid) return;
+
+      mutate(
+        {
+          uuid: website?.uuid,
+          data,
+        },
+        {
+          onSuccess: () => {
+            form.reset();
+            onSetIsSubmitting(false);
+            onRefetch;
+
+            addToast({
+              title: `${website ? "Edit" : "Create"} Seo Success`,
+              description: `User ${website ? "edited" : "created"} successfully`,
+              color: "success",
+            });
+          },
+          onError: (err: any) => {
+            onSetIsSubmitting(false);
+
+            addToast({
+              title: `${website ? "Edit" : "Create"} seo failed`,
+              description:
+                err.message || `Failed to ${website ? "Edit" : "Create"} seo`,
+              color: "danger",
+            });
+          },
+        },
+      );
+    },
+    [website],
+  );
 
   useEffect(() => {
     if (sharedFormRef) {
@@ -42,6 +89,16 @@ export default function SeoForm() {
       }
     }
   }, [sharedFormRef]);
+
+  useEffect(() => {
+    if (website) {
+      form.reset({
+        metaDescription: website.meta_description,
+        metaKeywords: website.meta_keywords,
+        metaTitle: website.meta_title,
+      });
+    }
+  }, [website]);
 
   return (
     <form
@@ -97,11 +154,32 @@ export default function SeoForm() {
       <Controller
         control={form.control}
         name="ogImage"
-        render={({ field }) => (
+        render={({ field, fieldState }) => (
           <DropzoneInput
-            label="Meta Image"
+            defaultMedia={[{ id: website?.uuid, url: website?.og_image || "" }]}
+            error={fieldState.error?.message}
+            label="Photo"
             maxFiles={1}
-            onChange={(files) => field.onChange(files)}
+            maxSize={2}
+            type="image"
+            onChange={(files) => {
+              const file = files?.[0];
+
+              if (file && file.size > 2 * 1024 * 1024) {
+                form.setError("ogImage", {
+                  type: "manual",
+                  message: "Maximum file size is 2MB",
+                });
+
+                return;
+              }
+
+              field.onChange(files);
+              form.clearErrors("ogImage");
+            }}
+            onDeleteDefault={() => {
+              mutateDeleteOgImage(website?.uuid);
+            }}
           />
         )}
       />

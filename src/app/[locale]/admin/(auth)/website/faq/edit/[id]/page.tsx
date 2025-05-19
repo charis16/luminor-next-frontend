@@ -1,5 +1,6 @@
 import { ScrollShadow } from "@heroui/scroll-shadow";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import { notFound } from "next/navigation";
 
 import { ButtonSave, Form } from "../../_components";
 import { getFaqByUUIDOptions } from "../../_hooks/use-faq-by-uuid";
@@ -18,7 +19,15 @@ export default async function EditPage({ params }: PageProps) {
   const queryClient = getQueryClient();
   const cookieHeader = await getAuthCookieHeader();
 
-  await queryClient.ensureQueryData(getFaqByUUIDOptions(id, cookieHeader));
+  try {
+    await queryClient.ensureQueryData(getFaqByUUIDOptions(id, cookieHeader));
+  } catch (err: any) {
+    if (err?.status === 403) {
+      return notFound(); // ⬅️ Redirect ke halaman 404
+    }
+
+    throw err;
+  }
 
   return (
     <HydrationBoundary key={id} state={dehydrate(queryClient)}>

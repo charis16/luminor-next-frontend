@@ -1,11 +1,18 @@
 import { z } from "zod";
 
+import { ContactInformationDetail } from "@/types/contact-information";
+
 export interface FormHandle {
   submit: () => void;
 }
 
 export type ContactInformationContextType = {
   formRef: React.RefObject<FormHandle>;
+  data: ContactInformationDetail | null;
+  isLoading: boolean;
+  isSubmitting: boolean;
+  onSetIsSubmitting: (value: boolean) => void;
+  onRefetch: () => void;
 };
 
 export const ContactInformationSchema = z.object({

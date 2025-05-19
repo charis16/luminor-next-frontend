@@ -1,8 +1,11 @@
 "use client";
 
-import { createContext, useContext, useRef } from "react";
+import { createContext, useContext, useRef, useState } from "react";
 
 import { FormHandle, SeoMetaDataContextType } from "../_type";
+import { useSeoMetaDataLists } from "../_hooks/use-seo-metadata";
+
+import { useIsMounted } from "@/hooks/use-is-mounted";
 
 const SeoMetadataContext = createContext<SeoMetaDataContextType | null>(null);
 
@@ -19,15 +22,28 @@ export function useSeoMetadataContext() {
 
 export const SeoMetadataProvider = ({
   children,
+  enabled = true,
 }: {
   children: React.ReactNode;
+  enabled?: boolean;
 }) => {
   const formRef = useRef<FormHandle>(null);
+  const isMounted = useIsMounted();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const { data, isLoading, isPending, refetch } = useSeoMetaDataLists(
+    isMounted && enabled,
+  );
 
   return (
     <SeoMetadataContext.Provider
       value={{
         formRef,
+        data: data?.data || null,
+        isLoading: isLoading || isPending,
+        onRefetch: refetch,
+        onSetIsSubmitting: setIsSubmitting,
+        isSubmitting,
       }}
     >
       {children}

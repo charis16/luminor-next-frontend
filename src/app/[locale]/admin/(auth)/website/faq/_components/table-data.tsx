@@ -12,7 +12,6 @@ import { Spinner } from "@heroui/spinner";
 import { useCallback, useState } from "react";
 import { useLocale } from "next-intl";
 import { Pagination } from "@heroui/pagination";
-import { addToast } from "@heroui/toast";
 import { useRouter } from "next/navigation";
 
 import { useFaqContext } from "../_context";
@@ -23,6 +22,7 @@ import ActionDropdown from "@/app/[locale]/admin/_components/action-dropdown";
 import { FaqDetail } from "@/types/faq-lists";
 import { useAuth } from "@/app/[locale]/admin/_context/auth-context";
 import { ConfirmDialog } from "@/app/[locale]/admin/_components/confirmation-dialog";
+import { showToast } from "@/utils/show-toast";
 
 export default function TableData() {
   const locale = useLocale();
@@ -148,19 +148,20 @@ export default function TableData() {
             { uuid: selectedId },
             {
               onSuccess: () => {
-                addToast({
+                showToast({
+                  type: "success",
                   title: "Faq deleted",
                   description: "Faq has been deleted successfully",
-                  color: "success",
                 });
+
                 setSelectedId("");
                 onRefetch();
               },
               onError: (error) => {
-                addToast({
+                showToast({
+                  type: "danger",
                   title: "Error deleting Faq",
                   description: error.message,
-                  color: "danger",
                 });
               },
             },

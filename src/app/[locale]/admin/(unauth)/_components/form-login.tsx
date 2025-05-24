@@ -5,11 +5,11 @@ import { Button } from "@heroui/button";
 import { Card, CardHeader, CardBody, CardFooter } from "@heroui/card";
 import { Input } from "@heroui/input";
 import { useRouter } from "next/navigation";
-import { addToast } from "@heroui/toast";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useLogin } from "@/hooks/use-login";
+import { showToast } from "@/utils/show-toast";
 
 export const loginSchema = z.object({
   email: z
@@ -41,10 +41,10 @@ export default function FormLogin() {
         router.push("/admin/dashboard");
       },
       onError: (err: any) => {
-        addToast({
-          title: "Login Failed",
+        showToast({
+          type: "danger",
+          title: "Login",
           description: err.message || "Login gagal",
-          color: "danger",
         });
       },
     });

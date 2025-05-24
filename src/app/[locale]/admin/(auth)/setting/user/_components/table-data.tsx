@@ -13,7 +13,6 @@ import { useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
 import { Pagination } from "@heroui/pagination";
-import { addToast } from "@heroui/toast";
 
 import { ColumnKey, COLUMNS } from "../_type";
 import { useUserContext } from "../_context";
@@ -23,6 +22,7 @@ import ActionDropdown from "@/app/[locale]/admin/_components/action-dropdown";
 import { User } from "@/types/user-lists";
 import { ConfirmDialog } from "@/app/[locale]/admin/_components/confirmation-dialog";
 import { useAuth } from "@/app/[locale]/admin/_context/auth-context";
+import { showToast } from "@/utils/show-toast";
 
 export default function TableData() {
   const {
@@ -147,19 +147,20 @@ export default function TableData() {
             { uuid: selectedId },
             {
               onSuccess: () => {
-                addToast({
-                  title: "User deleted",
+                showToast({
+                  type: "success",
+                  title: `User deleted`,
                   description: "User has been deleted successfully",
-                  color: "success",
                 });
+
                 setSelectedId("");
                 onRefetch();
               },
               onError: (error) => {
-                addToast({
-                  title: "Error deleting user",
+                showToast({
+                  type: "success",
+                  title: `User deleted`,
                   description: error.message,
-                  color: "danger",
                 });
               },
             },

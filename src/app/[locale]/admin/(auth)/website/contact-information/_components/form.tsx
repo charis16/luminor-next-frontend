@@ -3,7 +3,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { MutableRefObject, useCallback, useEffect, useRef } from "react";
-import { addToast } from "@heroui/toast";
 
 import {
   ContactInformationSchema,
@@ -14,6 +13,7 @@ import { useContactInformationContext } from "../_context";
 import { useMutateContactInformation } from "../_hooks/use-mutate-contact-information";
 
 import { InputText, InputTextArea } from "@/app/[locale]/admin/_components";
+import { showToast } from "@/utils/show-toast";
 
 export default function Form() {
   const {
@@ -50,28 +50,29 @@ export default function Form() {
             form.reset();
             onSetIsSubmitting(false);
 
-            addToast({
+            showToast({
+              type: "success",
               title: `${contactInformationData ? "Edit" : "Create"} Contact Information Success`,
               description: `Contact Information ${contactInformationData ? "edited" : "created"} successfully`,
-              color: "success",
             });
+
             onRefetch();
           },
           onError: (err: any) => {
             onSetIsSubmitting(false);
 
-            addToast({
+            showToast({
+              type: "danger",
               title: `${contactInformationData ? "Edit" : "Create"} Contact Information failed`,
               description:
                 err.message ||
                 `Failed to ${contactInformationData ? "Edit" : "Create"} contact information`,
-              color: "danger",
             });
           },
         },
       );
     },
-    [mutate, contactInformationData, form, onSetIsSubmitting, onRefetch],
+    [contactInformationData],
   );
 
   useEffect(() => {

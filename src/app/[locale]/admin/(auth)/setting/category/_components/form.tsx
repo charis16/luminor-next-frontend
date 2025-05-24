@@ -11,7 +11,6 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Switch } from "@heroui/switch";
 import { useParams, useRouter } from "next/navigation";
-import { addToast } from "@heroui/toast";
 
 import {
   CategoryFormHandle,
@@ -23,6 +22,7 @@ import { useCategoryByUUID } from "../_hooks/use-category-by-uuid";
 import { useMutateCategory } from "../_hooks/use-mutate-category";
 
 import { InputText } from "@/app/[locale]/admin/_components";
+import { showToast } from "@/utils/show-toast";
 
 const CategoryForm: ForwardRefRenderFunction<CategoryFormHandle> = () => {
   const params = useParams();
@@ -53,21 +53,21 @@ const CategoryForm: ForwardRefRenderFunction<CategoryFormHandle> = () => {
           onSetIsSubmitting(false);
           router.back();
 
-          addToast({
-            title: `${category ? "Edit" : "Create"} Category Success`,
+          showToast({
+            type: "success",
+            title: `Category ${category ? "edit" : "create"}`,
             description: `Category ${category ? "edited" : "created"} successfully`,
-            color: "success",
           });
         },
         onError: (err: any) => {
           onSetIsSubmitting(false);
 
-          addToast({
-            title: `${category ? "Edit" : "Create"} Category failed`,
+          showToast({
+            type: "danger",
+            title: `Category ${category ? "edit" : "create"}`,
             description:
               err.message ||
               `Failed to ${category ? "Edit" : "Create"} category`,
-            color: "danger",
           });
         },
       },

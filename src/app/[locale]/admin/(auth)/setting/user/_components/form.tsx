@@ -10,7 +10,6 @@ import {
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Switch } from "@heroui/switch";
-import { addToast } from "@heroui/toast";
 import { useParams, useRouter } from "next/navigation";
 
 import { EnumRole, FormHandle, UserFormValues, UserSchema } from "../_type";
@@ -25,6 +24,7 @@ import {
   InputTextArea,
   SelectOption,
 } from "@/app/[locale]/admin/_components";
+import { showToast } from "@/utils/show-toast";
 
 const Form: ForwardRefRenderFunction<FormHandle> = () => {
   const params = useParams();
@@ -77,28 +77,24 @@ const Form: ForwardRefRenderFunction<FormHandle> = () => {
           onSetIsSubmitting(false);
           router.back();
 
-          addToast({
+          showToast({
+            type: "success",
             title: `${user ? "Edit" : "Create"} User Success`,
             description: `User ${user ? "edited" : "created"} successfully`,
-            color: "success",
           });
         },
         onError: (err: any) => {
           onSetIsSubmitting(false);
 
-          addToast({
+          showToast({
+            type: "success",
             title: `${user ? "Edit" : "Create"} User failed`,
             description:
               err.message || `Failed to ${user ? "Edit" : "Create"} user`,
-            color: "danger",
           });
         },
       },
     );
-  };
-
-  const onError = (error: any) => {
-    console.log("Form error", error);
   };
 
   useEffect(() => {
@@ -146,7 +142,7 @@ const Form: ForwardRefRenderFunction<FormHandle> = () => {
     <form
       ref={formRef}
       className="flex flex-col gap-4"
-      onSubmit={form.handleSubmit(onSubmit, onError)}
+      onSubmit={form.handleSubmit(onSubmit)}
     >
       <Controller
         control={form.control}

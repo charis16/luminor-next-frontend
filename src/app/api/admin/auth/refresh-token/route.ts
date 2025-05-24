@@ -1,8 +1,8 @@
-// app/api/auth/refresh-token/route.ts
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
-import { goFetcher, safeRawCall } from "@/utils/api";
+import { safeRawCall } from "@/utils/api";
+import { rawServerOnly } from "@/server/go-raw-server-only";
 
 export async function POST() {
   const refreshToken = (await cookies()).get("admin_refresh_token")?.value;
@@ -15,13 +15,14 @@ export async function POST() {
   }
 
   const [backendRes, err] = await safeRawCall(
-    goFetcher.raw(
+    rawServerOnly(
       `${process.env.API_BASE_URL}/v1/api/auth/admin-refresh-token`,
       "POST",
       {
         headers: {
           Cookie: `admin_refresh_token=${refreshToken}`,
         },
+        withCredentials: true, // aman ditambahkan
       },
     ),
   );

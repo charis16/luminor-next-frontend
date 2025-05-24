@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { parse, serialize } from "cookie";
 
-import { goFetcher, safeRawCall } from "@/utils/api";
+import { rawServerOnly } from "./go-raw-server-only";
+
+import { safeRawCall } from "@/utils/api";
 
 interface FetchWithRefreshOptions {
   req: NextRequest;
@@ -38,7 +40,7 @@ export async function fetchWithAutoRefresh({
   const refreshCookie = getFilteredCookie(req, ["admin_refresh_token"]);
 
   const makeRequest = (cookieHeader: string, body: any, headers: any) => {
-    return goFetcher.raw(input.toString(), init.method || "GET", {
+    return rawServerOnly(input.toString(), init.method || "GET", {
       data: body,
       headers: {
         ...headers,
@@ -64,7 +66,7 @@ export async function fetchWithAutoRefresh({
   // === Refresh token attempt
   if (reqErr?.status === 401 && retry) {
     const [refreshRes, refreshErr] = await safeRawCall(
-      goFetcher.raw(
+      rawServerOnly(
         `${process.env.API_BASE_URL}/v1/api/auth/admin-refresh-token`,
         "POST",
         { headers: { Cookie: refreshCookie } },

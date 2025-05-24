@@ -13,7 +13,6 @@ import { Spinner } from "@heroui/spinner";
 import { useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
-import { addToast } from "@heroui/toast";
 
 import { useCategoryContext } from "../_context";
 import { ColumnKey, COLUMNS } from "../_type";
@@ -23,6 +22,7 @@ import ActionDropdown from "@/app/[locale]/admin/_components/action-dropdown";
 import { useAuth } from "@/app/[locale]/admin/_context/auth-context";
 import { CategoryDetail } from "@/types/category-lists";
 import { ConfirmDialog } from "@/app/[locale]/admin/_components/confirmation-dialog";
+import { showToast } from "@/utils/show-toast";
 
 export default function TableData() {
   const {
@@ -146,19 +146,20 @@ export default function TableData() {
             { uuid: selectedId },
             {
               onSuccess: () => {
-                addToast({
-                  title: "Category deleted",
+                showToast({
+                  type: "success",
+                  title: "Delete Category",
                   description: "Category has been deleted successfully",
-                  color: "success",
                 });
+
                 setSelectedId("");
                 onRefetch();
               },
               onError: (error) => {
-                addToast({
-                  title: "Error deleting category",
+                showToast({
+                  type: "success",
+                  title: "Delete Category",
                   description: error.message,
-                  color: "danger",
                 });
               },
             },

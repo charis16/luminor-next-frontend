@@ -11,12 +11,12 @@ import { Avatar } from "@heroui/avatar";
 import { Button } from "@heroui/button";
 import { LogOut, Settings } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { addToast } from "@heroui/toast";
 
 import { useAuth } from "../_context/auth-context";
 
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useLogout } from "@/hooks/use-logout";
+import { showToast } from "@/utils/show-toast";
 
 export default function UserDropdown({
   collapsed = false,
@@ -35,10 +35,10 @@ export default function UserDropdown({
         router.push("/admin");
       },
       onError: (err: { message?: string }) => {
-        addToast({
-          title: "Logout Failed",
+        showToast({
+          type: "danger",
+          title: "Logout",
           description: err.message || "Logout gagal",
-          color: "danger",
         });
       },
     });

@@ -31,7 +31,13 @@ function Providers({ children }: ProvidersProps) {
   return (
     <QueryClientProvider client={queryClient}>
       {children}
-      <ToastProvider placement="top-right" toastOffset={60} />
+      <ToastProvider
+        placement="top-right"
+        toastOffset={60}
+        toastProps={{
+          timeout: 1000,
+        }}
+      />
 
       {process.env.NODE_ENV === "development" && (
         <ReactQueryDevtools initialIsOpen={false} position="right" />

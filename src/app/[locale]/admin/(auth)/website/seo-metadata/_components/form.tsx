@@ -3,7 +3,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { MutableRefObject, useCallback, useEffect, useRef } from "react";
-import { addToast } from "@heroui/toast";
 
 import { FormHandle, SeoMetaDataFormValues, SeoMetaDataSchema } from "../_type";
 import { useSeoMetadataContext } from "../_context";
@@ -18,16 +17,16 @@ import {
   InputText,
 } from "@/app/[locale]/admin/_components";
 import InputTextArea from "@/app/[locale]/admin/_components/input-textarea";
+import { showToast } from "@/utils/show-toast";
 
 export default function SeoForm() {
   const {
     formRef: sharedFormRef,
     data: website,
-    isLoading,
     onRefetch,
     onSetIsSubmitting,
   } = useSeoMetadataContext();
-  const { mutate } = useMutateSeoMetaData();
+  const { mutate, isPending } = useMutateSeoMetaData();
   const { mutate: mutateDeleteOgImage } = useDeleteOgImageMetaData();
   const form = useForm<SeoMetaDataFormValues>({
     resolver: zodResolver(SeoMetaDataSchema),
@@ -58,20 +57,20 @@ export default function SeoForm() {
             onSetIsSubmitting(false);
             onRefetch;
 
-            addToast({
+            showToast({
+              type: "success",
               title: `${website ? "Edit" : "Create"} Seo Success`,
               description: `User ${website ? "edited" : "created"} successfully`,
-              color: "success",
             });
           },
           onError: (err: any) => {
             onSetIsSubmitting(false);
 
-            addToast({
+            showToast({
+              type: "danger",
               title: `${website ? "Edit" : "Create"} seo failed`,
               description:
                 err.message || `Failed to ${website ? "Edit" : "Create"} seo`,
-              color: "danger",
             });
           },
         },
@@ -93,12 +92,16 @@ export default function SeoForm() {
   useEffect(() => {
     if (website) {
       form.reset({
-        metaDescription: website.meta_description,
-        metaKeywords: website.meta_keywords,
+        metaDescription: website.meta_desc,
+        metaKeywords: website.meta_keyword.split(","),
         metaTitle: website.meta_title,
       });
     }
   }, [website]);
+
+  useEffect(() => {
+    onSetIsSubmitting(isPending);
+  }, [isPending]);
 
   return (
     <form
@@ -128,6 +131,7 @@ export default function SeoForm() {
             field={field}
             label="Meta Description"
             placeholder="Ex: Discover Luminor's innovative solutions for your business needs."
+            value={field.value}
             onClear={() => {
               field.onChange("");
             }}

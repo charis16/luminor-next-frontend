@@ -3,6 +3,7 @@
 import {
   forwardRef,
   MutableRefObject,
+  useCallback,
   useEffect,
   useRef,
   type ForwardRefRenderFunction,
@@ -12,9 +13,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { AboutUsFormValues, AboutUsSchema, FormHandle } from "../_type";
 import { AlbumFormHandle } from "../../../portfolio/album/_type";
-import { useAboutUsContext } from "../_context/about-us-context";
+import { useAboutUsContext } from "../_context";
+import { useMutateAboutUs } from "../_hooks/use-mutate-about-us";
 
 import { RichTextEditor } from "@/app/[locale]/admin/_components";
+import { showToast } from "@/utils/show-toast";
 
 const AboutUsForm: ForwardRefRenderFunction<FormHandle> = () => {
   const form = useForm<AboutUsFormValues>({
@@ -28,12 +31,50 @@ const AboutUsForm: ForwardRefRenderFunction<FormHandle> = () => {
   });
 
   const formRef = useRef<HTMLFormElement | null>(null);
-  const { formRef: sharedFormRef } = useAboutUsContext(); // ⬅️ Ambil dari context
+  const {
+    formRef: sharedFormRef,
+    onSetIsSubmitting,
+    data: aboutUsData,
+    onRefetch,
+  } = useAboutUsContext(); // ⬅️ Ambil dari context
+  const { mutate, isPending } = useMutateAboutUs();
 
-  const onSubmit = (data: AboutUsFormValues) => {
-    // eslint-disable-next-line no-console
-    console.log(data);
-  };
+  const onSubmit = useCallback(
+    (data: AboutUsFormValues) => {
+      mutate(
+        {
+          uuid: aboutUsData?.uuid,
+          data,
+        },
+        {
+          onSuccess: () => {
+            form.reset();
+            onSetIsSubmitting(false);
+
+            showToast({
+              type: "success",
+              title: `${aboutUsData ? "Edit" : "Create"} Contact Information Success`,
+              description: `Contact Information ${aboutUsData ? "edited" : "created"} successfully`,
+            });
+
+            onRefetch();
+          },
+          onError: (err: any) => {
+            onSetIsSubmitting(false);
+
+            showToast({
+              type: "danger",
+              title: `${aboutUsData ? "Edit" : "Create"} Contact Information failed`,
+              description:
+                err.message ||
+                `Failed to ${aboutUsData ? "Edit" : "Create"} contact information`,
+            });
+          },
+        },
+      );
+    },
+    [aboutUsData],
+  );
 
   useEffect(() => {
     if (sharedFormRef) {
@@ -44,6 +85,21 @@ const AboutUsForm: ForwardRefRenderFunction<FormHandle> = () => {
       }
     }
   }, [sharedFormRef]);
+
+  useEffect(() => {
+    onSetIsSubmitting(isPending);
+  }, [isPending]);
+
+  useEffect(() => {
+    if (aboutUsData) {
+      form.reset({
+        aboutUsBriefHomeEn: aboutUsData.about_us_brief_home_en || "",
+        aboutUsBriefHomeId: aboutUsData.about_us_brief_home_id || "",
+        aboutUsEn: aboutUsData.about_us_en || "",
+        aboutUsId: aboutUsData.about_us_id || "",
+      });
+    }
+  }, [aboutUsData]);
 
   return (
     <form

@@ -2,7 +2,6 @@ import "quill/dist/quill.snow.css";
 import "@/styles/globals.css";
 import { Metadata, Viewport } from "next";
 import clsx from "clsx";
-import { HeroUIProvider } from "@heroui/system";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 
 import { fontSans } from "@/config/fonts";
@@ -55,11 +54,9 @@ export default function RootLayout({
           fontSans.variable,
         )}
       >
-        <HeroUIProvider>
-          <NextThemesProvider attribute="class" forcedTheme="dark">
-            {children}
-          </NextThemesProvider>
-        </HeroUIProvider>
+        <NextThemesProvider attribute="class" forcedTheme="dark">
+          {children}
+        </NextThemesProvider>
       </body>
     </html>
   );

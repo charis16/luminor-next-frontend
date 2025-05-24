@@ -1,13 +1,14 @@
 // app/api/auth/login/route.ts
 import { NextRequest, NextResponse } from "next/server";
 
-import { goFetcher, safeRawCall } from "@/utils/api";
+import { safeRawCall } from "@/utils/api";
+import { rawServerOnly } from "@/server/go-raw-server-only";
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
 
   const [res, err] = await safeRawCall(
-    goFetcher.raw(
+    rawServerOnly(
       `${process.env.API_BASE_URL}/v1/api/auth/admin-login`,
       "POST",
       {

@@ -11,7 +11,6 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Switch } from "@heroui/switch";
 import { useParams, useRouter } from "next/navigation";
-import { addToast } from "@heroui/toast";
 
 import { useFaqContext } from "../_context";
 import { FaqFormValues, FaqSchema, FormHandle } from "../_type";
@@ -19,6 +18,7 @@ import { useMutateFaq } from "../_hooks/use-mutate-faq";
 import { useFaqByUUID } from "../_hooks/use-faq-by-uuid";
 
 import { InputText, InputTextArea } from "@/app/[locale]/admin/_components";
+import { showToast } from "@/utils/show-toast";
 
 const CategoryForm: ForwardRefRenderFunction<FormHandle> = () => {
   const params = useParams();
@@ -53,20 +53,20 @@ const CategoryForm: ForwardRefRenderFunction<FormHandle> = () => {
           onSetIsSubmitting(false);
           router.back();
 
-          addToast({
+          showToast({
+            type: "success",
             title: `${faq ? "Edit" : "Create"} Faq Success`,
             description: `Faq ${faq ? "edited" : "created"} successfully`,
-            color: "success",
           });
         },
         onError: (err: any) => {
           onSetIsSubmitting(false);
 
-          addToast({
+          showToast({
+            type: "success",
             title: `${faq ? "Edit" : "Create"} Faq failed`,
             description:
               err.message || `Failed to ${faq ? "Edit" : "Create"} faq`,
-            color: "danger",
           });
         },
       },

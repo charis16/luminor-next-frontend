@@ -2,17 +2,22 @@
 import { Button } from "@heroui/button";
 import { Save } from "lucide-react";
 
-import { useAboutUsContext } from "../_context/about-us-context";
+import { useAboutUsContext } from "../_context";
 
 export default function ButtonSave() {
-  const { formRef } = useAboutUsContext();
+  const { formRef, isSubmitting } = useAboutUsContext();
 
   const handleSave = () => {
     formRef.current?.submit(); // atau validasi, atau getValues dsb.
   };
 
   return (
-    <Button className="w-full md:w-fit" type="button" onPress={handleSave}>
+    <Button
+      className="w-full md:w-fit"
+      isLoading={isSubmitting}
+      type="button"
+      onPress={handleSave}
+    >
       <Save className="size-4" />
       Save
     </Button>

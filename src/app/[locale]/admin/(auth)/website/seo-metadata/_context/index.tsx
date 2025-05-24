@@ -35,6 +35,8 @@ export const SeoMetadataProvider = ({
     isMounted && enabled,
   );
 
+  if (!isMounted) return;
+
   return (
     <SeoMetadataContext.Provider
       value={{

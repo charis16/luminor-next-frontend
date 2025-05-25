@@ -2978,6 +2978,11 @@
     "@types/prop-types" "*"
     csstype "^3.0.2"
 
+"@types/trusted-types@^2.0.7":
+  version "2.0.7"
+  resolved "https://registry.yarnpkg.com/@types/trusted-types/-/trusted-types-2.0.7.tgz#baccb07a970b91707df3a3e8ba6896c57ead2d11"
+  integrity sha512-ScaPdn1dQczgbl0QFTeTOmVHFULt394XJgOQNoyVhZ6r2vLnMLJfBPd53SB52T/3G36VI1/g2MZaX0cwDuXsfw==
+
 "@typescript-eslint/eslint-plugin@8.11.0":
   version "8.11.0"
   resolved "https://registry.yarnpkg.com/@typescript-eslint/eslint-plugin/-/eslint-plugin-8.11.0.tgz#c3f087d20715fa94310b30666c08b3349e0ab084"
@@ -3707,6 +3712,13 @@ doctrine@^3.0.0:
   integrity sha512-yS+Q5i3hBf7GBkd4KG8a7eBNNWNGLTaEwwYWUijIYM7zrlYDM0BFXHjjPWlWZ1Rg7UaddZeIDmi9jF3HmqiQ2w==
   dependencies:
     esutils "^2.0.2"
+
+dompurify@^3.2.6:
+  version "3.2.6"
+  resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-3.2.6.tgz#ca040a6ad2b88e2a92dc45f38c79f84a714a1cad"
+  integrity sha512-/2GogDQlohXPZe6D6NOgQvXLPSYBqIWMnZ8zzOhn09REE4eyAzb+Hed3jhoM9OkuaJ8P6ZGTTVWQKAi8ieIzfQ==
+  optionalDependencies:
+    "@types/trusted-types" "^2.0.7"
 
 dunder-proto@^1.0.0, dunder-proto@^1.0.1:
   version "1.0.1"

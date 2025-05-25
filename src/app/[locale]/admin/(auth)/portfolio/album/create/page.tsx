@@ -1,6 +1,6 @@
 import { ScrollShadow } from "@heroui/scroll-shadow";
 
-import { AlbumProvider } from "../_context/album-context";
+import { AlbumProvider } from "../_context";
 import ButtonSave from "../_components/button-save";
 import Form from "../_components/form";
 
@@ -8,7 +8,7 @@ import { TitlePage } from "@/app/[locale]/admin/_components";
 
 export default async function AlbumCreatePage() {
   return (
-    <AlbumProvider>
+    <AlbumProvider enabled={false}>
       <div className="flex flex-col gap-6">
         <TitlePage
           withBackButton

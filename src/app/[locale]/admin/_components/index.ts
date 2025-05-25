@@ -30,11 +30,11 @@ export const InputTextArea = dynamic(() => import("./input-textarea"), {
 });
 
 export const ReactQuillEditor = dynamic(() => import("./react-quill"), {
-  ssr: true,
+  ssr: false,
 });
 
 export const RichTextEditor = dynamic(() => import("./rich-text-editor"), {
-  ssr: true,
+  ssr: false,
 });
 
 export const FormTagInput = dynamic(() => import("./tag-input"), {

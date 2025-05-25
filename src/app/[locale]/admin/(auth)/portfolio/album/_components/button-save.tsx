@@ -2,18 +2,23 @@
 import { Button } from "@heroui/button";
 import { Save } from "lucide-react";
 
-import { useAlbumContext } from "../_context/album-context";
+import { useAlbumContext } from "../_context";
 
 export default function ButtonSave() {
-  const { formRef } = useAlbumContext();
+  const { formRef, isSubmitting } = useAlbumContext();
 
   const handleSave = () => {
     formRef.current?.submit(); // atau validasi, atau getValues dsb.
   };
 
   return (
-    <Button className="w-full md:w-fit" type="button" onPress={handleSave}>
-      <Save className="size-4" />
+    <Button
+      className="w-full md:w-fit"
+      isLoading={isSubmitting}
+      type="button"
+      onPress={handleSave}
+    >
+      <Save className="size-4 shrink-0" />
       Save
     </Button>
   );

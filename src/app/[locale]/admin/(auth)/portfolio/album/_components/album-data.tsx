@@ -3,30 +3,34 @@
 import { ScrollShadow } from "@heroui/scroll-shadow";
 import { Card, CardFooter, CardHeader } from "@heroui/card";
 import { Image } from "@heroui/image";
+import DOMPurify from "dompurify";
 
-import { useAlbumContext } from "../_context/album-context";
+import { useAlbumContext } from "../_context";
 
 import ButtonEdit from "./button-edit";
 
 export default function AlbumDataPage() {
-  const { filteredAlbums } = useAlbumContext();
+  const { albums } = useAlbumContext();
 
   return (
     <ScrollShadow hideScrollBar className="h-[calc(100vh-20rem)]">
       <div className="grid grid-cols-1 gap-4">
-        {filteredAlbums.map((album) => (
+        {albums.map((album) => (
           <Card
-            key={album.id}
+            key={album.uuid}
             isFooterBlurred
             className="w-full h-[500px] col-span-12 sm:col-span-7"
           >
             <CardHeader className="absolute z-10 top-1 flex-col items-start">
               <p className="text-tiny text-white/60 uppercase font-bold">
-                {album.category}
+                {album.category_name}
               </p>
-              <h4 className="text-white/90 font-medium text-xl">
-                {album.description}
-              </h4>
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: DOMPurify.sanitize(album.description),
+                }}
+                className="text-white/90 font-medium text-xl"
+              />
             </CardHeader>
             <Image
               removeWrapper
@@ -38,14 +42,14 @@ export default function AlbumDataPage() {
               <div className="flex flex-grow gap-2 items-center">
                 <div className="flex items-center gap-3 text-white">
                   <Image
-                    alt={album.authorName}
+                    alt={album.user_id}
                     className="w-8 h-8 rounded-full border border-white object-cover"
-                    src={album.authorAvatar}
+                    src={album.user_avatar || "/images/default-avatar.png"}
                   />
-                  <span className="text-sm">{album.authorName}</span>
+                  <span className="text-sm">{album.user_name}</span>
                 </div>
               </div>
-              <ButtonEdit slug={album.slug} />
+              <ButtonEdit slug={album.uuid} />
             </CardFooter>
           </Card>
         ))}

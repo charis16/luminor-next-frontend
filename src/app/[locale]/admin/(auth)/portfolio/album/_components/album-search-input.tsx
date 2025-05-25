@@ -1,6 +1,6 @@
 "use client";
 
-import { useAlbumContext } from "../_context/album-context";
+import { useAlbumContext } from "../_context";
 
 import InputSearch from "@/app/[locale]/admin/_components/input-search";
 

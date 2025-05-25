@@ -18,7 +18,7 @@ export default function ButtonSave() {
       type="button"
       onPress={handleSave}
     >
-      <Save className="size-4" />
+      <Save className="size-4 shrink-0" />
       Save
     </Button>
   );

@@ -13,7 +13,7 @@ export default function ButtonSave() {
 
   return (
     <Button className="w-full md:w-fit" type="button" onPress={handleSave}>
-      <Save className="size-4" />
+      <Save className="size-4 shrink-0" />
       Save
     </Button>
   );

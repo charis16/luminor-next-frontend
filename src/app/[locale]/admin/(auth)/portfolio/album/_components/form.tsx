@@ -3,6 +3,7 @@
 import {
   forwardRef,
   MutableRefObject,
+  useCallback,
   useEffect,
   useRef,
   type ForwardRefRenderFunction,
@@ -10,9 +11,14 @@ import {
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Switch } from "@heroui/switch";
+import { useParams, useRouter } from "next/navigation";
 
-import { AlbumFormHandle, AlbumFormValues, AlbumSchema } from "../_type";
-import { useAlbumContext } from "../_context/album-context";
+import { AlbumFormValues, AlbumSchema, FormHandle } from "../_type";
+import { useAlbumByUUID } from "../_hooks/use-album-by-uuid";
+import { useAlbumContext } from "../_context";
+import { useMutateAlbum } from "../_hooks/use-mutate-album";
+import { useCategoryOption } from "../../../setting/category/_hooks/use-category-options";
+import { useUserOption } from "../../../setting/user/_hooks/use-user-options";
 
 import {
   DropzoneInput,
@@ -20,8 +26,18 @@ import {
   RichTextEditor,
   SelectOption,
 } from "@/app/[locale]/admin/_components";
+import { showToast } from "@/utils/show-toast";
 
-const AlbumForm: ForwardRefRenderFunction<AlbumFormHandle> = () => {
+const AlbumForm: ForwardRefRenderFunction<FormHandle> = () => {
+  const params = useParams();
+  const uuid = params?.id as string | undefined;
+  const { formRef: sharedFormRef, onSetIsSubmitting } = useAlbumContext();
+  const { data: album } = useAlbumByUUID(uuid);
+  const { mutate, isPending } = useMutateAlbum();
+  const router = useRouter();
+  const { data: categoryOptions } = useCategoryOption();
+  const { data: userOptions } = useUserOption();
+
   const form = useForm<AlbumFormValues>({
     resolver: zodResolver(AlbumSchema),
     defaultValues: {
@@ -37,41 +53,83 @@ const AlbumForm: ForwardRefRenderFunction<AlbumFormHandle> = () => {
   });
 
   const formRef = useRef<HTMLFormElement | null>(null);
-  const { formRef: sharedFormRef } = useAlbumContext(); // ⬅️ Ambil dari context
 
-  const onSubmit = (data: AlbumFormValues) => {
-    const formData = new FormData();
+  const onSubmit = useCallback(
+    (data: AlbumFormValues) => {
+      // const formData = new FormData();
+      // formData.append("is_publish", data.isPublished ? "publish" : "draft");
+      // formData.append("slug", data.slug ?? "untitled");
+      // formData.append("title", data.title);
+      // formData.append("category", data.category);
+      // formData.append("author", data.author);
+      // formData.append("description", data.description);
+      // data.images.forEach((file) => {
+      //   formData.append("images", file);
+      // });
+      // if (data.thumbnail) {
+      //   formData.append("thumbnail", data.thumbnail);
+      // }
+      // Array.from(formData.entries()).forEach(([key, value]) => {
+      //   // eslint-disable-next-line no-console
+      //   console.log(key, value);
+      // });
 
-    formData.append("is_publish", data.isPublished ? "publish" : "draft");
-    formData.append("slug", data.slug ?? "untitled");
-    formData.append("title", data.title);
-    formData.append("category", data.category);
-    formData.append("author", data.author);
-    formData.append("description", data.description);
+      mutate(
+        {
+          uuid: album?.uuid,
+          data,
+        },
+        {
+          onSuccess: () => {
+            form.reset();
+            router.back();
 
-    data.images.forEach((file) => {
-      formData.append("images", file);
-    });
-
-    if (data.thumbnail) {
-      formData.append("thumbnail", data.thumbnail);
-    }
-
-    Array.from(formData.entries()).forEach(([key, value]) => {
-      // eslint-disable-next-line no-console
-      console.log(key, value);
-    });
-  };
+            showToast({
+              type: "success",
+              title: `${album ? "Edit" : "Create"} Album Success`,
+              description: `User ${album ? "edited" : "created"} successfully`,
+            });
+          },
+          onError: (err: any) => {
+            showToast({
+              type: "danger",
+              title: `${album ? "Edit" : "Create"} Album failed`,
+              description:
+                err.message || `Failed to ${album ? "Edit" : "Create"} album`,
+            });
+          },
+        },
+      );
+    },
+    [album],
+  );
 
   useEffect(() => {
     if (sharedFormRef) {
       if (sharedFormRef && "current" in sharedFormRef) {
-        (sharedFormRef as MutableRefObject<AlbumFormHandle>).current = {
+        (sharedFormRef as MutableRefObject<FormHandle>).current = {
           submit: () => formRef.current?.requestSubmit(),
         };
       }
     }
   }, [sharedFormRef]);
+
+  useEffect(() => {
+    onSetIsSubmitting(isPending);
+  }, [isPending]);
+
+  useEffect(() => {
+    if (album) {
+      form.reset({
+        isPublished: album.is_published,
+        slug: album.slug,
+        title: album.title,
+        category: album.category_id,
+        description: album.description,
+        author: album.user_id,
+      });
+    }
+  }, [album]);
 
   return (
     <form
@@ -151,11 +209,14 @@ const AlbumForm: ForwardRefRenderFunction<AlbumFormHandle> = () => {
             field={field}
             label="Category"
             placeholder="Select Category"
-            selectItems={[
-              { value: "nature", label: "Nature" },
-              { value: "architecture", label: "Architecture" },
-              { value: "people", label: "People" },
-            ]}
+            selectItems={
+              categoryOptions
+                ? categoryOptions.map((category) => ({
+                    value: category.uuid,
+                    label: category.name,
+                  }))
+                : []
+            }
             selectedValue={field.value}
           />
         )}
@@ -171,11 +232,14 @@ const AlbumForm: ForwardRefRenderFunction<AlbumFormHandle> = () => {
             field={field}
             label="Author"
             placeholder="Select Author"
-            selectItems={[
-              { value: "alex", label: "Alex Johnson" },
-              { value: "emily", label: "Emily Smith" },
-              { value: "michael", label: "Michael Brown" },
-            ]}
+            selectItems={
+              userOptions
+                ? userOptions.map((user) => ({
+                    value: user.uuid,
+                    label: user.name,
+                  }))
+                : []
+            }
             selectedValue={field.value}
           />
         )}
@@ -199,14 +263,35 @@ const AlbumForm: ForwardRefRenderFunction<AlbumFormHandle> = () => {
       <Controller
         control={form.control}
         name="images"
-        render={({ field }) => (
+        render={({ field, fieldState }) => (
           <DropzoneInput
+            defaultMedia={
+              album?.images?.map((image) => ({
+                id: album.uuid,
+                url: image || "",
+              })) || []
+            }
+            error={fieldState.error?.message}
             label="Album Images"
             type="image"
             onChange={(files) => field.onChange(files)}
-            onSelectThumbnail={(file) =>
-              form.setValue("thumbnail", file, { shouldValidate: true })
-            }
+            onSelectThumbnail={(file) => {
+              // Set thumbnail
+              form.setValue("thumbnail", file, { shouldValidate: true });
+
+              // Jika file yang dipilih thumbnail juga ada di images, hapus
+              const currentImages = form.getValues("images");
+
+              if (currentImages) {
+                const filteredImages = currentImages.filter(
+                  (img: File) => img !== file,
+                );
+
+                form.setValue("images", filteredImages, {
+                  shouldValidate: true,
+                });
+              }
+            }}
           />
         )}
       />

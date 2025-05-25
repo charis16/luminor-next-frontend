@@ -7,7 +7,7 @@ import { TitlePage } from "@/app/[locale]/admin/_components";
 
 export default function CreatePage() {
   return (
-    <FaqProvider>
+    <FaqProvider enabled={false}>
       <div className="flex flex-col gap-6">
         <TitlePage
           withBackButton

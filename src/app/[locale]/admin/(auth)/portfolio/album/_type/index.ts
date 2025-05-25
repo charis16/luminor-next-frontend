@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { AlbumDetail } from "@/types/album-lists";
+
 export type Album = {
   id: number;
   category: string;
@@ -47,20 +49,26 @@ export const AlbumSchema = z.object({
   category: z.string().min(1, "Category is required"),
   author: z.string().min(1, "Author name is required"),
   description: z.string().min(1, "Description is required"),
-  images: z.array(z.any()).min(1, "At least one image is required"),
+  images: z.array(z.any()).optional(),
   thumbnail: z.any().nullable(),
 });
 
 export type AlbumFormValues = z.infer<typeof AlbumSchema>;
 
-export interface AlbumFormHandle {
+export interface FormHandle {
   submit: () => void;
 }
 
 export type AlbumContextType = {
-  albums: Album[];
-  filteredAlbums: Album[];
+  albums: AlbumDetail[];
   search: string;
   setSearch: (value: string) => void;
-  formRef: React.RefObject<AlbumFormHandle>;
+  formRef: React.RefObject<FormHandle>;
+  page: number;
+  setPage: (page: number) => void;
+  pages: number;
+  isLoading: boolean;
+  isSubmitting: boolean;
+  onSetIsSubmitting: (value: boolean) => void;
+  onRefetch: () => void;
 };

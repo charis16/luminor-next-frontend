@@ -10,7 +10,7 @@ export default function ButtonEdit({ slug }: { slug: string }) {
 
   return (
     <Button onPress={() => handleEdit(slug)}>
-      <Pencil className="size-4" />
+      <Pencil className="size-4 shrink-0" />
       Edit
     </Button>
   );

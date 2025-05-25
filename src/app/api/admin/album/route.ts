@@ -3,52 +3,39 @@ import FormData from "form-data";
 
 import { fetchWithAutoRefresh } from "@/server/fetch-with-auto-refresh";
 
-export async function PATCH(
-  req: NextRequest,
-  { params }: { params: Promise<{ uuid: string }> },
-) {
-  const { uuid } = await params;
-  const body = await req.json(); // ini cara ambil body JSON yang dikirim
+const backendBaseUrl = process.env.API_BASE_URL!;
 
+export async function GET(req: NextRequest) {
   return fetchWithAutoRefresh({
     req,
-    input: `${process.env.API_BASE_URL}/v1/api/websites/${body.status}/${uuid}`,
+    input: `${backendBaseUrl}/v1/api/albums/lists`,
     init: {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      method: "GET",
     },
   });
 }
-
-export async function PUT(
-  req: NextRequest,
-  { params }: { params: Promise<{ uuid: string }> },
-) {
-  const { uuid } = await params;
-
+export async function POST(req: NextRequest) {
   const incomingForm = await req.formData();
   const clone1 = new FormData();
   const clone2 = new FormData();
 
   for (const [key, value] of Array.from(incomingForm.entries())) {
-    if (typeof value === "string") {
-      clone1.append(key, value);
-      clone2.append(key, value);
-    } else if (value instanceof File) {
+    if (value instanceof File) {
       const buffer = Buffer.from(await value.arrayBuffer());
 
       clone1.append(key, buffer, value.name);
       clone2.append(key, buffer, value.name);
+    } else {
+      clone1.append(key, value as string);
+      clone2.append(key, value as string);
     }
   }
 
   return fetchWithAutoRefresh({
     req,
-    input: `${process.env.API_BASE_URL}/v1/api/websites/${uuid}`,
+    input: `${process.env.API_BASE_URL}/v1/api/albums/submit`, // ganti sesuai endpoint category
     init: {
-      method: "PUT",
+      method: "POST",
       body: clone1 as any,
       headers: clone1.getHeaders?.() ?? {},
     },

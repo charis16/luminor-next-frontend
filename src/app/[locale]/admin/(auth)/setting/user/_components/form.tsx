@@ -87,7 +87,7 @@ const Form: ForwardRefRenderFunction<FormHandle> = () => {
           onSetIsSubmitting(false);
 
           showToast({
-            type: "success",
+            type: "danger",
             title: `${user ? "Edit" : "Create"} User failed`,
             description:
               err.message || `Failed to ${user ? "Edit" : "Create"} user`,
@@ -114,9 +114,7 @@ const Form: ForwardRefRenderFunction<FormHandle> = () => {
   }, [canLogin, form]);
 
   useEffect(() => {
-    if (isPending) {
-      onSetIsSubmitting(isPending);
-    }
+    onSetIsSubmitting(isPending);
   }, [isPending]);
 
   useEffect(() => {

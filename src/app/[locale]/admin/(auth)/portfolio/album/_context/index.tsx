@@ -2,22 +2,22 @@
 
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 
-import { FaqContextType, FormHandle } from "../_type";
-import { useFaqLists } from "../_hooks/use-faq-lists";
+import { AlbumContextType, FormHandle } from "../_type";
+import { useAlbumLists } from "../_hooks/use-album-lists";
 
 import { useIsMounted } from "@/hooks/use-is-mounted";
 
-const FaqContext = createContext<FaqContextType | null>(null);
+const AlbumContext = createContext<AlbumContextType | null>(null);
 
-export function useFaqContext() {
-  const ctx = useContext(FaqContext);
+export function useAlbumContext() {
+  const ctx = useContext(AlbumContext);
 
-  if (!ctx) throw new Error("FaqContext must be used within FaqProvider");
+  if (!ctx) throw new Error("AlbumContext must be used within AlbumProvider");
 
   return ctx;
 }
 
-export const FaqProvider = ({
+export const AlbumProvider = ({
   children,
   enabled = true,
 }: {
@@ -43,19 +43,19 @@ export const FaqProvider = ({
     setPage(1);
   }, [debouncedSearch]);
 
-  const { data, isLoading, isPending, refetch } = useFaqLists(
+  const { data, isLoading, isPending, refetch } = useAlbumLists(
     page,
     search,
     10,
     isMounted && enabled,
   );
 
-  if (!isMounted) return;
+  if (!isMounted) return null;
 
   return (
-    <FaqContext.Provider
+    <AlbumContext.Provider
       value={{
-        faq: data?.data || [],
+        albums: data?.data || [],
         search,
         isSubmitting,
         setSearch,
@@ -69,6 +69,6 @@ export const FaqProvider = ({
       }}
     >
       {children}
-    </FaqContext.Provider>
+    </AlbumContext.Provider>
   );
 };

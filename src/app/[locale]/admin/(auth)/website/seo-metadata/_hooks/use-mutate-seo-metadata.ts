@@ -48,7 +48,9 @@ export function useDeleteOgImageMetaData() {
       if (!uuid) throw new Error("UUID is required to delete image website");
 
       const [res, err] = await safeCall(
-        goFetcher.patch(`/api/admin/seo-metadata/${uuid}`, {}),
+        goFetcher.patch(`/api/admin/seo-metadata/${uuid}`, {
+          status: "og_image",
+        }),
       );
 
       if (err) {

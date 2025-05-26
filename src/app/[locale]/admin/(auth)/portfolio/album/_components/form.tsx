@@ -265,12 +265,14 @@ const AlbumForm: ForwardRefRenderFunction<FormHandle> = () => {
         name="images"
         render={({ field, fieldState }) => (
           <DropzoneInput
-            defaultMedia={
-              album?.images?.map((image) => ({
-                id: album.uuid,
-                url: image || "",
-              })) || []
-            }
+            defaultMedia={[
+              album?.thumbnail,
+              ...(album?.images ?? []).filter(
+                (img) => img !== album?.thumbnail,
+              ),
+            ]
+              .filter((url): url is string => typeof url === "string" && !!url)
+              .map((url) => ({ id: album?.uuid ?? "", url }))}
             error={fieldState.error?.message}
             label="Album Images"
             type="image"

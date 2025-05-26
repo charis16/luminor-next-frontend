@@ -38,7 +38,7 @@ export default async function EditPage({ params }: PageProps) {
             withBackButton
             description="Edit and manage your album details easily"
             title="Edit Album"
-            urlBack={"/admin/admin/portfolio/album"}
+            urlBack={"/admin/portfolio/album"}
           >
             <ButtonSave />
           </TitlePage>

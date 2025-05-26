@@ -33,7 +33,7 @@ export function useDeleteImageUser() {
         goFetcher.patch(`/api/admin/user/${uuid}`, {}),
       );
 
-      if (err || !res?.data) {
+      if (err) {
         throw new Error("Failed to delete image user. Please try again later.");
       }
 

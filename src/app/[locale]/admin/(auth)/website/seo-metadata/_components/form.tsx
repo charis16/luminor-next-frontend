@@ -182,7 +182,23 @@ export default function SeoForm() {
               form.clearErrors("ogImage");
             }}
             onDeleteDefault={() => {
-              mutateDeleteOgImage(website?.uuid);
+              mutateDeleteOgImage(website?.uuid, {
+                onSuccess: () => {
+                  showToast({
+                    type: "success",
+                    title: "Delete Image Success",
+                    description: "Image deleted successfully",
+                  });
+                  onRefetch();
+                },
+                onError: (err: any) => {
+                  showToast({
+                    type: "danger",
+                    title: "Delete Image Failed",
+                    description: err.message || "Failed to delete image",
+                  });
+                },
+              });
             }}
           />
         )}

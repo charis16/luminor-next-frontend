@@ -30,7 +30,7 @@ const Form: ForwardRefRenderFunction<FormHandle> = () => {
   const params = useParams();
   const uuid = params?.id as string | undefined;
 
-  const { data: user } = useUserByUUID(uuid);
+  const { data: user, refetch } = useUserByUUID(uuid);
   const { mutate: mutateDeleteImageUser } = useDeleteImageUser();
   const { formRef: sharedFormRef, onSetIsSubmitting } = useUserContext();
   const { mutate, isPending } = useMutateUser();
@@ -250,9 +250,28 @@ const Form: ForwardRefRenderFunction<FormHandle> = () => {
               form.clearErrors("photo");
             }}
             onDeleteDefault={() => {
-              mutateDeleteImageUser({
-                uuid: user?.uuid,
-              });
+              mutateDeleteImageUser(
+                {
+                  uuid: user?.uuid,
+                },
+                {
+                  onSuccess: () => {
+                    showToast({
+                      type: "success",
+                      title: "Delete Image Success",
+                      description: "Image deleted successfully",
+                    });
+                    refetch();
+                  },
+                  onError: (err: any) => {
+                    showToast({
+                      type: "danger",
+                      title: "Delete Image Failed",
+                      description: err.message || "Failed to delete image",
+                    });
+                  },
+                },
+              );
             }}
           />
         )}

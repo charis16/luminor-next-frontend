@@ -6,6 +6,7 @@ import {
   useCallback,
   useEffect,
   useRef,
+  useState,
   type ForwardRefRenderFunction,
 } from "react";
 import { useForm, Controller } from "react-hook-form";
@@ -19,6 +20,7 @@ import { useAlbumContext } from "../_context";
 import { useMutateAlbum } from "../_hooks/use-mutate-album";
 import { useCategoryOption } from "../../../setting/category/_hooks/use-category-options";
 import { useUserOption } from "../../../setting/user/_hooks/use-user-options";
+import { useDeleteImage } from "../_hooks/use-delete-album";
 
 import {
   DropzoneInput,
@@ -27,16 +29,19 @@ import {
   SelectOption,
 } from "@/app/[locale]/admin/_components";
 import { showToast } from "@/utils/show-toast";
+import { DefaultMedia } from "@/app/[locale]/admin/_components/dropzone";
 
 const AlbumForm: ForwardRefRenderFunction<FormHandle> = () => {
   const params = useParams();
   const uuid = params?.id as string | undefined;
   const { formRef: sharedFormRef, onSetIsSubmitting } = useAlbumContext();
-  const { data: album } = useAlbumByUUID(uuid);
+  const { data: album, refetch } = useAlbumByUUID(uuid);
   const { mutate, isPending } = useMutateAlbum();
   const router = useRouter();
   const { data: categoryOptions } = useCategoryOption();
   const { data: userOptions } = useUserOption();
+  const { mutate: mutateDeleteImage } = useDeleteImage();
+  const [defaultMedia, setDefaultMedia] = useState<DefaultMedia[]>([]);
 
   const form = useForm<AlbumFormValues>({
     resolver: zodResolver(AlbumSchema),
@@ -56,28 +61,11 @@ const AlbumForm: ForwardRefRenderFunction<FormHandle> = () => {
 
   const onSubmit = useCallback(
     (data: AlbumFormValues) => {
-      // const formData = new FormData();
-      // formData.append("is_publish", data.isPublished ? "publish" : "draft");
-      // formData.append("slug", data.slug ?? "untitled");
-      // formData.append("title", data.title);
-      // formData.append("category", data.category);
-      // formData.append("author", data.author);
-      // formData.append("description", data.description);
-      // data.images.forEach((file) => {
-      //   formData.append("images", file);
-      // });
-      // if (data.thumbnail) {
-      //   formData.append("thumbnail", data.thumbnail);
-      // }
-      // Array.from(formData.entries()).forEach(([key, value]) => {
-      //   // eslint-disable-next-line no-console
-      //   console.log(key, value);
-      // });
-
       mutate(
         {
           uuid: album?.uuid,
           data,
+          mediaValue: defaultMedia,
         },
         {
           onSuccess: () => {
@@ -101,7 +89,7 @@ const AlbumForm: ForwardRefRenderFunction<FormHandle> = () => {
         },
       );
     },
-    [album],
+    [album, defaultMedia],
   );
 
   useEffect(() => {
@@ -119,7 +107,7 @@ const AlbumForm: ForwardRefRenderFunction<FormHandle> = () => {
   }, [isPending]);
 
   useEffect(() => {
-    if (album) {
+    if (album && categoryOptions?.length && userOptions?.length) {
       form.reset({
         isPublished: album.is_published,
         slug: album.slug,
@@ -128,13 +116,40 @@ const AlbumForm: ForwardRefRenderFunction<FormHandle> = () => {
         description: album.description,
         author: album.user_id,
       });
+
+      const thumbnail =
+        typeof album.thumbnail === "string"
+          ? [
+              {
+                id: album.uuid ?? "",
+                url: album.thumbnail,
+                isThumbnail: true,
+              },
+            ]
+          : [];
+
+      const images =
+        (album.images ?? [])
+          .filter(
+            (img): img is string =>
+              typeof img === "string" && img !== album.thumbnail,
+          )
+          .map((url) => ({
+            id: album.uuid ?? "",
+            url,
+            isThumbnail: false,
+          })) ?? [];
+
+      setDefaultMedia([...thumbnail, ...images]);
     }
-  }, [album]);
+  }, [album, categoryOptions, userOptions]);
+
+  console.log(defaultMedia);
 
   return (
     <form
       ref={formRef}
-      className="flex flex-col gap-4"
+      className="flex flex-col gap-4 pb-6"
       onSubmit={form.handleSubmit(onSubmit)}
     >
       {/* Published */}
@@ -265,33 +280,44 @@ const AlbumForm: ForwardRefRenderFunction<FormHandle> = () => {
         name="images"
         render={({ field, fieldState }) => (
           <DropzoneInput
-            defaultMedia={[
-              album?.thumbnail,
-              ...(album?.images ?? []).filter(
-                (img) => img !== album?.thumbnail,
-              ),
-            ]
-              .filter((url): url is string => typeof url === "string" && !!url)
-              .map((url) => ({ id: album?.uuid ?? "", url }))}
+            defaultMedia={defaultMedia}
             error={fieldState.error?.message}
             label="Album Images"
             type="image"
             onChange={(files) => field.onChange(files)}
-            onSelectThumbnail={(file) => {
+            onDeleteDefault={(id, url) => {
+              mutateDeleteImage(
+                {
+                  uuid: id,
+                  urlImage: url,
+                },
+                {
+                  onSuccess: () => {
+                    showToast({
+                      type: "success",
+                      title: "Delete Image Success",
+                      description: "Image deleted successfully",
+                    });
+                    refetch();
+                  },
+                  onError: (err: any) => {
+                    showToast({
+                      type: "danger",
+                      title: "Delete Image Failed",
+                      description: err.message || "Failed to delete image",
+                    });
+                  },
+                },
+              );
+            }}
+            onSelectThumbnail={(file, url) => {
               // Set thumbnail
-              form.setValue("thumbnail", file, { shouldValidate: true });
-
-              // Jika file yang dipilih thumbnail juga ada di images, hapus
-              const currentImages = form.getValues("images");
-
-              if (currentImages) {
-                const filteredImages = currentImages.filter(
-                  (img: File) => img !== file,
-                );
-
-                form.setValue("images", filteredImages, {
-                  shouldValidate: true,
-                });
+              if (file) {
+                form.setValue("thumbnail", file, { shouldValidate: true });
+              } else if (url) {
+                form.setValue("thumbnail", url, { shouldValidate: true });
+              } else {
+                form.setValue("thumbnail", null, { shouldValidate: true });
               }
             }}
           />

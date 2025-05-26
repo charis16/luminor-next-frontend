@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 
 export const AlbumData = dynamic(() => import("./album-data"), {
-  ssr: true,
+  ssr: false,
 });
 
 export const AlbumSearchInput = dynamic(() => import("./album-search-input"), {
@@ -19,5 +19,5 @@ export const ButtonEdit = dynamic(() => import("./button-edit"), {
 });
 
 export const SeoForm = dynamic(() => import("./form"), {
-  ssr: true,
+  ssr: false,
 });

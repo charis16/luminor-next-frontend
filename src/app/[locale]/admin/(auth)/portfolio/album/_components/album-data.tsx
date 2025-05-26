@@ -33,12 +33,14 @@ export default function AlbumDataPage() {
                 className="text-white/90 font-medium text-xl"
               />
             </CardHeader>
-            <Image
-              removeWrapper
-              alt={album.description}
-              className="z-0 w-full h-full object-cover"
-              src={album.thumbnail}
-            />
+            {album.thumbnail && (
+              <Image
+                removeWrapper
+                alt={album.description}
+                className="z-0 w-full h-full object-cover"
+                src={album.thumbnail}
+              />
+            )}
             <CardFooter className="absolute bg-black/40 bottom-0 z-10 border-t-1 border-default-600 dark:border-default-100">
               <div className="flex flex-grow gap-2 items-center">
                 <div className="flex items-center gap-3 text-white">

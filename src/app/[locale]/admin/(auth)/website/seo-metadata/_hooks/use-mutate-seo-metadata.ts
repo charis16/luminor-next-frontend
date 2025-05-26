@@ -51,7 +51,7 @@ export function useDeleteOgImageMetaData() {
         goFetcher.patch(`/api/admin/seo-metadata/${uuid}`, {}),
       );
 
-      if (err || !res?.data) {
+      if (err) {
         throw new Error(
           "Failed to delete og image website. Please try again later.",
         );

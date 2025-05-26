@@ -16,7 +16,7 @@ export default function Header() {
   const breadcrumbs = useBreadcrumb();
 
   return (
-    <header className="h-16 flex items-center justify-between px-4 border-b border-white/10 gap-4">
+    <header className="h-16 flex items-center justify-between px-4 border-b border-white/10 gap-4 ">
       <div className="flex items-center gap-4">
         <button
           className="text-gray-300 hover:text-white transition"

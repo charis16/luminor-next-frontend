@@ -7,11 +7,16 @@ import { goFetcher, safeRawCall } from "@/utils/api";
 interface MutateInput {
   uuid?: string;
   data: AlbumFormValues;
+  mediaValue: {
+    id?: string;
+    url: string;
+    isThumbnail?: boolean;
+  }[];
 }
 
 export function useMutateAlbum() {
   return useMutation({
-    mutationFn: async ({ uuid, data }: MutateInput) => {
+    mutationFn: async ({ uuid, data, mediaValue }: MutateInput) => {
       const formData = new FormData();
 
       formData.append(
@@ -24,10 +29,35 @@ export function useMutateAlbum() {
       formData.append("user_id", data.author);
       formData.append("is_published", data.isPublished ? "true" : "false");
 
-      formData.append("thumbnail", data.thumbnail);
+      if (data.thumbnail instanceof File) {
+        formData.append("thumbnail", data.thumbnail);
+      } else {
+        if (data.thumbnail) {
+          formData.append("thumbnail_url", data.thumbnail);
+        }
+        const mediaNonThumbnail = mediaValue.filter(
+          (media) =>
+            media.url !== data.thumbnail &&
+            media.url !== undefined &&
+            media.url !== null,
+        );
+
+        const mediaUrls = mediaNonThumbnail
+          .map((media) => media.url)
+          .filter((url) => url !== undefined && url !== null && url !== "");
+
+        if (mediaUrls.length > 0) {
+          formData.append("media_url", mediaUrls.join(","));
+        }
+      }
+
       if (Array.isArray(data.images)) {
         data.images.forEach((file, _) => {
-          if (file instanceof File) {
+          // Exclude thumbnail if it's the same File object
+          if (
+            file instanceof File &&
+            !(data.thumbnail instanceof File && file === data.thumbnail)
+          ) {
             formData.append("images", file);
           }
         });

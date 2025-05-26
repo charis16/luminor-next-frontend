@@ -7,16 +7,17 @@ import { Image } from "@heroui/image";
 import { cn } from "@heroui/theme";
 import { Modal, ModalBody, ModalContent } from "@heroui/modal";
 
-interface DefaultMedia {
+export interface DefaultMedia {
   id?: string;
   url: string;
+  isThumbnail?: boolean;
 }
 
 interface DropzoneProps {
   label?: string;
   onChange: (images: File[]) => void;
-  onSelectThumbnail?: (file: File | null) => void;
-  onDeleteDefault?: (id: string) => void;
+  onSelectThumbnail?: (file: File | null, url: string | null) => void;
+  onDeleteDefault?: (id: string, url?: string) => void;
   maxFiles?: number;
   type?: "image" | "video";
   error?: string;
@@ -48,16 +49,24 @@ export default function Dropzone({
     );
 
     setDefaultMedia(validDefaultMedia);
-    setPreviewUrls([
-      ...validDefaultMedia.map((m) => m.url),
-      ...files.map((f) => URL.createObjectURL(f)),
-    ]);
+    const filePreviews = files.map((f) => URL.createObjectURL(f));
+    const allUrls = [...validDefaultMedia.map((m) => m.url), ...filePreviews];
 
-    if (validDefaultMedia.length > 0) {
-      setThumbnailIndex(0);
-      onSelectThumbnail?.(null);
+    setPreviewUrls(allUrls);
+
+    const thumbnailMedia = validDefaultMedia.find((m) => m.isThumbnail);
+
+    if (thumbnailMedia) {
+      const index = allUrls.indexOf(thumbnailMedia.url);
+
+      if (index >= 0) {
+        setThumbnailIndex(index);
+        onSelectThumbnail?.(null, thumbnailMedia.url);
+      }
     }
-  }, [defaultMediaProp, files, deletedDefaultIds, onSelectThumbnail]);
+
+    setDeletedDefaultIds([]);
+  }, [defaultMediaProp, files, onSelectThumbnail]);
 
   const handleDrop = useCallback(
     (acceptedFiles: File[]) => {
@@ -85,33 +94,26 @@ export default function Dropzone({
 
   const handleSelectThumbnail = (index: number) => {
     setThumbnailIndex(index);
-    onSelectThumbnail?.(files[index - defaultMedia.length] ?? null);
+    const isFromFile = index >= defaultMedia.length;
+    const file = isFromFile ? files[index - defaultMedia.length] : null;
+    const url = previewUrls[index];
+
+    onSelectThumbnail?.(file, url);
   };
 
   const handleRemove = (index: number) => {
     const isFromDefault = index < defaultMedia.length;
-    const newPreviewUrls = [...previewUrls];
-
-    newPreviewUrls.splice(index, 1);
 
     if (isFromDefault) {
       const removed = defaultMedia[index];
 
-      const newDefaultMedia = defaultMedia.filter((_, i) => i !== index);
-
-      setDefaultMedia(newDefaultMedia);
-
-      const updatedUrls = [
-        ...newDefaultMedia.map((m) => m.url),
-        ...files.map((f) => URL.createObjectURL(f)),
-      ];
-
-      setPreviewUrls(updatedUrls);
-
+      // Tambahkan ID ke daftar yang akan dihapus
       if (removed.id) {
-        setDeletedDefaultIds((prev) => [...prev, removed.id as string]);
-        onDeleteDefault?.(removed.id);
+        setDeletedDefaultIds((prev) => [...prev, removed.id!]);
+        onDeleteDefault?.(removed.id, removed.url);
       }
+
+      // Tidak perlu setDefaultMedia manual, cukup andalkan useEffect
     } else {
       const fileIndex = index - defaultMedia.length;
       const newFiles = [...files];
@@ -119,20 +121,12 @@ export default function Dropzone({
       newFiles.splice(fileIndex, 1);
       setFiles(newFiles);
       onChange(newFiles);
-
-      const updatedUrls = [
-        ...defaultMedia.map((m) => m.url),
-        ...newFiles.map((f) => URL.createObjectURL(f)),
-      ];
-
-      setPreviewUrls(updatedUrls);
     }
 
-    setPreviewUrls(newPreviewUrls);
-
+    // Handle thumbnail reset
     if (thumbnailIndex === index) {
       setThumbnailIndex(null);
-      onSelectThumbnail?.(null);
+      onSelectThumbnail?.(null, null);
     } else if (thumbnailIndex !== null && index < thumbnailIndex) {
       setThumbnailIndex((prev) => (prev ?? 0) - 1);
     }
@@ -140,7 +134,6 @@ export default function Dropzone({
 
   return (
     <>
-      {" "}
       <div className="flex flex-col gap-2">
         {label && (
           <label
@@ -155,7 +148,7 @@ export default function Dropzone({
 
         <div
           className={cn(
-            "rounded-md p-4 group relative",
+            "rounded-md group relative",
             error
               ? "border-danger bg-danger-50 hover:bg-danger-100 transition-all"
               : "border-[hsl(var(--heroui-default-300))]",
@@ -250,32 +243,6 @@ export default function Dropzone({
 
             {error && <p className="mt-2 text-tiny text-danger">{error}</p>}
           </div>
-
-          {/* {zoomedImage && (
-            <div
-              className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm"
-              role="button"
-              tabIndex={0}
-              onClick={() => setZoomedImage(null)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") setZoomedImage(null);
-              }}
-            >
-              <Image
-                alt="Zoomed"
-                className="max-w-[90vw] max-h-[90vh] rounded-md shadow-lg"
-                src={zoomedImage}
-              />
-              <Button
-                isIconOnly
-                aria-label="Close"
-                className="absolute top-2 right-2 bg-black/60 hover:bg-black/80 text-white rounded-full p-1"
-                onPress={() => setZoomedImage(null)}
-              >
-                <X />
-              </Button>
-            </div>
-          )} */}
         </div>
       </div>
       <Modal

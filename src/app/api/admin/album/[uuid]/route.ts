@@ -53,3 +53,18 @@ export async function PUT(
     retryHeaders: clone2.getHeaders?.() ?? {},
   });
 }
+
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: Promise<{ uuid: string }> },
+) {
+  const { uuid } = await params;
+
+  return fetchWithAutoRefresh({
+    req,
+    input: `${process.env.API_BASE_URL}/v1/api/albums/${uuid}`,
+    init: {
+      method: "DELETE",
+    },
+  });
+}

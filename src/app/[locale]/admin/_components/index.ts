@@ -14,7 +14,7 @@ export const ButtonBack = dynamic(() => import("./button-back"), {
 
 export const DropzoneInput = dynamic(
   () => import("./dropzone").then((mod) => mod.default), // named export
-  { ssr: true },
+  { ssr: false },
 );
 
 export const InputSearch = dynamic(() => import("./input-search"), {

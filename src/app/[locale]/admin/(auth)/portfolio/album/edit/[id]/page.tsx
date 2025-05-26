@@ -36,9 +36,9 @@ export default async function EditPage({ params }: PageProps) {
         <div className="flex flex-col gap-6">
           <TitlePage
             withBackButton
-            description="Easily create and customize your faq"
-            title="Edit User"
-            urlBack={"/admin/website/faq"}
+            description="Edit and manage your album details easily"
+            title="Edit Album"
+            urlBack={"/admin/admin/portfolio/album"}
           >
             <ButtonSave />
           </TitlePage>

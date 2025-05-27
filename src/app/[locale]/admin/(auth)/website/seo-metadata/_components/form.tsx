@@ -67,7 +67,7 @@ export default function SeoForm() {
               ogImage: "",
             });
             onSetIsSubmitting(false);
-            onRefetch;
+            onRefetch();
 
             setResetKey(+Date.now()); // Reset key to force re-render if needed
             showToast({

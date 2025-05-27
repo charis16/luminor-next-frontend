@@ -2,7 +2,13 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
-import { MutableRefObject, useCallback, useEffect, useRef } from "react";
+import {
+  MutableRefObject,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 import { FormHandle, SeoMetaDataFormValues, SeoMetaDataSchema } from "../_type";
 import { useSeoMetadataContext } from "../_context";
@@ -20,6 +26,7 @@ import InputTextArea from "@/app/[locale]/admin/_components/input-textarea";
 import { showToast } from "@/utils/show-toast";
 
 export default function SeoForm() {
+  const [resetKey, setResetKey] = useState(+Date.now());
   const {
     formRef: sharedFormRef,
     data: website,
@@ -53,10 +60,16 @@ export default function SeoForm() {
         },
         {
           onSuccess: () => {
-            form.reset();
+            form.reset({
+              metaDescription: "",
+              metaKeywords: [],
+              metaTitle: "",
+              ogImage: "",
+            });
             onSetIsSubmitting(false);
             onRefetch;
 
+            setResetKey(+Date.now()); // Reset key to force re-render if needed
             showToast({
               type: "success",
               title: `${website ? "Edit" : "Create"} Seo Success`,
@@ -165,6 +178,7 @@ export default function SeoForm() {
             label="Photo"
             maxFiles={1}
             maxSize={2}
+            resetKey={resetKey}
             type="image"
             onChange={(files) => {
               const file = files?.[0];

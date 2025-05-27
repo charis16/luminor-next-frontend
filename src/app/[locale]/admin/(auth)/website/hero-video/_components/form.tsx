@@ -2,8 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
-import { MutableRefObject, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { MutableRefObject, useEffect, useRef, useState } from "react";
 
 import {
   FormHandle,
@@ -20,7 +19,7 @@ import { DropzoneInput } from "@/app/[locale]/admin/_components";
 import { showToast } from "@/utils/show-toast";
 
 export default function Form() {
-  const router = useRouter();
+  const [resetKey, setResetKey] = useState(+Date.now());
   const form = useForm<HeroVideoSchemaFormValue>({
     resolver: zodResolver(HeroVideoSchema),
     defaultValues: {
@@ -60,7 +59,10 @@ export default function Form() {
       },
       {
         onSuccess: () => {
-          form.reset();
+          form.reset({
+            videoMobile: "",
+            videoWeb: "",
+          });
           onSetIsSubmitting(false);
           showToast({
             type: "success",
@@ -68,7 +70,8 @@ export default function Form() {
             description: `Hero Video ${heroVideo ? "edited" : "created"} successfully`,
           });
 
-          router.refresh();
+          setResetKey(+Date.now()); // Reset key to force re-render if needed
+          onRefetch();
         },
         onError: (error) => {
           showToast({
@@ -108,11 +111,13 @@ export default function Form() {
         name="videoWeb"
         render={({ field }) => (
           <DropzoneInput
+            key="videoWeb"
             defaultMedia={[
               { id: heroVideo?.uuid, url: heroVideo?.video_web || "" },
             ]}
             label="Video (Web Version)"
             maxFiles={1}
+            resetKey={resetKey}
             type="video"
             onChange={(files) => {
               field.onChange(files);
@@ -150,6 +155,7 @@ export default function Form() {
       />
 
       <Controller
+        key="videoMobile"
         control={form.control}
         name="videoMobile"
         render={({ field }) => (
@@ -159,6 +165,7 @@ export default function Form() {
             ]}
             label="Video (Mobile Version)"
             maxFiles={1}
+            resetKey={resetKey}
             type="video"
             onChange={(files) => {
               field.onChange(files);

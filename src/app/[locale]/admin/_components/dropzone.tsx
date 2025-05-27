@@ -23,6 +23,7 @@ interface DropzoneProps {
   error?: string;
   maxSize?: number;
   defaultMedia?: DefaultMedia[];
+  resetKey?: string | number;
 }
 
 export default function Dropzone({
@@ -35,6 +36,7 @@ export default function Dropzone({
   error,
   maxSize,
   defaultMedia: defaultMediaProp = [],
+  resetKey,
 }: DropzoneProps) {
   const [defaultMedia, setDefaultMedia] = useState<DefaultMedia[]>([]);
   const [files, setFiles] = useState<File[]>([]);
@@ -48,7 +50,10 @@ export default function Dropzone({
       (m) => !!m.url && !deletedDefaultIds.includes(m.id || ""),
     );
 
+    // Jangan reset files! Hanya update defaultMedia
     setDefaultMedia(validDefaultMedia);
+
+    // Buat preview baru berdasarkan default + files yang sudah ada
     const filePreviews = files.map((f) => URL.createObjectURL(f));
     const allUrls = [...validDefaultMedia.map((m) => m.url), ...filePreviews];
 
@@ -65,6 +70,7 @@ export default function Dropzone({
       }
     }
 
+    // Bersihkan daftar ID default yang sudah dihapus
     setDeletedDefaultIds([]);
   }, [defaultMediaProp, files, onSelectThumbnail]);
 
@@ -131,6 +137,13 @@ export default function Dropzone({
       setThumbnailIndex((prev) => (prev ?? 0) - 1);
     }
   };
+
+  useEffect(() => {
+    setFiles([]);
+    setPreviewUrls([]);
+    setThumbnailIndex(null);
+    setDeletedDefaultIds([]);
+  }, [resetKey]);
 
   return (
     <>

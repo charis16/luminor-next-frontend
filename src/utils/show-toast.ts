@@ -37,6 +37,5 @@ export function showToast({
     description: description,
     color: colorMap[type],
     timeout,
-    shouldShowTimeoutProgress: true,
   });
 }

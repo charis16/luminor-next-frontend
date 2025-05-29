@@ -1,11 +1,7 @@
 /** @type {import('next').NextConfig} */
-const createBundleAnalyzer = require("@next/bundle-analyzer");
 const createNextIntlPlugin = require("next-intl/plugin");
 
 const withNextIntl = createNextIntlPlugin();
-const withBundleAnalyzer = createBundleAnalyzer({
-  enabled: process.env.ANALYZE === "true",
-});
 
 console.log("💡 BASE_PATH:", process.env.NEXT_PUBLIC_BASE_PATH);
 
@@ -33,4 +29,4 @@ const nextConfig = {
   },
 };
 
-module.exports = withBundleAnalyzer(withNextIntl(nextConfig));
+module.exports = withNextIntl(nextConfig);

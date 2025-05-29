@@ -18,6 +18,10 @@ COPY ./src .
 
 # Build dengan konfigurasi memory lebih besar
 ENV NODE_OPTIONS="--max-old-space-size=2048"
+
+# Bersihkan build sebelumnya (jika ada)
+RUN rm -rf .next
+
 RUN yarn build
 
 # Stage 2: Production image

@@ -5,7 +5,6 @@ FROM node:18-alpine AS builder
 WORKDIR /app
 
 # Set environment variables
-ENV NODE_ENV=production
 ENV NODE_OPTIONS="--max-old-space-size=2048"
 
 # Copy env file lebih awal (dibaca saat build)

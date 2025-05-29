@@ -7,6 +7,8 @@ const withBundleAnalyzer = createBundleAnalyzer({
   enabled: process.env.ANALYZE === "true",
 });
 
+console.log("💡 BASE_PATH:", process.env.NEXT_PUBLIC_BASE_PATH);
+
 const nextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,

@@ -12,7 +12,6 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { AboutUsFormValues, AboutUsSchema, FormHandle } from "../_type";
-import { AlbumFormHandle } from "../../../portfolio/album/_type";
 import { useAboutUsContext } from "../_context";
 import { useMutateAboutUs } from "../_hooks/use-mutate-about-us";
 
@@ -79,7 +78,7 @@ const AboutUsForm: ForwardRefRenderFunction<FormHandle> = () => {
   useEffect(() => {
     if (sharedFormRef) {
       if (sharedFormRef && "current" in sharedFormRef) {
-        (sharedFormRef as MutableRefObject<AlbumFormHandle>).current = {
+        (sharedFormRef as MutableRefObject<FormHandle>).current = {
           submit: () => formRef.current?.requestSubmit(),
         };
       }

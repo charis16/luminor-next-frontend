@@ -4,15 +4,9 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "127.0.0.1:3000:3000" # Exposing Next.js app on port 3000
-    networks:
-      - luminor_network
+      - "127.0.0.1:3000:3000" # cukup agar bisa diakses oleh Caddy di host
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      test: [ "CMD", "curl", "-f", "http://localhost:3000" ]
       interval: 10s
       timeout: 3s
       retries: 5
-
-networks:
-  luminor_network:
-    external: true

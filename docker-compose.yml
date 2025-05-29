@@ -4,10 +4,10 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "3000:3000" # Exposing Next.js app on port 3000
+      - "127.0.0.1:3000:3000" # Exposing Next.js app on port 3000
     networks:
       - luminor_network
 
 networks:
   luminor_network:
-    driver: bridge
+    external: true

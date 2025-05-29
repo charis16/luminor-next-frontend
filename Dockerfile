@@ -7,13 +7,15 @@ WORKDIR /app
 COPY ./src/package.json ./src/yarn.lock ./
 
 # Install dependencies (using cached layer if possible)
-RUN yarn install --frozen-lockfile
+
 
 # Copy entire source code
 COPY ./src .
 
 # Build Next.js app with standalone output
 ENV NODE_OPTIONS="--max-old-space-size=2048"
+RUN yarn cache clean
+RUN yarn install --frozen-lockfile
 RUN yarn build
 
 # Stage 2: Production image (minimal)
@@ -25,6 +27,7 @@ ENV NODE_ENV=production
 ENV PORT=3000
 
 # Copy only the necessary files from builder
+COPY ./src/.env .env
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public

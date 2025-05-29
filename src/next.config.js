@@ -10,7 +10,6 @@ const withBundleAnalyzer = createBundleAnalyzer({
 const nextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
-  swcMinify: true,
   output: "standalone",
   images: {
     remotePatterns: [

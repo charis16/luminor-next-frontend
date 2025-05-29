@@ -10,6 +10,7 @@ const withBundleAnalyzer = createBundleAnalyzer({
 const nextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
+  basePath: process.env.NEXT_PUBLIC_BASE_PATH || "",
   output: "standalone",
   images: {
     remotePatterns: [

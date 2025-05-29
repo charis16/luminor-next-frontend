@@ -13,6 +13,7 @@ RUN yarn install --frozen-lockfile
 COPY ./src .
 
 # Build Next.js app with standalone output
+ENV NODE_OPTIONS="--max-old-space-size=2048"
 RUN yarn build
 
 # Stage 2: Production image (minimal)

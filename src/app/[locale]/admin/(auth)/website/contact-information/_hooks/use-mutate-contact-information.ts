@@ -23,8 +23,6 @@ export function useMutateContactInformation() {
           data: JSON.stringify({
             address: data.address,
             phone_number: data.phoneNumber,
-            latitude: data.latitude.toString(),
-            longitude: data.longitude.toString(),
             url_instagram: data.urlInstagram,
             url_tiktok: data.urlTikTok,
             email: data.email,

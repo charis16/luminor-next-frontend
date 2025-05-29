@@ -49,6 +49,7 @@ export function useAlbumLists(
 ) {
   return useQuery({
     ...getListsOptions(page, search, limit),
+    staleTime: 1000 * 60 * 5,
     placeholderData: (prev) => prev,
     enabled: isMounted,
   });

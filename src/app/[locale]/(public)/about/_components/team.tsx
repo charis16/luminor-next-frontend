@@ -11,7 +11,7 @@ export default function Team() {
           isBlurred={false}
           radius="none"
           removeWrapper={true}
-          src={"https://fakeimg.pl/1920x1080"} // Ganti dengan URL asli
+          src="/images/team.webp" // Pastikan file ada di public/images
         />
       </div>
 

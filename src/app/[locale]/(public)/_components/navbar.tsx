@@ -13,6 +13,8 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Image } from "@heroui/image";
 
+import { useWebsites } from "../(home)/_hooks/use-website";
+
 import { InstagramIcon, TikTokIcon } from "./icons";
 
 import { siteConfigPublic } from "@/config/site";
@@ -21,6 +23,7 @@ export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const { data } = useWebsites();
 
   // Menunggu animasi sebelum menghapus dari DOM
   useEffect(() => {
@@ -109,14 +112,16 @@ export const Navbar = () => {
             <Link
               isExternal
               aria-label="Instagram"
-              href={siteConfigPublic.links.instagram}
+              href={
+                data?.data?.url_instagram || siteConfigPublic.links.instagram
+              }
             >
               <InstagramIcon />
             </Link>
             <Link
               isExternal
               aria-label="TikTok"
-              href={siteConfigPublic.links.tiktok}
+              href={data?.data?.url_tiktok || siteConfigPublic.links.tiktok}
             >
               <TikTokIcon />
             </Link>
@@ -148,7 +153,7 @@ export const Navbar = () => {
                     <Link
                       className="text-white transition-colors hover:text-gray-400"
                       href={item.href}
-                      onClick={() => setIsMenuOpen(false)}
+                      onPress={() => setIsMenuOpen(false)}
                     >
                       {item.label}
                     </Link>
@@ -161,16 +166,19 @@ export const Navbar = () => {
                 <Link
                   isExternal
                   aria-label="Instagram"
-                  href={siteConfigPublic.links.instagram}
-                  onClick={() => setIsMenuOpen(false)}
+                  href={
+                    data?.data?.url_instagram ||
+                    siteConfigPublic.links.instagram
+                  }
+                  onPress={() => setIsMenuOpen(false)}
                 >
                   <InstagramIcon className="text-white w-6 h-6 hover:text-gray-400 transition-colors" />
                 </Link>
                 <Link
                   isExternal
                   aria-label="TikTok"
-                  href={siteConfigPublic.links.tiktok}
-                  onClick={() => setIsMenuOpen(false)}
+                  href={data?.data?.url_tiktok || siteConfigPublic.links.tiktok}
+                  onPress={() => setIsMenuOpen(false)}
                 >
                   <TikTokIcon className="text-white w-6 h-6 hover:text-gray-400 transition-colors" />
                 </Link>

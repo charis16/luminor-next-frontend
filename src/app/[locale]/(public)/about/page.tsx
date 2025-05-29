@@ -11,10 +11,10 @@ export default function AboutPage() {
         <h1 className="text-xl md:text-3xl font-bold uppercase text-gray-200">
           Every Frame Tells a Story
         </h1>
-        <h2 className="text-4xl md:text-5xl font-extrabold uppercase text-white mt-2">
+        <h2 className="text-md md:text-5xl font-extrabold uppercase text-white mt-2">
           Immortalizing Every Moment
         </h2>
-        <p className="text-gray-400 my-6 max-w-7xl text-lg md:text-xl ">
+        <p className="text-gray-400 my-6 max-w-7xl text-sm md:text-xl ">
           Luminor is not just a photography vendor, it is a team of passionate
           professionals dedicated to capturing the essence of every moment with
           artistic precision. We specialize in transforming stories into

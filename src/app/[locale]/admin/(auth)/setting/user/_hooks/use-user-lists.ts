@@ -49,6 +49,7 @@ export function useUserLists(
   isMounted = true,
 ) {
   return useQuery({
+    staleTime: 1000 * 60 * 5,
     ...getUserListsOptions(page, search, limit),
     placeholderData: (prev) => prev,
     enabled: isMounted,

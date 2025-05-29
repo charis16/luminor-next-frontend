@@ -324,11 +324,6 @@ const Form: ForwardRefRenderFunction<FormHandle> = () => {
             field={field}
             label="Url Instagram"
             placeholder="www.instagram.com/luminor"
-            startContent={
-              <div className="pointer-events-none flex items-center">
-                <span className="text-default-400 text-small">https://</span>
-              </div>
-            }
           />
         )}
       />
@@ -342,11 +337,6 @@ const Form: ForwardRefRenderFunction<FormHandle> = () => {
             field={field}
             label="Url TikTok"
             placeholder="www.tiktok.com/@luminor"
-            startContent={
-              <div className="pointer-events-none flex items-center">
-                <span className="text-default-400 text-small">https://</span>
-              </div>
-            }
           />
         )}
       />
@@ -360,11 +350,6 @@ const Form: ForwardRefRenderFunction<FormHandle> = () => {
             field={field}
             label="Url Facebook"
             placeholder="www.facebook.com/luminor"
-            startContent={
-              <div className="pointer-events-none flex items-center">
-                <span className="text-default-400 text-small">https://</span>
-              </div>
-            }
           />
         )}
       />

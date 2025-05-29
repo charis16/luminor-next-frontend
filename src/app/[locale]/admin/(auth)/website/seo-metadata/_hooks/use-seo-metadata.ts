@@ -33,6 +33,7 @@ export function getOptions(
 // For client
 export function useSeoMetaDataLists(isMounted = true) {
   return useQuery({
+    staleTime: 1000 * 60 * 5,
     ...getOptions(),
     placeholderData: (prev) => prev,
     enabled: isMounted,

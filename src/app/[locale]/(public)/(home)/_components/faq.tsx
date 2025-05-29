@@ -6,7 +6,7 @@ import { ChevronRight, MapPin, Phone } from "lucide-react";
 
 import { useWebsites } from "../_hooks/use-website";
 
-export default function Contact() {
+export default function Faq() {
   const { data } = useWebsites();
   const [isInView, setIsInView] = useState(false);
 

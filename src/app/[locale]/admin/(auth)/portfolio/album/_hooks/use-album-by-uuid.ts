@@ -38,6 +38,7 @@ export function getAlbumByUUIDOptions(
 export function useAlbumByUUID(uuid?: string) {
   return useQuery({
     ...getAlbumByUUIDOptions(uuid || ""),
+    staleTime: 1000 * 60 * 5,
     enabled: !!uuid,
     placeholderData: (prev) => prev,
   });

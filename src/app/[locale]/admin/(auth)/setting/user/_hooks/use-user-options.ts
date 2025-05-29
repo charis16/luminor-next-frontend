@@ -35,6 +35,7 @@ export function getUserOptions(
 // Client-side hook
 export function useUserOption() {
   return useQuery({
+    staleTime: 1000 * 60 * 5,
     ...getUserOptions(),
     placeholderData: (prev) => prev,
   });

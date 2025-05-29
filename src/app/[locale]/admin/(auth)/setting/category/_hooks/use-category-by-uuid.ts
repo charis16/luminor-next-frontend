@@ -38,6 +38,7 @@ export function getCategoryByUUIDOptions(
 export function useCategoryByUUID(uuid?: string) {
   return useQuery({
     ...getCategoryByUUIDOptions(uuid || ""),
+    staleTime: 1000 * 60 * 5,
     enabled: !!uuid,
     placeholderData: (prev) => prev,
   });

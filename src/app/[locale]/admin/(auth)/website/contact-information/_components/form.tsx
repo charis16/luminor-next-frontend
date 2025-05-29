@@ -28,8 +28,6 @@ export default function Form() {
     defaultValues: {
       address: "",
       phoneNumber: "",
-      latitude: undefined,
-      longitude: undefined,
       email: "",
       urlInstagram: "",
       urlTikTok: "",
@@ -96,8 +94,6 @@ export default function Form() {
       form.reset({
         address: contactInformationData.address,
         phoneNumber: contactInformationData.phone_number,
-        latitude: +contactInformationData.latitude,
-        longitude: +contactInformationData.longitude,
         email: contactInformationData.email,
         urlInstagram: contactInformationData.url_instagram,
         urlTikTok: contactInformationData.url_tiktok,
@@ -158,50 +154,6 @@ export default function Form() {
 
       <Controller
         control={form.control}
-        name="latitude"
-        render={({ field, fieldState }) => (
-          <InputText
-            error={fieldState.error}
-            field={{
-              ...field,
-              value: field.value ?? "",
-              onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
-                const value = e.target.value;
-
-                field.onChange(value === "" ? undefined : Number(value));
-              },
-            }}
-            label="Latitude"
-            placeholder="Ex: -6.200000"
-            type="number"
-          />
-        )}
-      />
-
-      <Controller
-        control={form.control}
-        name="longitude"
-        render={({ field, fieldState }) => (
-          <InputText
-            error={fieldState.error}
-            field={{
-              ...field,
-              value: field.value ?? "",
-              onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
-                const value = e.target.value;
-
-                field.onChange(value === "" ? undefined : Number(value));
-              },
-            }}
-            label="Longitude"
-            placeholder="Ex: -6.200000"
-            type="number"
-          />
-        )}
-      />
-
-      <Controller
-        control={form.control}
         name="urlInstagram"
         render={({ field, fieldState }) => (
           <InputText
@@ -209,11 +161,6 @@ export default function Form() {
             field={field}
             label="Url Instagram"
             placeholder="www.instagram.com/luminor"
-            startContent={
-              <div className="pointer-events-none flex items-center">
-                <span className="text-default-400 text-small">https://</span>
-              </div>
-            }
           />
         )}
       />
@@ -227,11 +174,6 @@ export default function Form() {
             field={field}
             label="Url TikTok"
             placeholder="www.tiktok.com/@luminor"
-            startContent={
-              <div className="pointer-events-none flex items-center">
-                <span className="text-default-400 text-small">https://</span>
-              </div>
-            }
           />
         )}
       />

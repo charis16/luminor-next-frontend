@@ -1,21 +1,18 @@
 import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 
 import { goFetcher } from "@/utils/api";
-import { AboutUsDetailResponse } from "@/types/about-us";
+import { AlbumLatestResponse } from "@/types/website";
 
 export function getQueryKey() {
-  return ["about-us-metadata"];
+  return ["latest-albums"];
 }
 
 export async function fetchInformation(
   headers?: Record<string, string>,
-): Promise<AboutUsDetailResponse> {
-  const res = await goFetcher.get<AboutUsDetailResponse>(
-    `/api/admin/about-us`,
-    {
-      headers,
-    },
-  );
+): Promise<AlbumLatestResponse> {
+  const res = await goFetcher.get<AlbumLatestResponse>(`/api/album`, {
+    headers,
+  });
 
   return res;
 }
@@ -23,7 +20,7 @@ export async function fetchInformation(
 // For SSR
 export function getOptions(
   headers?: Record<string, string>,
-): UseQueryOptions<AboutUsDetailResponse, Error> {
+): UseQueryOptions<AlbumLatestResponse, Error> {
   return {
     queryKey: getQueryKey(),
     queryFn: () => fetchInformation(headers),
@@ -31,11 +28,10 @@ export function getOptions(
 }
 
 // For client
-export function useAboutUse(isMounted = true) {
+export function useAlbums() {
   return useQuery({
     ...getOptions(),
     staleTime: 1000 * 60 * 5,
     placeholderData: (prev) => prev,
-    enabled: isMounted,
   });
 }

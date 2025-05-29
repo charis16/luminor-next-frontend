@@ -4,6 +4,8 @@ import { motion } from "framer-motion";
 import { Image } from "@heroui/image";
 import NextImage from "next/image";
 
+import { useAlbums } from "../_hooks/use-album";
+
 export default function LatestRecent() {
   return (
     <div className="w-full min-h-screen flex items-center">
@@ -21,6 +23,7 @@ export default function LatestRecent() {
 
 // **Grid Komponen dengan Efek Slide Up Lebih Cepat**
 const LatestWork = () => {
+  const { data } = useAlbums();
   // Variants animasi per item grid
   const itemVariants = {
     hidden: { opacity: 0, y: 30 }, // **Lebih dekat supaya muncul lebih cepat**
@@ -37,9 +40,9 @@ const LatestWork = () => {
         Our Latest Work
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 w-full">
-        {Array.from({ length: 16 }, (_, index) => (
+        {data?.data.map((album) => (
           <motion.div
-            key={index}
+            key={album.uuid}
             className="relative flex flex-col w-full cursor-pointer hover:brightness-100 brightness-75"
             initial="hidden"
             variants={itemVariants}
@@ -49,17 +52,19 @@ const LatestWork = () => {
             <div className="relative w-full aspect-[4/3] min-h-[250px] md:min-h-[350px]">
               <Image
                 fill
-                alt={`Work ${index + 1}`}
+                alt={album.slug}
                 as={NextImage}
                 className="absolute inset-0 w-full h-full object-cover"
                 radius="none"
                 removeWrapper={true}
-                src={"https://fakeimg.pl/1200x900"}
+                src={album.thumbnail}
               />
             </div>
-            <p className="absolute bottom-5 left-5 text-lg font-medium shrink-0 z-10 text-white">
-              Work {index + 1}
-            </p>
+            <div className="absolute bottom-0 left-0 right-0 bg-black/60  px-3 py-2 z-10">
+              <p className="text-lg font-medium text-white m-0">
+                {album.title}
+              </p>
+            </div>
           </motion.div>
         ))}
       </div>

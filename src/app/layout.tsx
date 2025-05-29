@@ -2,36 +2,58 @@ import "quill/dist/quill.snow.css";
 import "@/styles/globals.css";
 import { Metadata, Viewport } from "next";
 import clsx from "clsx";
-import { ThemeProvider as NextThemesProvider } from "next-themes";
+
+import Providers from "./providers";
 
 import { fontSans } from "@/config/fonts";
-import { siteConfigPublic } from "@/config/site";
+import { WebsiteMetadataResponse } from "@/types/website";
 
-export const metadata: Metadata = {
-  title: {
-    default: siteConfigPublic.name,
-    template: `%s - ${siteConfigPublic.name}`,
-  },
-  description: siteConfigPublic.description,
-  icons: { icon: "/favicon.ico" },
-  twitter: {
-    card: "summary_large_image",
-    title: siteConfigPublic.name,
-    description: siteConfigPublic.description,
-    images: ["/og.png"],
-  },
-  openGraph: {
-    title: siteConfigPublic.name,
-    description: siteConfigPublic.description,
-    images: ["/og.png"],
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/website`, {
+    cache: "no-store", // hindari cache supaya data selalu fresh
+  });
+
+  const { data }: WebsiteMetadataResponse = await res.json();
+
+  const metaDesc =
+    data.meta_desc ||
+    "Luminor Photography is a professional photography service specializing in capturing moments that matter. From weddings to corporate events, we bring your vision to life.";
+
+  const metaName = data.meta_title || "Luminor Photography";
+
+  const keywords = data.meta_keyword?.split(",").map((kw) => kw.trim()) ?? [
+    "photography",
+    "wedding photographer",
+    "event photographer",
+  ];
+
+  return {
+    title: {
+      default: "Luminor Photography",
+      template: `%s - Luminor Photography`,
+    },
+    keywords,
+    description:
+      data.meta_desc ||
+      "Luminor Photography is a professional photography service specializing in capturing moments that matter. From weddings to corporate events, we bring your vision to life.",
+    openGraph: {
+      title: metaName,
+      description: metaDesc,
+      images: [data.og_image ?? "/og.png"],
+    },
+    twitter: {
+      title: metaName,
+      description: metaDesc,
+      images: [data.og_image ?? "/og.png"],
+    },
+  };
+}
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
-  userScalable: false,
+  userScalable: true,
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "white" },
     { media: "(prefers-color-scheme: dark)", color: "black" },
@@ -54,9 +76,9 @@ export default function RootLayout({
           fontSans.variable,
         )}
       >
-        <NextThemesProvider attribute="class" forcedTheme="dark">
+        <Providers themeProps={{ attribute: "class", forcedTheme: "dark" }}>
           {children}
-        </NextThemesProvider>
+        </Providers>
       </body>
     </html>
   );

@@ -2,7 +2,7 @@ import "quill/dist/quill.snow.css";
 import "@/styles/globals.css";
 import { NextIntlClientProvider } from "next-intl";
 
-import Providers from "./providers";
+import Providers from "../providers";
 
 export default async function LocaleLayout({
   children,

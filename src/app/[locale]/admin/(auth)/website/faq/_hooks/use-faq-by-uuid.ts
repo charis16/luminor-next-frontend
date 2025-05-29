@@ -37,6 +37,7 @@ export function getFaqByUUIDOptions(
 // Client-side hook
 export function useFaqByUUID(uuid?: string) {
   return useQuery({
+    staleTime: 1000 * 60 * 5,
     ...getFaqByUUIDOptions(uuid || ""),
     enabled: !!uuid,
     placeholderData: (prev) => prev,

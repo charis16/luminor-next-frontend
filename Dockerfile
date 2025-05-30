@@ -31,6 +31,8 @@ FROM node:18-alpine AS runner
 # Set working directory
 WORKDIR /app
 
+RUN apk add --no-cache curl
+
 # Set production environment
 ENV NODE_ENV=production
 ENV PORT=3000

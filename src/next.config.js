@@ -3,8 +3,6 @@ const createNextIntlPlugin = require("next-intl/plugin");
 
 const withNextIntl = createNextIntlPlugin();
 
-console.log("💡 BASE_PATH:", process.env.NEXT_PUBLIC_BASE_PATH);
-
 const nextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,

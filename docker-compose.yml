@@ -3,6 +3,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_BASE_PATH: "/luminor"
     ports:
       - "127.0.0.1:3000:3000" # cukup agar bisa diakses oleh Caddy di host
     healthcheck:

@@ -1,10 +1,14 @@
 services:
   app:
+    container_name: luminor-app
     build:
       context: .
       dockerfile: Dockerfile
       args:
         NEXT_PUBLIC_BASE_PATH: "/luminor"
+    restart: unless-stopped
+    env_file:
+      - ./src/.env
     ports:
       - "127.0.0.1:3000:3000" # cukup agar bisa diakses oleh Caddy di host
     healthcheck:

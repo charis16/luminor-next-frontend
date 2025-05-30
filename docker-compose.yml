@@ -1,6 +1,7 @@
 services:
   app:
     container_name: luminor-app
+    image: luminor-next-frontend_app:v1.0.0
     build:
       context: .
       dockerfile: Dockerfile

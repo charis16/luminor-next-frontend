@@ -3,12 +3,13 @@
 import { motion } from "framer-motion";
 import { Image } from "@heroui/image";
 import NextImage from "next/image";
+import { ImageIcon } from "lucide-react";
 
 import { useAlbums } from "../_hooks/use-album";
 
 export default function LatestRecent() {
   return (
-    <div className="w-full min-h-screen flex items-center">
+    <div className="w-full flex items-center">
       <motion.div
         animate={{ y: 0 }}
         className="w-full"
@@ -39,35 +40,48 @@ const LatestWork = () => {
       <h2 className="sticky top-20 pl-6 text-3xl md:text-4xl font-bold text-white z-20">
         Our Latest Work
       </h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 w-full">
-        {data?.data.map((album) => (
-          <motion.div
-            key={album.uuid}
-            className="relative flex flex-col w-full cursor-pointer hover:brightness-100 brightness-75"
-            initial="hidden"
-            variants={itemVariants}
-            viewport={{ once: false, amount: 0.05 }} // **Lebih sensitif, langsung muncul**
-            whileInView="visible"
-          >
-            <div className="relative w-full aspect-[4/3] min-h-[250px] md:min-h-[350px]">
-              <Image
-                fill
-                alt={album.slug}
-                as={NextImage}
-                className="absolute inset-0 w-full h-full object-cover"
-                radius="none"
-                removeWrapper={true}
-                src={album.thumbnail}
-              />
-            </div>
-            <div className="absolute bottom-0 left-0 right-0 bg-black/60  px-3 py-2 z-10">
-              <p className="text-lg font-medium text-white m-0">
-                {album.title}
-              </p>
-            </div>
-          </motion.div>
-        ))}
-      </div>
+      {data?.data && data.data.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 w-full">
+          {data.data.map((album) => (
+            <motion.div
+              key={album.uuid}
+              className="relative flex flex-col w-full cursor-pointer hover:brightness-100 brightness-75"
+              initial="hidden"
+              variants={itemVariants}
+              viewport={{ once: false, amount: 0.05 }}
+              whileInView="visible"
+            >
+              <div className="relative w-full aspect-[4/3] min-h-[250px] md:min-h-[350px]">
+                <Image
+                  fill
+                  alt={album.slug}
+                  as={NextImage}
+                  className="absolute inset-0 w-full h-full object-cover"
+                  radius="none"
+                  removeWrapper={true}
+                  src={album.thumbnail}
+                />
+              </div>
+              <div className="absolute bottom-0 left-0 right-0 bg-black/60  px-3 py-2 z-10">
+                <p className="text-lg font-medium text-white m-0">
+                  {album.title}
+                </p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      ) : (
+        <div className="flex flex-col items-center justify-center py-24 px-4 text-center space-y-4">
+          <div className="w-20 h-20 rounded-full bg-muted/10 flex items-center justify-center">
+            <ImageIcon className="text-muted-foreground size-10" />
+          </div>
+          <h2 className="text-3xl font-semibold text-white">No Albums Yet</h2>
+          <p className="text-muted-foreground max-w-md text-xl">
+            It seems we haven’t published any albums yet. Please check back
+            later or suggest something new!
+          </p>
+        </div>
+      )}
     </div>
   );
 };

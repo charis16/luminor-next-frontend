@@ -23,6 +23,7 @@ export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const { data } = useWebsites();
 
   // Menunggu animasi sebelum menghapus dari DOM
@@ -35,6 +36,19 @@ export const Navbar = () => {
       return () => clearTimeout(timeout);
     }
   }, [isMenuOpen]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    handleScroll();
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   return (
     <>
@@ -53,7 +67,7 @@ export const Navbar = () => {
         disableAnimation
         shouldHideOnScroll
         className="fixed top-0 left-0 w-full bg-transparent"
-        isBlurred={false}
+        isBlurred={scrolled}
         isMenuOpen={isMenuOpen}
         maxWidth="2xl"
         motionProps={{

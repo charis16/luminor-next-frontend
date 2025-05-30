@@ -1,52 +1,19 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
 import { ChevronRight, MapPin, Phone } from "lucide-react";
 
 import { useWebsites } from "../_hooks/use-website";
 
 export default function Contact() {
   const { data } = useWebsites();
-  const [isInView, setIsInView] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const section = document.getElementById("contact-section");
-
-      if (section) {
-        const rect = section.getBoundingClientRect();
-
-        if (rect.top >= 0 && rect.bottom <= window.innerHeight) {
-          setIsInView(true);
-        } else {
-          setIsInView(false);
-        }
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    handleScroll(); // Check on mount
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
 
   return (
-    <div className="min-h-dvh flex justify-center items-center ">
-      <motion.div
-        animate={
-          isInView
-            ? { opacity: 1, y: 0, scale: 1 }
-            : { opacity: 0, y: 50, scale: 0.8 }
-        }
+    <div className="flex justify-center items-center ">
+      <div
         className="flex flex-col gap-4 md:gap-8 z-10 w-full"
         id="contact-section"
-        initial={{ opacity: 0, y: 50, scale: 0.8 }}
-        transition={{ duration: 2, type: "tween" }} // Slower duration and tween type for smooth fade
       >
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-x-16 gap-y-10 w-full items-start max-w-7xl mx-auto ">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-x-16 gap-y-10 w-full items-start max-w-7xl mx-auto py-10 px-4 md:px-8">
           {/* Column 1: Intro */}
           <div className="space-y-4 text-start">
             <h1 className="text-4xl md:text-5xl font-extrabold text-foreground">
@@ -64,7 +31,11 @@ export default function Contact() {
               <MapPin className="text-black size-6" />
             </div>
             <p className="text-lg font-semibold text-foreground">Our Address</p>
-            <p className="text-neutral-300">{data?.data.address}</p>
+            <p className="text-neutral-300">
+              {data?.data?.address && data.data.address.trim() !== ""
+                ? data.data.address
+                : "Jl. Perkutut No.6, Nglawian Satu, Karangjati, Blora, Jawa Tengah 58219"}
+            </p>
           </div>
 
           {/* Column 3: Contact Info */}
@@ -75,8 +46,16 @@ export default function Contact() {
             <p className="text-lg font-semibold text-foreground">
               Our Contact Info
             </p>
-            <p className="text-neutral-300">{data?.data.phone_number}</p>
-            <p className="text-neutral-300">{data?.data.email}</p>
+            <p className="text-neutral-300">
+              {data?.data?.phone_number && data.data.phone_number.trim() !== ""
+                ? data.data.phone_number
+                : "+62 812-3456-7890"}
+            </p>
+            <p className="text-neutral-300">
+              {data?.data?.email && data.data.email.trim() !== ""
+                ? data.data.email
+                : "luminorphoto@gmail.com"}
+            </p>
           </div>
         </div>
 
@@ -102,7 +81,7 @@ export default function Contact() {
             <ChevronRight />
           </a>
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 }

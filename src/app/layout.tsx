@@ -6,47 +6,77 @@ import clsx from "clsx";
 import Providers from "./providers";
 
 import { fontSans } from "@/config/fonts";
-import { WebsiteMetadataResponse } from "@/types/website";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/website`, {
-    cache: "no-store", // hindari cache supaya data selalu fresh
-  });
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/website`, {
+      cache: "no-store",
+    });
 
-  const { data }: WebsiteMetadataResponse = await res.json();
+    if (!res.ok) {
+      throw new Error("Failed to fetch metadata");
+    }
 
-  const metaDesc =
-    data.meta_desc ||
-    "Luminor Photography is a professional photography service specializing in capturing moments that matter. From weddings to corporate events, we bring your vision to life.";
+    const json = await res.json();
 
-  const metaName = data.meta_title || "Luminor Photography";
+    const data = json?.data;
 
-  const keywords = data.meta_keyword?.split(",").map((kw) => kw.trim()) ?? [
-    "photography",
-    "wedding photographer",
-    "event photographer",
-  ];
+    const metaDesc =
+      data?.meta_desc ||
+      "Luminor Photography is a professional photography service specializing in capturing moments that matter. From weddings to corporate events, we bring your vision to life.";
 
-  return {
-    title: {
-      default: "Luminor Photography",
-      template: `%s - Luminor Photography`,
-    },
-    keywords,
-    description:
-      data.meta_desc ||
-      "Luminor Photography is a professional photography service specializing in capturing moments that matter. From weddings to corporate events, we bring your vision to life.",
-    openGraph: {
-      title: metaName,
+    const metaName = data?.meta_title || "Luminor Photography";
+
+    const keywords =
+      typeof data?.meta_keyword === "string" && data.meta_keyword.trim()
+        ? data.meta_keyword.split(",").map((kw: string) => kw.trim())
+        : ["photography", "wedding photographer", "event photographer"];
+
+    return {
+      title: {
+        default: "Luminor Photography",
+        template: `%s - Luminor Photography`,
+      },
+      keywords,
       description: metaDesc,
-      images: [data.og_image ?? "/og.png"],
-    },
-    twitter: {
-      title: metaName,
-      description: metaDesc,
-      images: [data.og_image ?? "/og.png"],
-    },
-  };
+      openGraph: {
+        title: metaName,
+        description: metaDesc,
+        images: [
+          data?.og_image && data.og_image.trim()
+            ? data.og_image
+            : "/web-app-manifest-512x512.png",
+        ],
+      },
+      twitter: {
+        title: metaName,
+        description: metaDesc,
+        images: [
+          data?.og_image && data.og_image.trim()
+            ? data.og_image
+            : "/web-app-manifest-512x512.png",
+        ],
+      },
+    };
+  } catch {
+    return {
+      title: "Luminor Photography",
+      description:
+        "Luminor Photography is a professional photography service specializing in capturing moments that matter.",
+      openGraph: {
+        title: "Luminor Photography",
+        description:
+          "Luminor Photography is a professional photography service specializing in capturing moments that matter.",
+        images: ["/web-app-manifest-512x512.png"],
+      },
+      twitter: {
+        title: "Luminor Photography",
+        description:
+          "Luminor Photography is a professional photography service specializing in capturing moments that matter.",
+        images: ["/web-app-manifest-512x512.png"],
+      },
+    };
+  }
 }
 
 export const viewport: Viewport = {

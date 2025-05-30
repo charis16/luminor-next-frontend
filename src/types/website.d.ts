@@ -21,18 +21,35 @@ export interface WebsiteMetadataResponse {
     og_image?: string;
     created_at: string;
     updated_at: string;
-  };
+  } | null;
 }
 
 export interface AlbumLatestResponse {
-  data: {
-    uuid: string;
-    slug: string;
-    title: string;
-    description: string;
-    thumbnail: string;
-    is_published: boolean;
-    created_at: string;
-    updated_at: string;
-  }[];
+  data:
+    | {
+        uuid: string;
+        slug: string;
+        title: string;
+        description: string;
+        thumbnail: string;
+        is_published: boolean;
+        created_at: string;
+        updated_at: string;
+      }[]
+    | null;
+}
+
+export interface FaqPublishedResponse {
+  data:
+    | {
+        uuid: string;
+        question_id: string;
+        question_en: string;
+        answer_id: string;
+        answer_en: string;
+        is_published: boolean;
+        created_at: string;
+        updated_at: string;
+      }[]
+    | null;
 }

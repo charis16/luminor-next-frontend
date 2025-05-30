@@ -7,6 +7,8 @@ import HeroVideo from "./_components/hero-video";
 import LatestRecent from "./_components/latest-work";
 import { getOptions as websiteOptions } from "./_hooks/use-website";
 import { getOptions as albumOptions } from "./_hooks/use-album";
+import FaqSection from "./_components/faq";
+import { getOptions as faqOptions } from "./_hooks/use-faq";
 
 import getQueryClient from "@/utils/react-query";
 
@@ -16,6 +18,7 @@ export default async function Home() {
   const results = await Promise.allSettled([
     queryClient.ensureQueryData(websiteOptions()),
     queryClient.ensureQueryData(albumOptions()),
+    queryClient.ensureQueryData(faqOptions()),
   ]);
 
   for (const result of results) {
@@ -36,6 +39,7 @@ export default async function Home() {
       <HeroVideo />
       <Description />
       <LatestRecent />
+      <FaqSection />
       <Contact />
     </HydrationBoundary>
   );

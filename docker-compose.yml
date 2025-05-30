@@ -8,6 +8,8 @@ services:
     restart: unless-stopped
     env_file:
       - ./src/.env
+    networks:
+      - shared-net
     ports:
       - "127.0.0.1:3000:3000" # cukup agar bisa diakses oleh Caddy di host
     healthcheck:
@@ -15,3 +17,7 @@ services:
       interval: 10s
       timeout: 3s
       retries: 5
+
+networks:
+  shared-net:
+    external: true

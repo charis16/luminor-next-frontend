@@ -1,17 +1,21 @@
 #!/bin/sh
 
-# Skrip untuk build dan menjalankan Docker Compose
+# Skrip untuk build dan menjalankan ulang Docker Compose secara bersih
 
-# Hentikan dan hapus container lama (opsional, untuk menjaga kebersihan)
-echo "📦 Stopping existing containers..."
+echo "📦 Stopping and removing old containers, volumes, and orphans..."
 docker-compose down --volumes --remove-orphans
-docker system prune -f
+
+echo "🧹 Cleaning unused containers and images..."
+docker container prune -f
+docker image prune -a -f
+docker volume prune -f
+docker network prune -f
 
 echo "📥 Pulling latest images..."
 docker-compose pull
 
-
-echo "🚀 Building and starting containers..."
+echo "🔨 Building containers..."
 docker-compose build --no-cache
-docker-compose up -d
 
+echo "🚀 Starting containers..."
+docker-compose up -d

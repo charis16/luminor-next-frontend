@@ -5,8 +5,6 @@ FROM node:18-alpine AS builder
 WORKDIR /app
 
 # Set environment variables
-ARG NEXT_PUBLIC_BASE_PATH
-ENV NEXT_PUBLIC_BASE_PATH=$NEXT_PUBLIC_BASE_PATH
 ENV NODE_OPTIONS="--max-old-space-size=2048"
 
 # Copy env file lebih awal (dibaca saat build)

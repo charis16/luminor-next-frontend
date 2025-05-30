@@ -1,13 +1,34 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
+import axios, { AxiosRequestConfig, AxiosResponse, AxiosInstance } from "axios";
 
-function toUrl(url: string): string {
-  return url.startsWith("http")
-    ? url
-    : `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}${url}`;
-}
-
-function createFetcher(defaultHeaders: Record<string, string> = {}) {
-  const instance = axios.create({
+function createFetcher(defaultHeaders: Record<string, string> = {}): {
+  get: <T = any>(url: string, config?: AxiosRequestConfig) => Promise<T>;
+  post: <T = any, D = any>(
+    url: string,
+    data: D,
+    config?: AxiosRequestConfig,
+  ) => Promise<T>;
+  put: <T = any, D = any>(
+    url: string,
+    data: D,
+    config?: AxiosRequestConfig,
+  ) => Promise<T>;
+  patch: <T = any, D = any>(
+    url: string,
+    data: D,
+    config?: AxiosRequestConfig,
+  ) => Promise<T>;
+  delete: <T = any, D = any>(
+    url: string,
+    data?: D,
+    config?: AxiosRequestConfig,
+  ) => Promise<T>;
+  raw: (
+    url: string,
+    method?: string,
+    config?: AxiosRequestConfig,
+  ) => Promise<AxiosResponse>;
+} {
+  const instance: AxiosInstance = axios.create({
     baseURL: process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000",
     withCredentials: true,
     headers: defaultHeaders,
@@ -21,7 +42,7 @@ function createFetcher(defaultHeaders: Record<string, string> = {}) {
     } catch (err: any) {
       const response = err.response;
 
-      const customError = {
+      throw {
         status: response?.status || 500,
         data: response?.data || {},
         message:
@@ -30,56 +51,48 @@ function createFetcher(defaultHeaders: Record<string, string> = {}) {
           err.message ||
           "Something went wrong",
       };
-
-      throw customError;
     }
   };
 
   return {
     get: <T = any>(url: string, config?: AxiosRequestConfig) =>
-      handle<T>({ url: toUrl(url), method: "GET", ...config }),
+      handle<T>({ url, method: "GET", ...config }),
 
     post: <T = any, D = any>(
       url: string,
       data: D,
       config?: AxiosRequestConfig,
-    ) => handle<T>({ url: toUrl(url), method: "POST", data, ...config }),
+    ) => handle<T>({ url, method: "POST", data, ...config }),
 
     put: <T = any, D = any>(
       url: string,
       data: D,
       config?: AxiosRequestConfig,
-    ) => handle<T>({ url: toUrl(url), method: "PUT", data, ...config }),
+    ) => handle<T>({ url, method: "PUT", data, ...config }),
 
     patch: <T = any, D = any>(
       url: string,
       data: D,
       config?: AxiosRequestConfig,
-    ) => handle<T>({ url: toUrl(url), method: "PATCH", data, ...config }),
+    ) => handle<T>({ url, method: "PATCH", data, ...config }),
 
     delete: <T = any, D = any>(
       url: string,
       data?: D,
       config?: AxiosRequestConfig,
-    ) => handle<T>({ url: toUrl(url), method: "DELETE", data, ...config }),
+    ) => handle<T>({ url, method: "DELETE", data, ...config }),
 
-    raw: (url: string, method = "POST", config?: AxiosRequestConfig) => {
-      return axios.request({
-        url: toUrl(url),
-        method,
-        withCredentials: true,
-        ...config,
-      });
-    },
+    raw: (url: string, method = "POST", config?: AxiosRequestConfig) =>
+      instance.request({ url, method, ...config }),
   };
 }
 
-// ✅ Main fetcher
+// ✅ Default fetcher
 export const goFetcher = Object.assign(createFetcher(), {
   withHeaders: (headers: Record<string, string>) => createFetcher(headers),
 });
 
-// ✅ Untuk dapatkan data saja
+// ✅ Untuk response yang hanya perlu `data`
 export async function safeCall<T extends { status: number; data: any }>(
   promise: Promise<T>,
 ): Promise<[T, null] | [null, any]> {
@@ -100,7 +113,7 @@ export async function safeCall<T extends { status: number; data: any }>(
   }
 }
 
-// ✅ Untuk akses headers, status, dsb
+// ✅ Untuk full AxiosResponse (status, headers, dsb)
 export async function safeRawCall<T = any>(
   promise: Promise<AxiosResponse<T>>,
 ): Promise<[AxiosResponse<T>, null] | [null, any]> {

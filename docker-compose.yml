@@ -4,8 +4,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      args:
-        NEXT_PUBLIC_BASE_PATH: "/luminor"
     restart: unless-stopped
     env_file:
       - ./src/.env

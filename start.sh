@@ -1,26 +1,36 @@
 #!/bin/sh
 
-set -e # Stop script if any command fails
+set -e # Berhenti jika ada perintah yang gagal
 
-echo "📦 Stopping and removing old containers, volumes, and orphans..."
+# 💓 Heartbeat untuk mencegah GitHub Actions timeout
+(while true; do echo "💓 Still running at $(date)"; sleep 60; done) &
+KEEP_ALIVE_PID=$!
+trap 'kill $KEEP_ALIVE_PID' EXIT # Hentikan heartbeat saat script selesai
+
+log() {
+  echo ""
+  echo "🔹 $1"
+  echo "-------------------------------------------"
+}
+
+log "Stopping and removing old containers, volumes, and orphans"
 docker-compose down --volumes --remove-orphans
 
-echo "🧹 Cleaning unused containers and networks..."
+log "Pruning unused containers, volumes, and networks"
 docker container prune -f
 docker volume prune -f
 docker network prune -f
 
-echo "🗑️ Removing dangling <none> images..."
-# Hapus image <none> saja (optional, aman)
+log "Removing dangling <none> images"
 docker images -f dangling=true -q | xargs -r docker rmi -f || true
 
-echo "📥 Pulling latest images..."
+log "Pulling latest base images"
 docker-compose pull
 
-echo "🔨 Building containers (without --no-cache)..."
+log "Building containers"
 docker-compose build
 
-echo "🚀 Starting containers..."
+log "Starting containers"
 docker-compose up -d
 
-echo "✅ Build and run process completed."
+log "✅ Build and deployment completed successfully"

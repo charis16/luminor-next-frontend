@@ -1,6 +1,40 @@
 {
   "home": {
-    "title": "halo dunia!",
-    "about": "Go to the about page"
+    "title": "Selamat datang di Luminor!",
+    "ourLatestWork": "Karya Terbaru Kami",
+    "noVideos": "Tidak ada video yang ditemukan.",
+    "noAlbums": "Tidak ada album yang ditemukan.",
+    "noAlbumsYet": "Sepertinya kami belum menerbitkan album apa pun. Silakan cek kembali nanti atau sarankan sesuatu yang baru!",
+    "faqs": "Pertanyaan yang Sering Diajukan",
+    "faqDesc": "Temukan jawaban atas pertanyaan umum tentang layanan kami.",
+    "noFaqs": "Tidak ada pertanyaan yang sering diajukan.",
+    "noFaqsYet": "Sepertinya kami belum menambahkan pertanyaan yang sering diajukan. Silakan cek kembali nanti atau sarankan sesuatu yang baru!",
+    "getInTouch": "Hubungi Kami",
+    "getInTouchDesc": "Punya pertanyaan atau ingin memesan sesi? Hubungi kami dan mari terhubung!",
+    "ourAddress": "Alamat Kami",
+    "ourContactInfo": "Info Kontak Kami"
+  },
+  "about": {
+    "heading1": "Setiap Bingkai Memiliki Cerita",
+    "heading2": "Mengabadikan Setiap Momen",
+    "aboutLuminor": "Tentang Luminor",
+    "whoWeAre": "Siapa Kami?",
+    "meetTheTeam": "Kenali Tim Kami",
+    "meetTheTeamDesc": "Kenali individu berbakat di balik Luminor yang berdedikasi untuk menangkap setiap momen berharga Anda dengan kreativitas, keahlian, dan semangat yang tinggi",
+    "noTeamUser": "Tidak ada anggota tim yang ditemukan",
+    "noTeamUserYet": "Sepertinya kami belum menambahkan anggota tim. Silakan cek kembali nanti atau sarankan sesuatu yang baru!",
+    "ourCategory": "Kategori Kami",
+    "ourCategoryDesc": "Jelajahi berbagai layanan yang kami tawarkan, mulai dari fotografi hingga videografi, yang dirancang untuk mengabadikan momen-momen terindah Anda",
+    "noCategory": "Tidak ada kategori yang ditemukan",
+    "noCategoryYet": "Sepertinya kami belum menambahkan kategori apa pun. Silakan cek kembali nanti atau sarankan sesuatu yang baru!"
+  },
+  "category": {
+    "heading": "Rasakan kebahagiaan dan keindahan momen spesial melalui koleksi menakjubkan kami. Biarkan kami membantu Anda menciptakan kenangan tak terlupakan di setiap peristiwa penting dalam hidup Anda"
+  },
+  "navbar": {
+    "about": "Tentang Kami",
+    "category": "Kategori",
+    "portfolio": "Portofolio",
+    "chatWithUs": "Chat dengan Kami"
   }
 }

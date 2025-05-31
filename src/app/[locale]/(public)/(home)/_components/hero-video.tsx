@@ -2,12 +2,14 @@
 
 import { motion, useScroll, useSpring, useTransform } from "framer-motion";
 import { VideoOff } from "lucide-react";
+import { useTranslations } from "next-intl";
 
-import { useWebsites } from "../_hooks/use-website";
+import { useWebsites } from "../../_hooks/use-website";
 
 import { useIsMobile } from "@/hooks/use-mobile";
 
 export default function HeroVideo() {
+  const t = useTranslations("home");
   const { data } = useWebsites();
   const { scrollY } = useScroll();
   const smoothScroll = useSpring(scrollY, { stiffness: 80, damping: 20 });
@@ -32,7 +34,9 @@ export default function HeroVideo() {
       ) : (
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-2  text-white">
           <VideoOff className="size-20 text-muted" />
-          <p className="text-xl font-medium">No video found</p>
+          <p className="text-xl font-medium text-neutral-400">
+            {t("noVideos")}
+          </p>
         </div>
       )}
     </motion.section>

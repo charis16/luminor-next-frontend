@@ -32,7 +32,11 @@ const Form: ForwardRefRenderFunction<FormHandle> = () => {
 
   const { data: user, refetch } = useUserByUUID(uuid);
   const { mutate: mutateDeleteImageUser } = useDeleteImageUser();
-  const { formRef: sharedFormRef, onSetIsSubmitting } = useUserContext();
+  const {
+    formRef: sharedFormRef,
+    onSetIsSubmitting,
+    onRefetch,
+  } = useUserContext();
   const { mutate, isPending } = useMutateUser();
   const router = useRouter();
   const form = useForm<UserFormValues>({
@@ -75,6 +79,7 @@ const Form: ForwardRefRenderFunction<FormHandle> = () => {
         onSuccess: () => {
           form.reset();
           onSetIsSubmitting(false);
+          onRefetch();
           router.back();
 
           showToast({

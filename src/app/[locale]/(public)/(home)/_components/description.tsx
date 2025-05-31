@@ -1,12 +1,13 @@
 "use client";
 
 import { motion, useScroll, useSpring, useTransform } from "framer-motion";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import DOMPurify from "dompurify";
 
-import { useWebsites } from "../_hooks/use-website";
+import { useWebsites } from "../../_hooks/use-website";
 
 export default function Description() {
+  const t = useTranslations();
   const { data } = useWebsites();
   const locale = useLocale();
   const { scrollY } = useScroll();
@@ -29,7 +30,7 @@ export default function Description() {
     >
       <div className="w-full p-8">
         <h1 className="text-3xl font-bold md:text-7xl text-white leading-relaxed">
-          Welcome to Luminor!
+          {t("home.title")}
         </h1>
         <div
           dangerouslySetInnerHTML={{
@@ -38,7 +39,7 @@ export default function Description() {
                 "This is a placeholder paragraph intended to represent where real content will eventually go. It demonstrates how text will appear on the layout, helping visualize structure, spacing, and flow before final copy is added. Feel free to replace this with actual content when available",
             ),
           }}
-          className="mt-4 md:mt-8 text-lg md:text-2xl text-neutral-300"
+          className="mt-4 md:mt-8 text-lg md:text-xl text-neutral-400"
         />
       </div>
     </motion.section>

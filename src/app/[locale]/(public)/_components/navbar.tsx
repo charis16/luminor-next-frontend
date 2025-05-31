@@ -4,18 +4,30 @@ import {
   Navbar as HeroUINavbar,
   NavbarContent,
   NavbarBrand,
-  NavbarItem,
   NavbarMenuToggle,
+  NavbarItem,
 } from "@heroui/navbar";
-import { Link } from "@heroui/link";
 import NextLink from "next/link";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Image } from "@heroui/image";
+import NextImage from "next/image";
+import { Link } from "@heroui/link";
+import { useTranslations } from "next-intl";
+import {
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+} from "@heroui/dropdown";
+import { Button } from "@heroui/button";
+import { ChevronDown } from "lucide-react";
 
-import { useWebsites } from "../(home)/_hooks/use-website";
+import { useWebsites } from "../_hooks/use-website";
+import { LanguageSwitcher } from "../../admin/_components";
 
-import { InstagramIcon, TikTokIcon } from "./icons";
+import { InstagramIcon, TikTokIcon, WhatsappIcon } from "./icons";
+import SidebarMenuItem from "./sidebar-menu";
 
 import { siteConfigPublic } from "@/config/site";
 
@@ -25,6 +37,7 @@ export const Navbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { data } = useWebsites();
+  const t = useTranslations("navbar");
 
   // Menunggu animasi sebelum menghapus dari DOM
   useEffect(() => {
@@ -86,10 +99,11 @@ export const Navbar = () => {
             >
               <Image
                 alt="Luminor"
+                as={NextImage}
                 height={32}
                 isBlurred={false}
                 removeWrapper={true}
-                src={"/logo.png"}
+                src={"/images/logo.png"}
                 width={32}
               />
               <p className="font-bold text-inherit uppercase md:block">
@@ -97,6 +111,7 @@ export const Navbar = () => {
               </p>
             </NextLink>
           </NavbarBrand>
+
           <NavbarMenuToggle
             aria-label={isMenuOpen ? "Close menu" : "Open menu"}
             className="sm:hidden"
@@ -108,37 +123,90 @@ export const Navbar = () => {
           className="hidden sm:flex basis-1/5 sm:basis-full"
           justify="center"
         />
+
         <NavbarContent
           className="hidden sm:flex basis-1/5 sm:basis-full"
           justify="end"
         >
-          {siteConfigPublic.navItems.map((item, index) => (
-            <NavbarItem key={index}>
-              <Link
-                className="text-lg  hover:font-bold focus:font-bold text-white hover:opacity-100 focus:opacity-100"
-                href={item.href}
-              >
-                {item.label}
-              </Link>
+          <NavbarItem>
+            <Link
+              aria-current="page"
+              className="text-white text-base"
+              href="/about"
+            >
+              {t("about")}
+            </Link>
+          </NavbarItem>
+
+          <Dropdown>
+            <NavbarItem>
+              <DropdownTrigger>
+                <Button
+                  disableRipple
+                  className="p-0 bg-transparent data-[hover=true]:bg-transparent text-base"
+                  endContent={<ChevronDown className="text-white size-5" />}
+                  radius="sm"
+                  variant="light"
+                >
+                  {t("category")}
+                </Button>
+              </DropdownTrigger>
             </NavbarItem>
-          ))}
+            <DropdownMenu
+              aria-label="ACME features"
+              itemClasses={{
+                base: "gap-4",
+              }}
+            >
+              <DropdownItem
+                key="autoscaling"
+                description="ACME scales apps based on demand and load"
+              >
+                Autoscaling
+              </DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
+
+          <Dropdown>
+            <NavbarItem>
+              <DropdownTrigger>
+                <Button
+                  disableRipple
+                  className="p-0 bg-transparent data-[hover=true]:bg-transparent text-base"
+                  endContent={<ChevronDown className="text-white size-5" />}
+                  radius="sm"
+                  variant="light"
+                >
+                  {t("portfolio")}
+                </Button>
+              </DropdownTrigger>
+            </NavbarItem>
+            <DropdownMenu
+              aria-label="ACME features"
+              itemClasses={{
+                base: "gap-4",
+              }}
+            >
+              <DropdownItem
+                key="autoscaling"
+                description="ACME scales apps based on demand and load"
+              >
+                Autoscaling
+              </DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
+
           <NavbarItem className="hidden sm:flex gap-2">
-            <Link
+            <Button
               isExternal
-              aria-label="Instagram"
-              href={
-                data?.data?.url_instagram || siteConfigPublic.links.instagram
-              }
+              as={Link}
+              className="bg-[rgb(42,181,64)]/10 text-white hover:bg-[rgb(42,181,64)] border-none"
+              endContent={<WhatsappIcon />}
+              href="https://api.whatsapp.com/send?phone=6281234567890&text=Halo%20Luminor!"
+              variant="bordered"
             >
-              <InstagramIcon />
-            </Link>
-            <Link
-              isExternal
-              aria-label="TikTok"
-              href={data?.data?.url_tiktok || siteConfigPublic.links.tiktok}
-            >
-              <TikTokIcon />
-            </Link>
+              {t("chatWithUs")}
+            </Button>
           </NavbarItem>
         </NavbarContent>
 
@@ -160,23 +228,19 @@ export const Navbar = () => {
                 ✕
               </button>
 
-              {/* Menu Items */}
-              <div className="text-center space-y-4 font-medium">
-                {siteConfigPublic.navItems.flatMap((item, index) => (
-                  <div key={`${item.label}-${index}`} className="w-full">
-                    <Link
-                      className="text-white transition-colors hover:text-gray-400"
-                      href={item.href}
-                      onPress={() => setIsMenuOpen(false)}
-                    >
-                      {item.label}
-                    </Link>
-                  </div>
-                ))}
+              <div>
+                <Link
+                  className="text-white transition-colors hover:text-gray-400"
+                  href="/about"
+                  onPress={() => setIsMenuOpen(false)}
+                >
+                  {t("about")}
+                </Link>
+
+                <SidebarMenuItem />
               </div>
 
-              {/* Social Media Links */}
-              <div className="flex gap-6 mt-6">
+              <div className="flex mt-6">
                 <Link
                   isExternal
                   aria-label="Instagram"
@@ -184,18 +248,18 @@ export const Navbar = () => {
                     data?.data?.url_instagram ||
                     siteConfigPublic.links.instagram
                   }
-                  onPress={() => setIsMenuOpen(false)}
                 >
-                  <InstagramIcon className="text-white w-6 h-6 hover:text-gray-400 transition-colors" />
+                  <InstagramIcon height={14} width={14} />
                 </Link>
                 <Link
                   isExternal
                   aria-label="TikTok"
+                  className="ml-3 "
                   href={data?.data?.url_tiktok || siteConfigPublic.links.tiktok}
-                  onPress={() => setIsMenuOpen(false)}
                 >
-                  <TikTokIcon className="text-white w-6 h-6 hover:text-gray-400 transition-colors" />
+                  <TikTokIcon height={14} width={14} />
                 </Link>
+                <LanguageSwitcher />
               </div>
             </motion.div>
           )}

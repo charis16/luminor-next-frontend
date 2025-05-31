@@ -6,25 +6,22 @@ import {
   ChevronUp,
   MessageCircleQuestionIcon,
 } from "lucide-react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
-import { useFaq } from "../_hooks/use-faq";
+import { useFaq } from "../../_hooks/use-faq";
 
 export default function FaqSection() {
   const { data } = useFaq();
   const locale = useLocale();
+  const t = useTranslations("home");
 
   return (
-    <div
-      className="flex flex-col justify-center px-4 py-40  text-white"
-      id="faq-section"
-    >
-      <div className="flex flex-col gap-2 ">
-        <h2 className="text-4xl md:text-5xl font-bold text-foreground">FAQs</h2>
-        <p className="text-neutral-400 max-w-3xl">
-          Find answers to common questions about our services.
-        </p>
+    <div className="relative flex flex-col gap-6 w-full" id="faq-section">
+      <div className="flex flex-col gap-2 pl-6">
+        <h2 className="text-4xl font-bold text-foreground">{t("faqs")}</h2>
+        <p className="text-neutral-400 max-w-3xl">{t("faqDesc")}</p>
       </div>
+
       {data?.data && data.data.length > 0 ? (
         data.data.map((faq) => {
           const localizedQuestion =
@@ -95,12 +92,12 @@ export default function FaqSection() {
           );
         })
       ) : (
-        <div className="flex flex-col my-20 gap-2 items-center">
-          <MessageCircleQuestionIcon className="size-10 text-white" />
-          <h2 className="text-3xl font-semibold text-white">No Faq Yet</h2>
-          <p className="text-muted-foreground max-w-md text-xl">
-            No FAQs available at the moment.
-          </p>
+        <div className="flex flex-col items-center justify-center py-24 px-4 text-center space-y-4">
+          <div className="w-20 h-20 rounded-full bg-muted/10 flex items-center justify-center">
+            <MessageCircleQuestionIcon className="text-muted-foreground size-14" />
+          </div>
+          <h2 className="text-3xl font-semibold text-white">{t("noFaqs")}</h2>
+          <p className="text-neutral-400 max-w-md text-xl">{t("noFaqsYet")}</p>
         </div>
       )}
     </div>

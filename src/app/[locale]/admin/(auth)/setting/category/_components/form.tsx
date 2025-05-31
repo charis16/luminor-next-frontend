@@ -39,7 +39,11 @@ const CategoryForm: ForwardRefRenderFunction<CategoryFormHandle> = () => {
   });
 
   const formRef = useRef<HTMLFormElement | null>(null);
-  const { formRef: sharedFormRef, onSetIsSubmitting } = useCategoryContext(); // ⬅️ Ambil dari context
+  const {
+    formRef: sharedFormRef,
+    onSetIsSubmitting,
+    onRefetch,
+  } = useCategoryContext(); // ⬅️ Ambil dari context
 
   const onSubmit = (data: CategoryFormValues) => {
     mutate(
@@ -51,6 +55,7 @@ const CategoryForm: ForwardRefRenderFunction<CategoryFormHandle> = () => {
         onSuccess: () => {
           form.reset();
           onSetIsSubmitting(false);
+          onRefetch();
           router.back();
 
           showToast({

@@ -4,8 +4,9 @@ import { motion } from "framer-motion";
 import { Image } from "@heroui/image";
 import NextImage from "next/image";
 import { ImageIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 
-import { useAlbums } from "../_hooks/use-album";
+import { useAlbums } from "../../_hooks/use-album";
 
 export default function LatestRecent() {
   return (
@@ -25,6 +26,7 @@ export default function LatestRecent() {
 // **Grid Komponen dengan Efek Slide Up Lebih Cepat**
 const LatestWork = () => {
   const { data } = useAlbums();
+  const t = useTranslations("home");
   // Variants animasi per item grid
   const itemVariants = {
     hidden: { opacity: 0, y: 30 }, // **Lebih dekat supaya muncul lebih cepat**
@@ -38,7 +40,7 @@ const LatestWork = () => {
   return (
     <div className="relative flex flex-col gap-6 w-full">
       <h2 className="sticky top-20 pl-6 text-3xl md:text-4xl font-bold text-white z-20">
-        Our Latest Work
+        {t("ourLatestWork")}
       </h2>
       {data?.data && data.data.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 w-full">
@@ -73,12 +75,11 @@ const LatestWork = () => {
       ) : (
         <div className="flex flex-col items-center justify-center py-24 px-4 text-center space-y-4">
           <div className="w-20 h-20 rounded-full bg-muted/10 flex items-center justify-center">
-            <ImageIcon className="text-muted-foreground size-10" />
+            <ImageIcon className="text-muted-foreground size-14" />
           </div>
-          <h2 className="text-3xl font-semibold text-white">No Albums Yet</h2>
-          <p className="text-muted-foreground max-w-md text-xl">
-            It seems we haven’t published any albums yet. Please check back
-            later or suggest something new!
+          <h2 className="text-3xl font-semibold text-white">{t("noAlbums")}</h2>
+          <p className="text-neutral-400 max-w-md text-xl">
+            {t("noAlbumsYet")}
           </p>
         </div>
       )}

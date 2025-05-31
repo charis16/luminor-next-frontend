@@ -10,11 +10,12 @@ import {
   X,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
-import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { useMemo, useState } from "react";
 import { cn } from "@heroui/theme";
 import Link from "next/link";
+import NextImage from "next/image";
+import { Image } from "@heroui/image";
 
 import { useSidebar } from "../_context/sidebar-context";
 import { useAuth } from "../_context/auth-context";
@@ -106,16 +107,23 @@ export default function Sidebar() {
           href="/admin/dashboard"
         >
           <div className="inline-flex gap-2 items-center">
-            <Image
-              alt="Luminor Logo"
+            <div
               className={cn(
-                "transition-all duration-300",
+                "relative transition-all duration-300",
                 isCollapsed ? "w-8 h-8" : "w-10 h-10",
               )}
-              height={40}
-              src="/logo.png"
-              width={40}
-            />
+            >
+              <Image
+                fill
+                alt="Luminor Logo"
+                as={NextImage}
+                className="object-contain" // Bisa juga object-cover tergantung tujuan
+                isBlurred={false}
+                removeWrapper={true}
+                src="/images/logo.png"
+              />
+            </div>
+
             {!isCollapsed && (
               <span className="ml-3 text-lg font-semibold">Luminor</span>
             )}

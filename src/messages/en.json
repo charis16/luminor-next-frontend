@@ -1,6 +1,40 @@
 {
   "home": {
-    "title": "Hello world!",
-    "about": "Go to the about page"
+    "title": "Welcome to Luminor!",
+    "ourLatestWork": "Our Latest Work",
+    "noVideos": "No videos found.",
+    "noAlbums": "No Albums Yet",
+    "noAlbumsYet": "It seems we haven’t published any albums yet. Please check back later or suggest something new!",
+    "faqs": "Frequently Asked Questions",
+    "faqDesc": " Find answers to common questions about our services.",
+    "noFaqs": "No frequently asked questions found",
+    "noFaqsYet": "It seems we haven’t added any frequently asked questions yet. Please check back later or suggest something new!",
+    "getInTouch": "Get in Touch",
+    "getInTouchDesc": "Have a question or want to book a session? Reach out and let’s connect!",
+    "ourAddress": "Our Address",
+    "ourContactInfo": "Our Contact Info"
+  },
+  "about": {
+    "heading1": "Every Frame Tells a Story",
+    "heading2": "Immortalizing Every Moment",
+    "aboutLuminor": "About Luminor",
+    "whoWeAre": "Who We Are?",
+    "meetTheTeam": "Meet the Team",
+    "meetTheTeamDesc": "Get to know the talented individuals behind Luminor, each bringing their unique skills and passion to create unforgettable moments for you.",
+    "noTeamUser": "No team members found",
+    "noTeamUserYet": "It seems we haven’t added any team members yet. Please check back later or suggest something new!",
+    "ourCategory": "Our Category",
+    "ourCategoryDesc": "Explore the range of services we offer, from photography to videography, designed to capture your most cherished moments",
+    "noCategory": "No categories found",
+    "noCategoryYet": "It seems we haven’t added any categories yet. Please check back later or suggest something new!"
+  },
+  "category": {
+    "heading": "Celebrate the joy and beauty of special moments through our stunning collection. Let us help you create unforgettable memories at every important event in your life"
+  },
+  "navbar": {
+    "about": "About Us",
+    "category": "Category",
+    "portfolio": "Portfolio",
+    "chatWithUs": "Chat with Us"
   }
 }

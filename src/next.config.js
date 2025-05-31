@@ -21,7 +21,26 @@ const nextConfig = {
         port: "9000",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "www.cdn.luminorpictures.com",
+        port: "",
+        pathname: "/**",
+      },
     ],
+  },
+  async headers() {
+    return [
+      {
+        source: "/images/(.*)", // match file di public/images/
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable", // cache 1 tahun
+          },
+        ],
+      },
+    ];
   },
 };
 

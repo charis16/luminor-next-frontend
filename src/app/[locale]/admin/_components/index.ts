@@ -62,5 +62,5 @@ export const Header = dynamic(() => import("./header"), {
 });
 
 export const LanguageSwitcher = dynamic(() => import("./language-switcher"), {
-  ssr: true,
+  ssr: false,
 });

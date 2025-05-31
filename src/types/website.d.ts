@@ -53,3 +53,34 @@ export interface FaqPublishedResponse {
       }[]
     | null;
 }
+
+export interface TeamMemberResponse {
+  data:
+    | {
+        uuid: string;
+        name: string;
+        email: string;
+        photo: string;
+        role: string;
+        url_instagram: string;
+        url_tiktok: string;
+        url_facebook: string;
+        url_youtube: string;
+      }[]
+    | null;
+}
+
+export interface CategoryResponse {
+  data:
+    | {
+        uuid: string;
+        name: string;
+        slug: string;
+        description: string;
+        photo_url: string;
+        is_published: boolean;
+        created_at: string;
+        updated_at: string;
+      }[]
+    | null;
+}

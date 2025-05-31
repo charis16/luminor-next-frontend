@@ -13,7 +13,7 @@ export default function TitlePage({ title, subtitle }: TitlePageProps) {
   if (isMobile) {
     return (
       <div className="flex flex-col items-center justify-center pt-20 gap-2">
-        <p className="text-gray-500 text-sm uppercase mt-4 relative whitespace-nowrap">
+        <p className="text-neutral-400 text-sm uppercase mt-4 relative whitespace-nowrap">
           {title}
         </p>
         <div className="w-3/4 h-[1px] bg-gray-600" />
@@ -28,7 +28,7 @@ export default function TitlePage({ title, subtitle }: TitlePageProps) {
     <div className="fixed left-0 top-0 h-full w-[120px] flex flex-col items-center justify-center">
       <div className="absolute left-1/2 top-0 h-full w-[1px] bg-gray-600" />
 
-      <p className="text-gray-500 text-sm uppercase absolute left-[40%] bottom-[40%] -rotate-90 origin-center transform -translate-x-1/2 whitespace-nowrap">
+      <p className="text-neutral-400 text-sm uppercase absolute left-[40%] bottom-[40%] -rotate-90 origin-center transform -translate-x-1/2 whitespace-nowrap">
         {title}
       </p>
 

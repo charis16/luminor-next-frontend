@@ -39,7 +39,11 @@ const CategoryForm: ForwardRefRenderFunction<FormHandle> = () => {
   });
 
   const formRef = useRef<HTMLFormElement | null>(null);
-  const { formRef: sharedFormRef, onSetIsSubmitting } = useFaqContext(); // ⬅️ Ambil dari context
+  const {
+    formRef: sharedFormRef,
+    onSetIsSubmitting,
+    onRefetch,
+  } = useFaqContext(); // ⬅️ Ambil dari context
 
   const onSubmit = (data: FaqFormValues) => {
     mutate(
@@ -50,6 +54,7 @@ const CategoryForm: ForwardRefRenderFunction<FormHandle> = () => {
       {
         onSuccess: () => {
           form.reset();
+          onRefetch();
           onSetIsSubmitting(false);
           router.back();
 

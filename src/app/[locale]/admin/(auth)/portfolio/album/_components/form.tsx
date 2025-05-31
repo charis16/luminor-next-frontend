@@ -34,7 +34,11 @@ import { DefaultMedia } from "@/app/[locale]/admin/_components/dropzone";
 const AlbumForm: ForwardRefRenderFunction<FormHandle> = () => {
   const params = useParams();
   const uuid = params?.id as string | undefined;
-  const { formRef: sharedFormRef, onSetIsSubmitting } = useAlbumContext();
+  const {
+    formRef: sharedFormRef,
+    onSetIsSubmitting,
+    onRefetch,
+  } = useAlbumContext();
   const { data: album, refetch } = useAlbumByUUID(uuid);
   const { mutate, isPending } = useMutateAlbum();
   const router = useRouter();
@@ -69,6 +73,7 @@ const AlbumForm: ForwardRefRenderFunction<FormHandle> = () => {
         },
         {
           onSuccess: () => {
+            onRefetch();
             form.reset();
             router.back();
 

@@ -24,7 +24,6 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "www.cdn.luminorpictures.com",
-        port: "",
         pathname: "/**",
       },
     ],

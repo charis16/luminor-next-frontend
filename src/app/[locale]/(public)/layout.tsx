@@ -35,7 +35,7 @@ export default async function LayoutHome({
               href="https://instagram.com"
               target="_blank"
             >
-              <InstagramIcon height={14} width={14} />
+              <InstagramIcon height={18} width={18} />
             </Link>
             <Link
               aria-label="TikTok"
@@ -43,7 +43,7 @@ export default async function LayoutHome({
               href="https://tiktok.com"
               target="_blank"
             >
-              <TikTokIcon height={14} width={14} />
+              <TikTokIcon height={18} width={18} />
             </Link>
             <LanguageSwitcher />
           </div>

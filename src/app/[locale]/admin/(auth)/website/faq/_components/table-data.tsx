@@ -23,6 +23,7 @@ import { FaqDetail } from "@/types/faq-lists";
 import { useAuth } from "@/app/[locale]/admin/_context/auth-context";
 import { ConfirmDialog } from "@/app/[locale]/admin/_components/confirmation-dialog";
 import { showToast } from "@/utils/show-toast";
+import { EnumRole } from "@/types/enums";
 
 export default function TableData() {
   const locale = useLocale();
@@ -60,7 +61,11 @@ export default function TableData() {
       case "actions":
         return (
           <ActionDropdown
-            actions={authUser?.role === "admin" ? ["edit", "delete"] : ["edit"]}
+            actions={
+              authUser?.role.toLowerCase() === EnumRole.Admin.toLowerCase()
+                ? ["edit", "delete"]
+                : ["edit"]
+            }
             onAction={(action) => {
               if (action === "edit") {
                 router.push(`/${locale}/admin/website/faq/edit/${data.uuid}`);
@@ -84,7 +89,7 @@ export default function TableData() {
         removeWrapper
         aria-label="category table"
         classNames={{
-          base: "max-h-[480px] overflow-scroll max-w-[350px] md:max-w-full md:max-h-[700x]",
+          base: "max-h-[480px] overflow-scroll xs:max-w-[350px] md:max-w-full md:max-h-[700x]",
         }}
         rowHeight={10}
       >

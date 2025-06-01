@@ -1,3 +1,5 @@
+import { EnumRole } from "./enums";
+
 export type User = {
   uuid: string;
   name: string;

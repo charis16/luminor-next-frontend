@@ -24,6 +24,7 @@ import { UserDropdown } from ".";
 
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useIsMounted } from "@/hooks/use-is-mounted";
+import { EnumRole } from "@/types/enums";
 
 const navItems = [
   {
@@ -75,7 +76,9 @@ export default function Sidebar() {
   const { isCollapsed, isMobileOpen, closeMobile } = useSidebar();
   const pathname = usePathname();
   const { user: authUser } = useAuth();
-  const roleAdmin = authUser?.role === "admin";
+  const roleAdmin =
+    authUser?.role.toLowerCase() === EnumRole.Admin.toLowerCase();
+
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>(() => {
     const initialState: Record<string, boolean> = {};
 

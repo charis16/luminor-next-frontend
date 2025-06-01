@@ -23,6 +23,7 @@ import { User } from "@/types/user-lists";
 import { ConfirmDialog } from "@/app/[locale]/admin/_components/confirmation-dialog";
 import { useAuth } from "@/app/[locale]/admin/_context/auth-context";
 import { showToast } from "@/utils/show-toast";
+import { EnumRole } from "@/types/enums";
 
 export default function TableData() {
   const {
@@ -55,7 +56,8 @@ export default function TableData() {
         return (
           <ActionDropdown
             actions={
-              authUser?.role === "admin" && authUser?.uuid !== data.uuid
+              authUser?.role.toLowerCase() === EnumRole.Admin.toLowerCase() &&
+              authUser?.uuid !== data.uuid
                 ? ["edit", "delete"]
                 : ["edit"]
             }
@@ -82,7 +84,7 @@ export default function TableData() {
         removeWrapper
         aria-label="user table"
         classNames={{
-          base: "max-h-[480px] overflow-scroll max-w-[350px] md:max-w-full md:max-h-[700x]",
+          base: "max-h-[480px] overflow-scroll xs:max-w-[350px] md:max-w-full md:max-h-[700x]",
         }}
         rowHeight={10}
       >

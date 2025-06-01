@@ -249,7 +249,7 @@ export const Navbar = () => {
                     siteConfigPublic.links.instagram
                   }
                 >
-                  <InstagramIcon height={14} width={14} />
+                  <InstagramIcon height={18} width={18} />
                 </Link>
                 <Link
                   isExternal
@@ -257,7 +257,7 @@ export const Navbar = () => {
                   className="ml-3 "
                   href={data?.data?.url_tiktok || siteConfigPublic.links.tiktok}
                 >
-                  <TikTokIcon height={14} width={14} />
+                  <TikTokIcon height={18} width={18} />
                 </Link>
                 <LanguageSwitcher />
               </div>

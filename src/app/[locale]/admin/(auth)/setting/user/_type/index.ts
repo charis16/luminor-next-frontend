@@ -1,12 +1,7 @@
 import { z } from "zod";
 
 import { User } from "@/types/user-lists";
-
-export enum EnumRole {
-  Photographer = "Photographer",
-  Editor = "Editor",
-  Assistant = "Assistant",
-}
+import { EnumRole } from "@/types/enums";
 
 export const COLUMNS = [
   { name: "Name", uid: "name" },
@@ -69,9 +64,17 @@ export const UserSchema = z
     description: z.string().optional(),
     phoneNumber: z.string().optional(),
 
-    role: z.enum([EnumRole.Photographer, EnumRole.Editor, EnumRole.Assistant], {
-      errorMap: () => ({ message: "Role is required" }),
-    }),
+    role: z.enum(
+      [
+        EnumRole.Photographer,
+        EnumRole.Editor,
+        EnumRole.Assistant,
+        EnumRole.Admin,
+      ],
+      {
+        errorMap: () => ({ message: "Role is required" }),
+      },
+    ),
 
     password: z.string().optional(),
 

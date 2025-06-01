@@ -12,7 +12,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Switch } from "@heroui/switch";
 import { useParams, useRouter } from "next/navigation";
 
-import { EnumRole, FormHandle, UserFormValues, UserSchema } from "../_type";
+import { FormHandle, UserFormValues, UserSchema } from "../_type";
 import { useUserContext } from "../_context";
 import { useMutateUser } from "../_hooks/use-mutate-user";
 import { useUserByUUID } from "../_hooks/use-user-by-uuid";
@@ -25,10 +25,13 @@ import {
   SelectOption,
 } from "@/app/[locale]/admin/_components";
 import { showToast } from "@/utils/show-toast";
+import { EnumRole } from "@/types/enums";
+import { useAuth } from "@/app/[locale]/admin/_context/auth-context";
 
 const Form: ForwardRefRenderFunction<FormHandle> = () => {
   const params = useParams();
   const uuid = params?.id as string | undefined;
+  const { user: authUser } = useAuth();
 
   const { data: user, refetch } = useUserByUUID(uuid);
   const { mutate: mutateDeleteImageUser } = useDeleteImageUser();
@@ -195,19 +198,29 @@ const Form: ForwardRefRenderFunction<FormHandle> = () => {
       <Controller
         control={form.control}
         name="role"
-        render={({ field, fieldState }) => (
-          <SelectOption
-            error={fieldState.error}
-            field={field}
-            label="Role"
-            placeholder="Select Role"
-            selectItems={Object.values(EnumRole).map((role) => ({
-              value: role,
-              label: role.charAt(0).toUpperCase() + role.slice(1),
-            }))}
-            selectedValue={field.value}
-          />
-        )}
+        render={({ field, fieldState }) => {
+          const roles = Object.values(EnumRole).filter((role) =>
+            authUser?.role.toLowerCase() === EnumRole.Admin.toLowerCase()
+              ? true
+              : role.toLowerCase() !== EnumRole.Admin.toLowerCase(),
+          );
+
+          return (
+            <SelectOption
+              error={fieldState.error}
+              field={field}
+              label="Role"
+              placeholder="Select Role"
+              selectItems={roles.map((role) => ({
+                value: (role as string).toLowerCase(),
+                label:
+                  (role as string).charAt(0).toUpperCase() +
+                  (role as string).slice(1),
+              }))}
+              selectedValue={field.value}
+            />
+          );
+        }}
       />
 
       <Controller

@@ -19,11 +19,11 @@ function switchLocalePath(path: string, current: string, next: string) {
 const items = [
   {
     key: "id",
-    label: "🇮🇩",
+    label: "🇮🇩 Indonesia",
   },
   {
     key: "en",
-    label: "🇺🇸",
+    label: "🇺🇸 English",
   },
 ];
 

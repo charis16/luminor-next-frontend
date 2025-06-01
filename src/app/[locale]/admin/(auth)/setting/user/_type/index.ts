@@ -55,6 +55,7 @@ export const UserSchema = z
     canLogin: z.boolean(),
     photo: PhotoSchema,
     id: z.string().optional(),
+    slug: z.string().optional(),
     name: z.string().min(1, { message: "Name is required" }),
     email: z
       .string()
@@ -66,10 +67,10 @@ export const UserSchema = z
 
     role: z.enum(
       [
-        EnumRole.Photographer,
-        EnumRole.Editor,
-        EnumRole.Assistant,
-        EnumRole.Admin,
+        EnumRole.Photographer.toLowerCase(),
+        EnumRole.Editor.toLowerCase(),
+        EnumRole.Assistant.toLowerCase(),
+        EnumRole.Admin.toLowerCase(),
       ],
       {
         errorMap: () => ({ message: "Role is required" }),

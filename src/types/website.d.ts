@@ -58,6 +58,7 @@ export interface TeamMemberResponse {
   data:
     | {
         uuid: string;
+        slug: string;
         name: string;
         email: string;
         photo: string;

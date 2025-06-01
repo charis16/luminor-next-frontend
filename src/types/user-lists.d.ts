@@ -11,6 +11,7 @@ export type User = {
 export interface UserDetail {
   uuid: string;
   name: string;
+  slug: string;
   email: string;
   role: string;
   description: string;

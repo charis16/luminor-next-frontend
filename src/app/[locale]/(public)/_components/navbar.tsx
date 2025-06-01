@@ -25,6 +25,8 @@ import { ChevronDown } from "lucide-react";
 
 import { useWebsites } from "../_hooks/use-website";
 import { LanguageSwitcher } from "../../admin/_components";
+import { useCategories } from "../_hooks/use-categories";
+import { useTeamMembers } from "../_hooks/use-team-members";
 
 import { InstagramIcon, TikTokIcon, WhatsappIcon } from "./icons";
 import SidebarMenuItem from "./sidebar-menu";
@@ -38,6 +40,8 @@ export const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const { data } = useWebsites();
   const t = useTranslations("navbar");
+  const { data: categoryData } = useCategories();
+  const { data: teamData } = useTeamMembers();
 
   // Menunggu animasi sebelum menghapus dari DOM
   useEffect(() => {
@@ -153,17 +157,22 @@ export const Navbar = () => {
               </DropdownTrigger>
             </NavbarItem>
             <DropdownMenu
-              aria-label="ACME features"
+              aria-label="categories"
               itemClasses={{
                 base: "gap-4",
               }}
             >
-              <DropdownItem
-                key="autoscaling"
-                description="ACME scales apps based on demand and load"
-              >
-                Autoscaling
-              </DropdownItem>
+              {(categoryData?.data ?? []).map((category) => (
+                <DropdownItem
+                  key={category.uuid}
+                  as={Link}
+                  className="text-base text-white"
+                  href={`/category/${category.slug}`}
+                >
+                  {category.name.charAt(0).toUpperCase() +
+                    category.name.slice(1)}
+                </DropdownItem>
+              ))}
             </DropdownMenu>
           </Dropdown>
 
@@ -182,17 +191,22 @@ export const Navbar = () => {
               </DropdownTrigger>
             </NavbarItem>
             <DropdownMenu
-              aria-label="ACME features"
+              aria-label="portfolio"
               itemClasses={{
                 base: "gap-4",
               }}
             >
-              <DropdownItem
-                key="autoscaling"
-                description="ACME scales apps based on demand and load"
-              >
-                Autoscaling
-              </DropdownItem>
+              {(teamData?.data ?? []).map((teamData) => (
+                <DropdownItem
+                  key={teamData.uuid}
+                  as={Link}
+                  className="text-base text-white"
+                  href={`/${teamData.slug}`}
+                >
+                  {teamData.name.charAt(0).toUpperCase() +
+                    teamData.name.slice(1)}
+                </DropdownItem>
+              ))}
             </DropdownMenu>
           </Dropdown>
 
@@ -200,9 +214,9 @@ export const Navbar = () => {
             <Button
               isExternal
               as={Link}
-              className="bg-[rgb(42,181,64)]/10 text-white hover:bg-[rgb(42,181,64)] border-none"
+              className="bg-[rgb(42,181,64)]/80 text-white hover:bg-[rgb(42,181,64)] border-none"
               endContent={<WhatsappIcon />}
-              href="https://api.whatsapp.com/send?phone=6281234567890&text=Halo%20Luminor!"
+              href={`https://api.whatsapp.com/send?phone=${data?.data?.phone_number}&text=Halo%20Luminor!`}
               variant="bordered"
             >
               {t("chatWithUs")}

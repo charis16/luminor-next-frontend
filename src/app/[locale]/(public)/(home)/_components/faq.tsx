@@ -16,7 +16,7 @@ export default function FaqSection() {
   const t = useTranslations("home");
 
   return (
-    <div className="relative flex flex-col gap-6 w-full" id="faq-section">
+    <div className="relative flex flex-col gap-6 w-full my-10" id="faq-section">
       <div className="flex flex-col gap-2 pl-6">
         <h2 className="text-4xl font-bold text-foreground">{t("faqs")}</h2>
         <p className="text-neutral-400 max-w-3xl">{t("faqDesc")}</p>
@@ -30,65 +30,70 @@ export default function FaqSection() {
             locale === "en" ? faq.answer_en : faq.answer_id;
 
           return (
-            <Accordion
-              key={faq.uuid}
-              className="p-0 mt-4"
-              motionProps={{
-                variants: {
-                  enter: {
-                    y: 0,
-                    opacity: 1,
-                    height: "auto",
-                    overflowY: "unset",
-                    transition: {
-                      height: {
-                        type: "spring",
-                        stiffness: 500,
-                        damping: 30,
-                        duration: 1,
+            <div key={faq.uuid} className="w-full px-8">
+              <Accordion
+                className="p-0 mt-4"
+                motionProps={{
+                  variants: {
+                    enter: {
+                      y: 0,
+                      opacity: 1,
+                      height: "auto",
+                      overflowY: "unset",
+                      transition: {
+                        height: {
+                          type: "spring",
+                          stiffness: 500,
+                          damping: 30,
+                          duration: 1,
+                        },
+                        opacity: {
+                          easings: "ease",
+                          duration: 1,
+                        },
                       },
-                      opacity: {
-                        easings: "ease",
-                        duration: 1,
+                    },
+                    exit: {
+                      y: -10,
+                      opacity: 0,
+                      height: 0,
+                      overflowY: "hidden",
+                      transition: {
+                        height: {
+                          easings: "ease",
+                          duration: 0.25,
+                        },
+                        opacity: {
+                          easings: "ease",
+                          duration: 0.3,
+                        },
                       },
                     },
                   },
-                  exit: {
-                    y: -10,
-                    opacity: 0,
-                    height: 0,
-                    overflowY: "hidden",
-                    transition: {
-                      height: {
-                        easings: "ease",
-                        duration: 0.25,
-                      },
-                      opacity: {
-                        easings: "ease",
-                        duration: 0.3,
-                      },
-                    },
-                  },
-                },
-              }}
-            >
-              <AccordionItem
-                aria-label={localizedQuestion}
-                className="text-white p-0"
-                indicator={({ isOpen }) =>
-                  isOpen ? <ChevronUp className="rotate-90" /> : <ChevronDown />
-                }
-                title={
-                  <span className="text-lg font-semibold">
-                    {localizedQuestion}
-                  </span>
-                }
+                }}
               >
-                <span className="text-md text-neutral-300">
-                  {localizedAnswer}
-                </span>
-              </AccordionItem>
-            </Accordion>
+                <AccordionItem
+                  aria-label={localizedQuestion}
+                  className="text-white p-0"
+                  indicator={({ isOpen }) =>
+                    isOpen ? (
+                      <ChevronUp className="rotate-90" />
+                    ) : (
+                      <ChevronDown />
+                    )
+                  }
+                  title={
+                    <span className="text-lg font-semibold">
+                      {localizedQuestion}
+                    </span>
+                  }
+                >
+                  <span className="text-md text-neutral-300">
+                    {localizedAnswer}
+                  </span>
+                </AccordionItem>
+              </Accordion>
+            </div>
           );
         })
       ) : (

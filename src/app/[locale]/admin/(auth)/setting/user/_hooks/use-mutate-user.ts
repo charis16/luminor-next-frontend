@@ -13,6 +13,11 @@ export function useMutateUser() {
     mutationFn: async ({ uuid, data }: MutateUserInput) => {
       const formData = new FormData();
 
+      formData.append(
+        "slug",
+        data.slug ?? data.name.toLowerCase().replace(/\s+/g, "-"),
+      );
+
       formData.append("name", data.name);
       formData.append("email", data.email);
       formData.append("role", data.role);

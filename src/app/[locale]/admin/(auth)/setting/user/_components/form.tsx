@@ -46,6 +46,7 @@ const Form: ForwardRefRenderFunction<FormHandle> = () => {
     resolver: zodResolver(UserSchema),
     defaultValues: {
       isPublished: true,
+      slug: "",
       canLogin: false,
       email: "",
       name: "",
@@ -129,6 +130,7 @@ const Form: ForwardRefRenderFunction<FormHandle> = () => {
     if (user) {
       form.reset({
         id: user.uuid,
+        slug: user.slug,
         isPublished: user.is_published,
         email: user.email,
         name: user.name,
@@ -165,6 +167,19 @@ const Form: ForwardRefRenderFunction<FormHandle> = () => {
           >
             {field.value ? "Published" : "Draft"}
           </Switch>
+        )}
+      />
+
+      <Controller
+        control={form.control}
+        name="slug"
+        render={({ field, fieldState }) => (
+          <InputText
+            error={fieldState.error}
+            field={field}
+            label="Slug"
+            placeholder="Ex: john-doe"
+          />
         )}
       />
 

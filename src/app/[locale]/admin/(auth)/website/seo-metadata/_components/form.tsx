@@ -106,7 +106,8 @@ export default function SeoForm() {
     if (website) {
       form.reset({
         metaDescription: website.meta_desc,
-        metaKeywords: website.meta_keyword.split(","),
+        metaKeywords:
+          website.meta_keyword !== "" ? website.meta_keyword.split(",") : [],
         metaTitle: website.meta_title,
       });
     }

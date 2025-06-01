@@ -11,18 +11,6 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "fakeimg.pl",
-        port: "",
-        pathname: "/**",
-      },
-      {
-        protocol: "http",
-        hostname: "localhost",
-        port: "9000",
-        pathname: "/**",
-      },
-      {
-        protocol: "https",
         hostname: "www.cdn.luminorpictures.com",
         pathname: "/**",
       },

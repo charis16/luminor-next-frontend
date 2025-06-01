@@ -13,6 +13,7 @@ log() {
   echo "-------------------------------------------"
 }
 
+rm -rf .next
 log "Stopping and removing old containers, volumes, and orphans"
 docker-compose down --volumes --remove-orphans
 

@@ -11,7 +11,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "www.cdn.luminorpictures.com",
+        hostname: "cdn.luminorpictures.com",
         pathname: "/**",
       },
     ],

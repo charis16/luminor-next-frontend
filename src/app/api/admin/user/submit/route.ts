@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import FormData from "form-data";
 
 import { fetchWithAutoRefresh } from "@/server/fetch-with-auto-refresh";
+import { isServerFile } from "@/server/is-server-file";
 
 export async function POST(req: NextRequest) {
   const incomingForm = await req.formData();
@@ -12,7 +13,7 @@ export async function POST(req: NextRequest) {
     if (typeof value === "string") {
       clone1.append(key, value);
       clone2.append(key, value);
-    } else if (value instanceof File) {
+    } else if (isServerFile(value)) {
       const buffer = Buffer.from(await value.arrayBuffer());
 
       clone1.append(key, buffer, value.name);

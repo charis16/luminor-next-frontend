@@ -24,6 +24,7 @@ import { ConfirmDialog } from "@/app/[locale]/admin/_components/confirmation-dia
 import { useAuth } from "@/app/[locale]/admin/_context/auth-context";
 import { showToast } from "@/utils/show-toast";
 import { EnumRole } from "@/types/enums";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export default function TableData() {
   const {
@@ -39,6 +40,7 @@ export default function TableData() {
   const { user: authUser } = useAuth();
   const [selectedId, setSelectedId] = useState<User["uuid"]>("");
   const { mutate: deleteUser } = useDeleteUser();
+  const isMobile = useIsMobile();
 
   const loadingState = isLoading ? "loading" : "idle";
   const isOpen = selectedId !== "";
@@ -84,7 +86,7 @@ export default function TableData() {
         removeWrapper
         aria-label="user table"
         classNames={{
-          base: "max-h-[480px] overflow-scroll xs:max-w-[350px] md:max-w-full md:max-h-[700x]",
+          base: `max-h-[480px] overflow-scroll ${isMobile && "max-w-[350px] mx-auto"} md:max-w-full md:max-h-[700x]`,
         }}
         rowHeight={10}
       >
@@ -93,7 +95,7 @@ export default function TableData() {
             <TableColumn
               key={column.uid}
               align={column.uid === "actions" ? "center" : "start"}
-              className="!text-white !font-semibold text-base"
+              className="!text-white !font-semibold text-base "
             >
               {column.name}
             </TableColumn>

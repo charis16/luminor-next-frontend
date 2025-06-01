@@ -6,29 +6,40 @@ import { ChevronDown } from "lucide-react";
 import { useTranslations } from "use-intl";
 import { useMemo } from "react";
 
-// Data struktur
+import { useCategories } from "../_hooks/use-categories";
+import { useTeamMembers } from "../_hooks/use-team-members";
 
-export default function SidebarMenuItem() {
+interface SidebarMenuProps {
+  onSetMenuOpen: () => void;
+}
+
+export default function SidebarMenuItem({ onSetMenuOpen }: SidebarMenuProps) {
   const t = useTranslations("navbar");
-  const menuGroups = useMemo(
-    () => [
+  const { data: categoryData } = useCategories();
+  const { data: teamData } = useTeamMembers();
+
+  const menuGroups = useMemo(() => {
+    return [
       {
         title: t("category"),
-        items: [
-          { title: "Introduction", href: "/introduction" },
-          { title: "Design Principles", href: "/design" },
-        ],
+        items: (categoryData?.data ?? []).map(
+          (cat: { name: string; slug: string }) => ({
+            title: cat.name,
+            href: `/category/${cat.slug}`,
+          }),
+        ),
       },
       {
         title: t("portfolio"),
-        items: [
-          { title: "NextUI to HeroUI", href: "/migration" },
-          { title: "Figma", href: "/figma" },
-        ],
+        items: (teamData?.data ?? []).map(
+          (cat: { name: string; slug: string }) => ({
+            title: cat.name,
+            href: `/${cat.slug}`,
+          }),
+        ),
       },
-    ],
-    [t],
-  );
+    ];
+  }, [t, categoryData, teamData]);
 
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
 
@@ -70,7 +81,11 @@ export default function SidebarMenuItem() {
             <ul className="space-y-1">
               {group.items.map(({ title, href }) => (
                 <li key={href} className="pl-2 flex items-center gap-2">
-                  <Link className="hover:text-white" href={href}>
+                  <Link
+                    className="hover:text-white"
+                    href={href}
+                    onClick={onSetMenuOpen}
+                  >
                     {title}
                   </Link>
                 </li>

@@ -18,10 +18,10 @@ export default function Contact() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-x-16 gap-y-10 w-full items-start py-10 px-6">
           {/* Column 1: Intro */}
           <div className="space-y-4 text-start">
-            <h1 className="text-4xl md:text-5xl font-extrabold text-foreground">
+            <h2 className="text-4xl font-bold text-foreground">
               {t("getInTouch")}
-            </h1>
-            <p className="text-neutral-400">{t("getInTouchDesc")}</p>
+            </h2>
+            <h4 className="text-neutral-400">{t("getInTouchDesc")}</h4>
           </div>
 
           {/* Column 2: Address */}

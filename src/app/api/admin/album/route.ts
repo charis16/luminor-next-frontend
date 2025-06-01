@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import FormData from "form-data";
 
 import { fetchWithAutoRefresh } from "@/server/fetch-with-auto-refresh";
+import { isServerFile } from "@/server/is-server-file";
 
 const backendBaseUrl = process.env.API_BASE_URL!;
 
@@ -22,7 +23,7 @@ export async function POST(req: NextRequest) {
   const clone2 = new FormData();
 
   for (const [key, value] of Array.from(incomingForm.entries())) {
-    if (value instanceof File) {
+    if (isServerFile(value)) {
       const buffer = Buffer.from(await value.arrayBuffer());
 
       clone1.append(key, buffer, value.name);

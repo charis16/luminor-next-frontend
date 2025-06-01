@@ -78,9 +78,9 @@ const LatestWork = () => {
             <ImageIcon className="text-muted-foreground size-14" />
           </div>
           <h2 className="text-3xl font-semibold text-white">{t("noAlbums")}</h2>
-          <p className="text-neutral-400 max-w-md text-xl">
+          <h4 className="text-neutral-400 max-w-md text-xl">
             {t("noAlbumsYet")}
-          </p>
+          </h4>
         </div>
       )}
     </div>

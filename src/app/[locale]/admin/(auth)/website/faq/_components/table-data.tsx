@@ -24,6 +24,7 @@ import { useAuth } from "@/app/[locale]/admin/_context/auth-context";
 import { ConfirmDialog } from "@/app/[locale]/admin/_components/confirmation-dialog";
 import { showToast } from "@/utils/show-toast";
 import { EnumRole } from "@/types/enums";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export default function TableData() {
   const locale = useLocale();
@@ -41,6 +42,7 @@ export default function TableData() {
   const router = useRouter();
   const loadingState = isLoading || data?.length === 0 ? "loading" : "idle";
   const isOpen = selectedId !== "";
+  const isMobile = useIsMobile();
   const renderCell = useCallback((data: FaqDetail, columnKey: ColumnKey) => {
     const cellValue = data[columnKey as keyof FaqDetail];
 
@@ -89,7 +91,7 @@ export default function TableData() {
         removeWrapper
         aria-label="category table"
         classNames={{
-          base: "max-h-[480px] overflow-scroll xs:max-w-[350px] md:max-w-full md:max-h-[700x]",
+          base: `max-h-[480px] overflow-scroll ${isMobile && "max-w-[350px] mx-auto"} md:max-w-full md:max-h-[700x]`,
         }}
         rowHeight={10}
       >

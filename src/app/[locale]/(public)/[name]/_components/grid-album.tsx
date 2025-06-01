@@ -1,13 +1,12 @@
 "use client";
 import { Tab, Tabs } from "@heroui/tabs";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Image } from "@heroui/image";
 import { cn } from "@heroui/theme";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-
-import { useIsMobile } from "@/hooks/use-mobile";
+import NextImage from "next/image";
 
 const itemVariants = {
   hidden: { opacity: 0, y: 50 }, // Mulai dalam keadaan tidak terlihat dan turun ke bawah
@@ -26,53 +25,30 @@ interface GridAlbumProps {
 export default function GridAlbum({ showTab }: GridAlbumProps) {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [selected, setSelected] = useState("all");
-  const isMobile = useIsMobile();
   const { name } = useParams();
-  const [isScrolling, setIsScrolling] = useState(false);
-
-  useEffect(() => {
-    if (!isMobile) return; // Hanya berlaku di mobile
-
-    let timeout: NodeJS.Timeout;
-
-    const handleScroll = () => {
-      setIsScrolling(true);
-      clearTimeout(timeout);
-      timeout = setTimeout(() => setIsScrolling(false), 300); // Setelah 300ms berhenti, Tabs muncul lagi
-    };
-
-    window.addEventListener("scroll", handleScroll);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      clearTimeout(timeout);
-    };
-  }, [isMobile]);
 
   return (
-    <div className="mx-auto py-14 flex flex-col-reverse md:flex-col gap-6">
-      {showTab && (
-        <div
-          className={cn(
-            isMobile &&
-              `fixed bottom-0 left-0 right-0 bg-black/60 backdrop-blur-lg p-4 z-20 
-            transition-opacity duration-300 ${isScrolling ? "opacity-0" : "opacity-100"}`,
-          )}
-        >
+    <div className="mx-auto flex flex-col gap-6 py-6">
+      <div className="sticky top-[70px] z-30 transition-colors duration-300 backdrop-blur-sm py-4 bg-[#16151D]/50">
+        <div className="overflow-x-auto whitespace-nowrap scrollbar-hide">
           <Tabs
             aria-label="Tabs category"
             selectedKey={selected}
-            size="lg"
+            size="md"
             variant="underlined"
             onSelectionChange={(key) => setSelected(key.toString())}
           >
             <Tab key="all" className="text-xl" title="All" />
-            <Tab key="weeding" className="text-xl" title="Wedding" />
-            <Tab key="pre-weeding" className="text-xl" title="Pre Wedding" />
+            <Tab key="wedding" className="text-xl" title="Wedding" />
+            <Tab key="pre-wedding" className="text-xl" title="Pre Wedding" />
             <Tab key="family" className="text-xl" title="Family" />
+            <Tab key="maternity" className="text-xl" title="Maternity" />
+            <Tab key="engagement" className="text-xl" title="Engagement" />
+            {/* Tambah lebih banyak tab jika perlu */}
           </Tabs>
         </div>
-      )}
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
         {Array.from({ length: 100 }, (_, index) => (
           <motion.div
@@ -93,17 +69,18 @@ export default function GridAlbum({ showTab }: GridAlbumProps) {
             onMouseLeave={() => setHoveredIndex(null)}
           >
             <Link passHref href={`/${name}/${selected}/${index + 1}`}>
-              <div>
+              <div className="relative w-full aspect-[16/9] group overflow-hidden">
                 <Image
+                  fill
                   alt={`album ${index}`}
-                  className="w-full object-cover transition duration-300 group-hover:brightness-100"
+                  as={NextImage}
+                  className="object-cover transition duration-300 group-hover:brightness-100"
                   isBlurred={false}
                   radius="none"
                   removeWrapper={true}
-                  src={"https://fakeimg.pl/1920x1080"}
+                  src="/images/placeholder-image.webp"
                 />
-                {/* Teks muncul di bawah gambar */}
-                <p className="absolute bottom-3 left-3 text-white text-center p-2 z-10 font-semibold text-lg px-3 py-1">
+                <p className="absolute bottom-3 left-3 text-white text-center z-10 font-semibold text-lg px-3 py-1">
                   Album {index + 1}
                 </p>
               </div>

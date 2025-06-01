@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
+import { Metadata } from "next";
 
 import { LanguageSwitcher } from "../admin/_components";
 
@@ -14,6 +15,68 @@ import { getOptions as categoryOptions } from "./_hooks/use-categories";
 import { getOptions as teamMemberOptions } from "./_hooks/use-team-members";
 
 import getQueryClient from "@/utils/react-query";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+  const t = await getTranslations("seo");
+
+  try {
+    const res = await fetch(`${baseUrl}/api/website`, {
+      cache: "no-store",
+    });
+
+    const json = await res.json();
+    const data = json?.data;
+
+    const metaDesc = data?.meta_desc?.slice(0, 160) || t("description");
+
+    const metaName = data?.meta_title || t("title");
+
+    const ogImage = data?.og_image?.startsWith("http")
+      ? data.og_image
+      : `${baseUrl}${data?.og_image || "/web-app-manifest-512x512.png"}`;
+
+    return {
+      title: {
+        default: metaName,
+        template: `%s - Luminor Photography`,
+      },
+      description: metaDesc,
+      openGraph: {
+        title: metaName,
+        description: metaDesc,
+        images: [ogImage],
+        url: `${baseUrl}`,
+      },
+      twitter: {
+        title: metaName,
+        description: metaDesc,
+        images: [ogImage],
+      },
+      alternates: {
+        canonical: `${baseUrl}`,
+      },
+    };
+  } catch {
+    return {
+      title: t("title"),
+      description: t("description"),
+      openGraph: {
+        title: "Luminor Photography",
+        description: t("description"),
+        images: [`${baseUrl}/web-app-manifest-512x512.png`],
+      },
+      twitter: {
+        title: "Luminor Photography",
+        description: t("description"),
+        images: [`${baseUrl}/web-app-manifest-512x512.png`],
+      },
+      alternates: {
+        canonical: `${baseUrl}`,
+      },
+    };
+  }
+}
 
 export default async function LayoutHome({
   children,
@@ -53,7 +116,7 @@ export default async function LayoutHome({
         <Navbar />
         <div>{children}</div>
         <a
-          className="fixed top-1/2 right-4 -translate-y-1/2 z-50 bg-green-600 text-white px-2 py-2 text-sm tracking-tight rotate-90 origin-right md:hidden rounded-b-lg whitespace-nowrap inline-flex gap-2 cursor-pointer items-center"
+          className="fixed top-1/2 right-4 -translate-y-1/2 z-30 bg-green-600 text-white px-2 py-2 text-sm tracking-tight rotate-90 origin-right md:hidden rounded-b-lg whitespace-nowrap inline-flex gap-2 cursor-pointer items-center"
           href={`https://api.whatsapp.com/send?phone=${website?.phone_number}&text=Halo%20Luminor!`}
           rel="noreferrer"
           target="_blank"
@@ -85,7 +148,7 @@ export default async function LayoutHome({
           </div>
           <div className="mt-2 border-t border-white/10 pt-6 flex flex-col md:flex-row items-center justify-center text-sm text-neutral-500">
             {/* Kiri - Info */}
-            <p className="text-center flex flex-col gap-1 md:flex-row">
+            <div className="text-center flex flex-col gap-1 md:flex-row">
               © 2025 Luminor,
               <p className="inline-flex items-center text-center gap-1">
                 Designed by
@@ -93,7 +156,7 @@ export default async function LayoutHome({
                   CV. Selaras Utama Kreasindo
                 </span>
               </p>
-            </p>
+            </div>
 
             {/* <div className="flex items-center gap-6 mt-3 md:mt-0">
               <div className="flex gap-6">

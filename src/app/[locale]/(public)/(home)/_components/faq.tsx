@@ -19,7 +19,7 @@ export default function FaqSection() {
     <div className="relative flex flex-col gap-6 w-full my-10" id="faq-section">
       <div className="flex flex-col gap-2 pl-6">
         <h2 className="text-4xl font-bold text-foreground">{t("faqs")}</h2>
-        <p className="text-neutral-400 max-w-3xl">{t("faqDesc")}</p>
+        <h4 className="text-neutral-400 max-w-3xl">{t("faqDesc")}</h4>
       </div>
 
       {data?.data && data.data.length > 0 ? (
@@ -102,7 +102,9 @@ export default function FaqSection() {
             <MessageCircleQuestionIcon className="text-muted-foreground size-14" />
           </div>
           <h2 className="text-3xl font-semibold text-white">{t("noFaqs")}</h2>
-          <p className="text-neutral-400 max-w-md text-xl">{t("noFaqsYet")}</p>
+          <h4 className="text-neutral-400 max-w-md text-xl">
+            {t("noFaqsYet")}
+          </h4>
         </div>
       )}
     </div>

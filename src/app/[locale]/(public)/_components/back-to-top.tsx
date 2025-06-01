@@ -48,7 +48,7 @@ export default function BackToTop() {
 
   return (
     <div
-      className={`z-10 fixed bottom-24 md:bottom-10 right-4 flex flex-col items-center cursor-pointer group transition-opacity duration-500 ${
+      className={`z-10 fixed bottom-0 md:bottom-10 right-4 flex flex-col items-center cursor-pointer group transition-opacity duration-500 ${
         isVisible && !isScrolling ? "opacity-100" : "opacity-0"
       }`}
       role="button"

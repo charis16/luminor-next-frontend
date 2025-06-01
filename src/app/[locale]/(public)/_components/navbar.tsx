@@ -251,7 +251,7 @@ export const Navbar = () => {
                   {t("about")}
                 </Link>
 
-                <SidebarMenuItem />
+                <SidebarMenuItem onSetMenuOpen={() => setIsMenuOpen(false)} />
               </div>
 
               <div className="flex mt-6">

@@ -24,6 +24,7 @@ import { CategoryDetail } from "@/types/category-lists";
 import { ConfirmDialog } from "@/app/[locale]/admin/_components/confirmation-dialog";
 import { showToast } from "@/utils/show-toast";
 import { EnumRole } from "@/types/enums";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export default function TableData() {
   const {
@@ -39,6 +40,7 @@ export default function TableData() {
   const loadingState = isLoading ? "loading" : "idle";
   const router = useRouter();
   const locale = useLocale();
+  const isMobile = useIsMobile();
   const [selectedId, setSelectedId] = useState<CategoryDetail["uuid"]>("");
 
   const isOpen = selectedId !== "";
@@ -85,7 +87,7 @@ export default function TableData() {
         removeWrapper
         aria-label="category table"
         classNames={{
-          base: "max-h-[480px] overflow-scroll xs:max-w-[350px] lg:max-w-full md:max-h-[700x]",
+          base: `max-h-[480px] overflow-scroll ${isMobile && "max-w-[350px] mx-auto"} md:max-w-full md:max-h-[700x]`,
         }}
         rowHeight={10}
       >

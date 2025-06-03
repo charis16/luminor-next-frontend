@@ -28,9 +28,9 @@ export default function GridAlbum({ showTab }: GridAlbumProps) {
   const { name } = useParams();
 
   return (
-    <div className="mx-auto flex flex-col gap-6 py-6">
+    <div className="mx-auto flex flex-col gap-2 md:gap-6 md:py-6">
       {showTab && (
-        <div className="sticky top-[70px] z-30 transition-colors duration-300 backdrop-blur-sm py-4 bg-[#16151D]/50">
+        <div className="sticky top-[60px] z-30 transition-colors duration-300 backdrop-blur-sm py-2 md:py-4 bg-[#16151D]">
           <div className="overflow-x-auto whitespace-nowrap scrollbar-hide">
             <Tabs
               aria-label="Tabs category"

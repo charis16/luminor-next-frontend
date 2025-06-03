@@ -22,10 +22,10 @@ export default async function ServicePage(props: {
   const t = await getTranslations("category");
 
   return (
-    <div className="relative min-h-screen text-white flex flex-col md:flex-row gap-6">
+    <div className="relative min-h-screen text-white flex flex-col md:flex-row gap-2 md:gap-6">
       <TitlePage subtitle={name} title="Our Work" />
       <div className="md:ml-[120px] md:px-10 px-5 md:py-32 gap-6 grow">
-        <p className="text-white mt-4 text-xl md:text-4xl">{t("heading")}</p>
+        <p className="text-white md:mt-4 text-lg md:text-4xl">{t("heading")}</p>
         <GridAlbum showTab />
         <BackToTop />
       </div>

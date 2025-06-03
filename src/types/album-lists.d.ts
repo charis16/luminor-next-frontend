@@ -4,9 +4,11 @@ export type AlbumDetail = {
   title: string;
   category_id: string;
   category_name: string;
+  category_slug: string;
   user_id: string;
   user_name: string;
   user_avatar: string;
+  user_slug: string;
   description: string;
   thumbnail: string;
   images: string[];

@@ -17,7 +17,7 @@ export default function Team() {
   const { data } = useTeamMembers();
 
   return (
-    <div className="flex flex-col gap-6 my-6 ">
+    <div className="flex flex-col gap-10 py-6">
       <div className="relative w-full h-[40vh] md:h-[65vh]">
         <Image
           fill
@@ -34,10 +34,10 @@ export default function Team() {
 
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-2">
-          <h2 className="text-4xl font-bold text-foreground">
+          <h2 className="text-xl md:text-4xl font-bold text-foreground">
             {t("meetTheTeam")}
           </h2>
-          <p className="text-neutral-400 max-w-3xl">{t("meetTheTeamDesc")}</p>
+          <p className="text-neutral-400">{t("meetTheTeamDesc")}</p>
         </div>
         {data && data?.data && data.data.length ? (
           data?.data?.map((member) => (
@@ -45,14 +45,14 @@ export default function Team() {
               key={member.uuid}
               className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
             >
-              <div className="relative group h-[420px] bg-black overflow-hidden rounded-md shadow-md">
+              <div className="relative group h-[420px] overflow-hidden rounded-md shadow-md">
                 <Image
                   alt="Team Member"
                   className="w-full h-full object-cover"
                   isBlurred={false}
                   radius="none"
                   removeWrapper={true}
-                  src={member.photo || "/images/default-avatar.png"}
+                  src={member.photo_url || "/images/placeholder-image.webp"}
                 />
 
                 <h3 className="absolute bottom-4 left-4 text-white text-xl z-10 font-bold">

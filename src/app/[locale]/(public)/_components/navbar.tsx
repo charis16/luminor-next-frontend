@@ -133,13 +133,13 @@ export const Navbar = () => {
           justify="end"
         >
           <NavbarItem>
-            <Link
+            <NextLink
               aria-current="page"
               className="text-white text-base"
               href="/about"
             >
               {t("about")}
-            </Link>
+            </NextLink>
           </NavbarItem>
 
           <Dropdown>
@@ -147,7 +147,7 @@ export const Navbar = () => {
               <DropdownTrigger>
                 <Button
                   disableRipple
-                  className="p-0 bg-transparent data-[hover=true]:bg-transparent text-base"
+                  className="p-0 bg-transparent data-[hover=true]:bg-transparent text-base font-light"
                   endContent={<ChevronDown className="text-white size-5" />}
                   radius="sm"
                   variant="light"
@@ -165,7 +165,7 @@ export const Navbar = () => {
               {(categoryData?.data ?? []).map((category) => (
                 <DropdownItem
                   key={category.uuid}
-                  as={Link}
+                  as={NextLink}
                   className="text-base text-white"
                   href={`/category/${category.slug}`}
                 >
@@ -181,7 +181,7 @@ export const Navbar = () => {
               <DropdownTrigger>
                 <Button
                   disableRipple
-                  className="p-0 bg-transparent data-[hover=true]:bg-transparent text-base"
+                  className="p-0 bg-transparent data-[hover=true]:bg-transparent text-base font-light"
                   endContent={<ChevronDown className="text-white size-5" />}
                   radius="sm"
                   variant="light"
@@ -199,7 +199,7 @@ export const Navbar = () => {
               {(teamData?.data ?? []).map((teamData) => (
                 <DropdownItem
                   key={teamData.uuid}
-                  as={Link}
+                  as={NextLink}
                   className="text-base text-white"
                   href={`/${teamData.slug}`}
                 >

@@ -39,7 +39,7 @@ const LatestWork = () => {
 
   return (
     <div className="relative flex flex-col gap-6 w-full">
-      <h2 className="sticky top-20 pl-6 text-3xl md:text-4xl font-bold text-white z-20">
+      <h2 className="sticky top-20 pl-6 text-xl md:text-4xl font-bold text-foreground z-20">
         {t("ourLatestWork")}
       </h2>
       {data?.data && data.data.length > 0 ? (
@@ -77,8 +77,10 @@ const LatestWork = () => {
           <div className="w-20 h-20 rounded-full bg-muted/10 flex items-center justify-center">
             <ImageIcon className="text-muted-foreground size-14" />
           </div>
-          <h2 className="text-3xl font-semibold text-white">{t("noAlbums")}</h2>
-          <h4 className="text-neutral-400 max-w-md text-xl">
+          <h2 className="text-xl md:text-3xl font-semibold text-white">
+            {t("noAlbums")}
+          </h2>
+          <h4 className="text-neutral-400 max-w-md text-lg md:text-xl">
             {t("noAlbumsYet")}
           </h4>
         </div>

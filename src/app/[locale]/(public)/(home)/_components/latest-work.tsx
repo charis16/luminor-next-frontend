@@ -5,6 +5,7 @@ import { Image } from "@heroui/image";
 import NextImage from "next/image";
 import { ImageIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
 
 import { useAlbums } from "../../_hooks/use-album";
 
@@ -53,22 +54,26 @@ const LatestWork = () => {
               viewport={{ once: false, amount: 0.05 }}
               whileInView="visible"
             >
-              <div className="relative w-full aspect-[4/3] min-h-[250px] md:min-h-[350px]">
-                <Image
-                  fill
-                  alt={album.slug}
-                  as={NextImage}
-                  className="absolute inset-0 w-full h-full object-cover"
-                  radius="none"
-                  removeWrapper={true}
-                  src={album.thumbnail}
-                />
-              </div>
-              <div className="absolute bottom-0 left-0 right-0 bg-black/60  px-3 py-2 z-10">
-                <p className="text-lg font-medium text-white m-0">
-                  {album.title}
-                </p>
-              </div>
+              <Link
+                href={`/${album.user_slug.replace(/\s+/g, "-")}/${album.category_slug.replace(/\s+/g, "-")}/${album.slug.replace(/\s+/g, "-")}`}
+              >
+                <div className="relative w-full aspect-[16/9] group overflow-hidden">
+                  <Image
+                    fill
+                    alt={album.slug}
+                    as={NextImage}
+                    className="absolute inset-0 w-full h-full object-cover"
+                    radius="none"
+                    removeWrapper={true}
+                    src={album.thumbnail}
+                  />
+                </div>
+                <div className="absolute bottom-0 left-0 right-0 bg-black/60  px-3 py-2 z-10">
+                  <p className="text-lg font-medium text-white m-0">
+                    {album.title}
+                  </p>
+                </div>
+              </Link>
             </motion.div>
           ))}
         </div>

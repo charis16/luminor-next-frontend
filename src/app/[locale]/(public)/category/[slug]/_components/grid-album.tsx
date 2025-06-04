@@ -88,7 +88,6 @@ export default function GridAlbum({ showTab, slug }: GridAlbumProps) {
                   title={user.name.replace(/\b\w/g, (char) =>
                     char.toUpperCase(),
                   )}
-                  onClick={() => setSelected(user.slug)}
                 />
               ))}
             </Tabs>

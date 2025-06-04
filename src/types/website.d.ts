@@ -47,6 +47,10 @@ export interface CategoryBySlugResponse {
   data: (CategoryDetail & { users?: UserDetail[] }) | null;
 }
 
+export interface AlbumDetailBySlugResponse {
+  data: AlbumDetail | null;
+}
+
 export interface AlbumCategoryBySlugResponse {
   next: number;
   data: AlbumDetail[];

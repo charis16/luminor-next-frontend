@@ -1,14 +1,10 @@
 "use client";
 
 import { Button } from "@heroui/button";
-import {
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownTrigger,
-} from "@heroui/dropdown";
+import { Dropdown, DropdownItem, DropdownMenu } from "@heroui/dropdown";
 import { useLocale } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
+import { useState } from "react";
 
 function switchLocalePath(path: string, current: string, next: string) {
   if (!path.startsWith(`/${current}`)) return path;
@@ -31,34 +27,48 @@ export default function LanguageSwitcher() {
   const locale = useLocale();
   const pathname = usePathname();
   const router = useRouter();
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <Dropdown>
-      <DropdownTrigger className="!p-">
-        <Button
-          disableRipple
-          isIconOnly
-          className="!p-0 !bg-transparent text-lg"
-          size="sm"
-          variant="light"
-        >
-          {locale === "id" ? "🇮🇩" : "🇺🇸"}
-        </Button>
-      </DropdownTrigger>
-      <DropdownMenu
-        aria-label="Dynamic Actions"
-        items={items}
-        onAction={(key) => {
-          const newLocale = String(key);
-
-          if (newLocale !== locale && typeof pathname === "string") {
-            document.cookie = `LUMINOR_LOCALE=${newLocale}; path=/`;
-            router.replace(switchLocalePath(pathname, locale, newLocale));
-          }
-        }}
+    <>
+      <Button
+        disableRipple
+        isIconOnly
+        className="!p-0 !bg-transparent text-lg"
+        size="sm"
+        variant="light"
+        onPress={() => setIsOpen(true)}
       >
-        {(item) => <DropdownItem key={item.key}>{item.label}</DropdownItem>}
-      </DropdownMenu>
-    </Dropdown>
+        {locale === "id" ? "🇮🇩" : "🇺🇸"}
+      </Button>
+      {isOpen && (
+        <Dropdown>
+          {[
+            <DropdownMenu
+              key="dropdown-menu"
+              aria-label="Dynamic Actions"
+              items={items}
+              onAction={(key) => {
+                try {
+                  const newLocale = String(key);
+
+                  if (newLocale !== locale && typeof pathname === "string") {
+                    document.cookie = `LUMINOR_LOCALE=${newLocale}; path=/`;
+                    router.replace(
+                      switchLocalePath(pathname, locale, newLocale),
+                    );
+                  }
+                } catch {}
+                setIsOpen(false);
+              }}
+            >
+              {(item) => (
+                <DropdownItem key={item.key}>{item.label}</DropdownItem>
+              )}
+            </DropdownMenu>,
+          ]}
+        </Dropdown>
+      )}
+    </>
   );
 }

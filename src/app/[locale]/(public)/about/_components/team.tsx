@@ -40,12 +40,12 @@ export default function Team() {
           <p className="text-neutral-400">{t("meetTheTeamDesc")}</p>
         </div>
         {data && data?.data && data.data.length ? (
-          data?.data?.map((member) => (
-            <div
-              key={member.uuid}
-              className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
-            >
-              <div className="relative group h-[420px] overflow-hidden rounded-md shadow-md">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {data?.data?.map((member) => (
+              <div
+                key={member.uuid}
+                className="relative group h-[420px] overflow-hidden rounded-md shadow-md"
+              >
                 <Image
                   alt="Team Member"
                   className="w-full h-full object-cover"
@@ -59,14 +59,14 @@ export default function Team() {
                   {member.name}
                 </h3>
 
-                {/* Overlay dan konten tambahan hanya muncul saat hover */}
+                {/* Overlay and additional content only appears on hover */}
                 <div className="absolute inset-0 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/60">
-                  {/* Jabatan vertikal kanan atas */}
+                  {/* Role vertical top right */}
                   <div className="text-white tracking-widest rotate-90 absolute top-[20%] -right-8 z-30 font-semibold">
                     {member.role}
                   </div>
 
-                  {/* Ikon sosial kanan bawah */}
+                  {/* Social icons bottom right */}
                   <div className="absolute bottom-4 right-4 flex flex-col items-end gap-2">
                     {[
                       {
@@ -94,8 +94,8 @@ export default function Team() {
                   </div>
                 </div>
               </div>
-            </div>
-          ))
+            ))}
+          </div>
         ) : (
           <div className="flex flex-col items-center justify-center text-center space-y-4">
             <div className="w-20 h-20 rounded-full bg-muted/10 flex items-center justify-center">

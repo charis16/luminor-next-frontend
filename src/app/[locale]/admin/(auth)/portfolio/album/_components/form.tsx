@@ -149,8 +149,6 @@ const AlbumForm: ForwardRefRenderFunction<FormHandle> = () => {
     }
   }, [album, categoryOptions, userOptions]);
 
-  console.log(defaultMedia);
-
   return (
     <form
       ref={formRef}

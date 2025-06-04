@@ -55,3 +55,10 @@ export interface AlbumCategoryBySlugResponse {
   next: number;
   data: AlbumDetail[];
 }
+
+export interface UserBySlugResponse {
+  data: {
+    user: UserDetail | null;
+    categories: CategoryDetail[] | null;
+  };
+}

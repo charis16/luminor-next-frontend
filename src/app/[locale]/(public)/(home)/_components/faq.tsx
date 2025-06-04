@@ -9,6 +9,7 @@ import {
 import { useLocale, useTranslations } from "next-intl";
 
 import { useFaq } from "../../_hooks/use-faq";
+import EmptyState from "../../_components/empty-state";
 
 export default function FaqSection() {
   const { data } = useFaq();
@@ -104,17 +105,13 @@ export default function FaqSection() {
           );
         })
       ) : (
-        <div className="flex flex-col items-center justify-center py-24 px-4 text-center space-y-4">
-          <div className="w-20 h-20 rounded-full bg-muted/10 flex items-center justify-center">
+        <EmptyState
+          icon={
             <MessageCircleQuestionIcon className="text-muted-foreground size-14" />
-          </div>
-          <h2 className="text-xl md:text-3xl font-semibold text-white">
-            {t("noFaqs")}
-          </h2>
-          <h4 className="text-neutral-400 max-w-md text-xl">
-            {t("noFaqsYet")}
-          </h4>
-        </div>
+          }
+          subtitle={t("noFaqsDesc")}
+          title={t("noFaqs")}
+        />
       )}
     </div>
   );

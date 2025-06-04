@@ -11,6 +11,7 @@ import {
   TikTokIcon,
   YoutubeIcon,
 } from "../../_components/icons";
+import EmptyState from "../../_components/empty-state";
 
 export default function Team() {
   const t = useTranslations("about");
@@ -97,17 +98,11 @@ export default function Team() {
             ))}
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center text-center space-y-4">
-            <div className="w-20 h-20 rounded-full bg-muted/10 flex items-center justify-center">
-              <UserRoundX className="text-muted-foreground size-14" />
-            </div>
-            <h2 className="text-3xl font-semibold text-white">
-              {t("noTeamUser")}
-            </h2>
-            <p className="text-neutral-400 max-w-md text-xl">
-              {t("noTeamUserYet")}
-            </p>
-          </div>
+          <EmptyState
+            icon={<UserRoundX className="text-muted-foreground size-14" />}
+            subtitle={t("noTeamUser")}
+            title={t("noTeamUserYet")}
+          />
         )}
       </div>
     </div>

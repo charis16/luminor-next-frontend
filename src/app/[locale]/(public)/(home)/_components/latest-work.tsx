@@ -8,6 +8,7 @@ import { useTranslations } from "next-intl";
 import Link from "next/link";
 
 import { useAlbums } from "../../_hooks/use-album";
+import EmptyState from "../../_components/empty-state";
 
 export default function LatestRecent() {
   return (
@@ -78,17 +79,11 @@ const LatestWork = () => {
           ))}
         </div>
       ) : (
-        <div className="flex flex-col items-center justify-center py-24 px-4 text-center space-y-4">
-          <div className="w-20 h-20 rounded-full bg-muted/10 flex items-center justify-center">
-            <ImageIcon className="text-muted-foreground size-14" />
-          </div>
-          <h2 className="text-xl md:text-3xl font-semibold text-white">
-            {t("noAlbums")}
-          </h2>
-          <h4 className="text-neutral-400 max-w-md text-lg md:text-xl">
-            {t("noAlbumsYet")}
-          </h4>
-        </div>
+        <EmptyState
+          icon={<ImageIcon className="text-muted-foreground size-14" />}
+          subtitle={t("noAlbumsYet")}
+          title={t("noAlbums")}
+        />
       )}
     </div>
   );

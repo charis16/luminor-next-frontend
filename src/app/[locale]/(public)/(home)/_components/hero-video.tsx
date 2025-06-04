@@ -5,6 +5,7 @@ import { VideoOff } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import { useWebsites } from "../../_hooks/use-website";
+import EmptyState from "../../_components/empty-state";
 
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -34,10 +35,10 @@ export default function HeroVideo() {
         </video>
       ) : (
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-2  text-white">
-          <VideoOff className="size-20 text-muted" />
-          <p className="text-xl font-medium text-neutral-400">
-            {t("noVideos")}
-          </p>
+          <EmptyState
+            icon={<VideoOff className="text-muted-foreground size-14" />}
+            title={t("noVideos")}
+          />
         </div>
       )}
     </motion.section>

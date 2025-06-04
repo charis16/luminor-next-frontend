@@ -7,7 +7,7 @@ export async function GET(
   { params }: { params: Promise<{ slug: string }> },
 ) {
   const { slug } = await params;
-  const url = `${process.env.API_BASE_URL}/v1/api/albums/detail/${slug}`;
+  const url = `${process.env.API_BASE_URL}/v1/api/users/website/${slug}`;
 
   return fetchWithAutoRefresh({
     req,

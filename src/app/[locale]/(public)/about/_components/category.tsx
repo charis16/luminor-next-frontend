@@ -7,6 +7,7 @@ import NextImage from "next/image";
 import Link from "next/link";
 
 import { useCategories } from "../../_hooks/use-categories";
+import EmptyState from "../../_components/empty-state";
 
 export default function Category() {
   const t = useTranslations("about");
@@ -56,17 +57,11 @@ export default function Category() {
             ))}
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center text-center space-y-4">
-            <div className="w-20 h-20 rounded-full bg-muted/10 flex items-center justify-center">
-              <FolderSearch className="text-muted-foreground size-14" />
-            </div>
-            <h2 className="text-xl md:text-3xl font-semibold text-white">
-              {t("noCategory")}
-            </h2>
-            <p className="text-neutral-400 max-w-md text-lg md:text-xl">
-              {t("noCategoryYet")}
-            </p>
-          </div>
+          <EmptyState
+            icon={<FolderSearch className="text-muted-foreground size-14" />}
+            subtitle={t("noCategory")}
+            title={t("noCategoryYet")}
+          />
         )}
       </div>
     </div>

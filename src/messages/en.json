@@ -36,7 +36,9 @@
     "heading": "Celebrate the joy and beauty of special moments through our stunning collection. Let us help you create unforgettable memories at every important event in your life"
   },
   "portfolio": {
-    "ourWork": "Our Work"
+    "ourWork": "Our Work",
+    "noAlbums": "No albums found",
+    "noAlbumsYet": "It seems we haven’t published any albums yet. Please check back later or suggest something new!"
   },
   "navbar": {
     "about": "About Us",

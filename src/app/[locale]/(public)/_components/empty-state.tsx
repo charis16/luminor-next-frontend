@@ -12,9 +12,11 @@ export default function EmptyState({ icon, title, subtitle }: EmptyStateProps) {
       <div className="w-20 h-20 rounded-full bg-muted/10 flex items-center justify-center">
         {icon}
       </div>
-      <h2 className="text-xl md:text-3xl font-semibold text-white">{title}</h2>
+      <h2 className="text-lg md:text-3xl font-semibold text-white">{title}</h2>
       {subtitle && (
-        <h4 className="text-neutral-400 max-w-md text-xl">{subtitle}</h4>
+        <h4 className="text-neutral-400 max-w-md text-base md:text-xl">
+          {subtitle}
+        </h4>
       )}
     </div>
   );

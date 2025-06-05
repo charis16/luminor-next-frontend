@@ -215,7 +215,7 @@ export default async function CategoryPage(props: {
           <p className="text-white md:mt-4 text-lg md:text-4xl">
             {selectedData?.data?.description || t("category.description")}
           </p>
-          <GridAlbum showTab slug={slug} />
+          <GridAlbum slug={slug} />
           <BackToTop />
         </div>
       </div>

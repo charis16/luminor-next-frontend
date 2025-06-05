@@ -7,6 +7,10 @@ import { cn } from "@heroui/theme";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import NextImage from "next/image";
+import { FileImage } from "lucide-react";
+import { useTranslations } from "next-intl";
+
+import EmptyState from "./empty-state";
 
 import { AlbumDetail } from "@/types/album-lists";
 
@@ -22,7 +26,6 @@ const itemVariants = {
 
 interface GridAlbumProps {
   showTab?: boolean;
-  slug: string;
   tabs: { key: string; label: string }[];
   selected: string;
   onSelectedChange: (key: string) => void;
@@ -31,12 +34,12 @@ interface GridAlbumProps {
 
 export default function GridAlbum({
   showTab = false,
-  slug,
   tabs,
   selected,
   onSelectedChange,
   albumData,
 }: GridAlbumProps) {
+  const t = useTranslations("portfolio");
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [records, setRecords] = useState<AlbumDetail[]>([]);
 
@@ -88,50 +91,58 @@ export default function GridAlbum({
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
-        {records.map((album, index) => (
-          <motion.div
-            key={album.uuid}
-            className={cn(
-              "relative group overflow-hidden cursor-pointer",
-              hoveredIndex !== null &&
-                hoveredIndex !== index &&
-                "brightness-75",
-            )}
-            custom={index}
-            exit="exit"
-            initial="hidden"
-            variants={itemVariants}
-            viewport={{ once: false, amount: 0.2 }}
-            whileInView="visible"
-            onMouseEnter={() => setHoveredIndex(index)}
-            onMouseLeave={() => setHoveredIndex(null)}
-          >
-            <Link
-              href={`/${album.user_slug.replace(/\s+/g, "-")}/${album.category_slug.replace(
-                /\s+/g,
-                "-",
-              )}/${album.slug.replace(/\s+/g, "-")}`}
+      {records.length === 0 ? (
+        <EmptyState
+          icon={<FileImage className="size-16 md:size-24" />}
+          subtitle={t("noAlbumsYet")}
+          title={t("noAlbums")}
+        />
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+          {records.map((album, index) => (
+            <motion.div
+              key={album.uuid}
+              className={cn(
+                "relative group overflow-hidden cursor-pointer",
+                hoveredIndex !== null &&
+                  hoveredIndex !== index &&
+                  "brightness-75",
+              )}
+              custom={index}
+              exit="exit"
+              initial="hidden"
+              variants={itemVariants}
+              viewport={{ once: false, amount: 0.2 }}
+              whileInView="visible"
+              onMouseEnter={() => setHoveredIndex(index)}
+              onMouseLeave={() => setHoveredIndex(null)}
             >
-              <div className="relative w-full aspect-[16/9] group overflow-hidden">
-                <Image
-                  fill
-                  removeWrapper
-                  alt={album.title}
-                  as={NextImage}
-                  className="object-cover transition duration-300 group-hover:brightness-100 cursor-pointer"
-                  isBlurred={false}
-                  radius="none"
-                  src={album.thumbnail || "/images/placeholder-image.webp"}
-                />
-                <h3 className="absolute bottom-0 left-0 right-0 text-white text-start z-10 font-semibold text-lg px-3 py-1 backdrop-blur-sm cursor-pointer">
-                  {album.title}
-                </h3>
-              </div>
-            </Link>
-          </motion.div>
-        ))}
-      </div>
+              <Link
+                href={`/${album.user_slug.replace(/\s+/g, "-")}/${album.category_slug.replace(
+                  /\s+/g,
+                  "-",
+                )}/${album.slug.replace(/\s+/g, "-")}`}
+              >
+                <div className="relative w-full aspect-[16/9] group overflow-hidden">
+                  <Image
+                    fill
+                    removeWrapper
+                    alt={album.title}
+                    as={NextImage}
+                    className="object-cover transition duration-300 group-hover:brightness-100 cursor-pointer"
+                    isBlurred={false}
+                    radius="none"
+                    src={album.thumbnail || "/images/placeholder-image.webp"}
+                  />
+                  <h3 className="absolute bottom-0 left-0 right-0 text-white text-start z-10 font-semibold text-lg px-3 py-1 backdrop-blur-sm cursor-pointer">
+                    {album.title}
+                  </h3>
+                </div>
+              </Link>
+            </motion.div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

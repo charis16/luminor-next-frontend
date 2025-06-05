@@ -27,7 +27,6 @@ export default function GridAlbumByUser({ slug }: GridAlbumByUserProps) {
       albumData={albumData}
       selected={selected}
       showTab={true}
-      slug={slug}
       tabs={tabs}
       onSelectedChange={setSelected}
     />

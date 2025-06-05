@@ -34,7 +34,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
     const ogImage = data?.og_image?.startsWith("http")
       ? data.og_image
-      : `${baseUrl}${data?.og_image || "/web-app-manifest-512x512.png"}`;
+      : `${baseUrl}${data?.og_image || "/images/web-app-manifest-512x512.png"}`;
 
     return {
       title: {
@@ -64,12 +64,12 @@ export async function generateMetadata(): Promise<Metadata> {
       openGraph: {
         title: "Luminor Photography",
         description: t("description"),
-        images: [`${baseUrl}/web-app-manifest-512x512.png`],
+        images: [`${baseUrl}/images/web-app-manifest-512x512.png`],
       },
       twitter: {
         title: "Luminor Photography",
         description: t("description"),
-        images: [`${baseUrl}/web-app-manifest-512x512.png`],
+        images: [`${baseUrl}/images/web-app-manifest-512x512.png`],
       },
       alternates: {
         canonical: `${baseUrl}`,

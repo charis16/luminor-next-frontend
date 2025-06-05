@@ -18,12 +18,12 @@ export const metadata: Metadata = {
     title: "Luminor Photography",
     description:
       "Luminor Photography captures weddings and events with professionalism and creativity.",
-    images: [`${baseUrl}/web-app-manifest-512x512.png`],
+    images: [`${baseUrl}/images/web-app-manifest-512x512.png`],
   },
   twitter: {
     title: "Luminor Photography",
     description: "Capture your most precious moments with Luminor Photography.",
-    images: [`${baseUrl}/web-app-manifest-512x512.png`],
+    images: [`${baseUrl}/images/web-app-manifest-512x512.png`],
   },
   alternates: {
     canonical: `${baseUrl}/`,

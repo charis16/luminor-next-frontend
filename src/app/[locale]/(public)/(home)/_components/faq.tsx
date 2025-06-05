@@ -109,7 +109,7 @@ export default function FaqSection() {
           icon={
             <MessageCircleQuestionIcon className="text-muted-foreground size-14" />
           }
-          subtitle={t("noFaqsDesc")}
+          subtitle={t("noFaqsYet")}
           title={t("noFaqs")}
         />
       )}

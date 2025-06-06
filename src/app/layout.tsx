@@ -2,6 +2,7 @@ import "quill/dist/quill.snow.css";
 import "@/styles/globals.css";
 import { Metadata, Viewport } from "next";
 import clsx from "clsx";
+import { cookies } from "next/headers";
 
 import Providers from "./providers";
 
@@ -41,15 +42,16 @@ export const viewport: Viewport = {
   ],
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
-  params,
 }: {
   children: React.ReactNode;
-  params: { locale: string };
 }) {
+  const cookieStore = await cookies();
+  const locale = cookieStore.get("luminor_locale")?.value || "id";
+
   return (
-    <html suppressHydrationWarning lang={params?.locale || "id"}>
+    <html suppressHydrationWarning lang={locale}>
       <body
         className={clsx(
           "min-h-dvh bg-background font-sans antialiased",

@@ -79,7 +79,7 @@ export default function LanguageSwitcher() {
                     const newLocale = String(key);
 
                     if (newLocale !== locale && typeof pathname === "string") {
-                      document.cookie = `LUMINOR_LOCALE=${newLocale}; path=/`;
+                      document.cookie = `luminor_locale=${newLocale}; path=/`;
                       router.replace(
                         switchLocalePath(pathname, locale, newLocale),
                       );
@@ -120,7 +120,7 @@ export default function LanguageSwitcher() {
             const newLocale = String(key);
 
             if (newLocale !== locale && typeof pathname === "string") {
-              document.cookie = `LUMINOR_LOCALE=${newLocale}; path=/`;
+              document.cookie = `luminor_locale=${newLocale}; path=/`;
               router.replace(switchLocalePath(pathname, locale, newLocale));
             }
           } catch {}

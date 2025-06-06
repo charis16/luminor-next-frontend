@@ -5,6 +5,6 @@ export const routing = defineRouting({
   defaultLocale: "id",
   localePrefix: "never",
   localeCookie: {
-    name: "LUMINOR_LOCALE", // ⬅️ ganti dari NEXT_LOCALE ke custom
+    name: "luminor_locale", // ⬅️ ganti dari NEXT_LOCALE ke custom
   },
 });

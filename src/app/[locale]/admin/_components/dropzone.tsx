@@ -19,7 +19,7 @@ interface DropzoneProps {
   onSelectThumbnail?: (file: File | null, url: string | null) => void;
   onDeleteDefault?: (id: string, url?: string) => void;
   maxFiles?: number;
-  type?: "image" | "video";
+  type?: "image" | "video" | "all";
   error?: string;
   maxSize?: number;
   defaultMedia?: DefaultMedia[];
@@ -93,7 +93,12 @@ export default function Dropzone({
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop: handleDrop,
-    accept: type === "video" ? { "video/*": [] } : { "image/*": [] },
+    accept:
+      type === "video"
+        ? { "video/*": [] }
+        : type === "all"
+          ? { "image/*": [], "video/*": [] }
+          : { "image/*": [] },
     multiple: !maxFiles || maxFiles > 1,
     disabled: maxFiles !== undefined && previewUrls.length >= maxFiles,
   });
@@ -190,23 +195,35 @@ export default function Dropzone({
                 </p>
                 <p className="text-xs text-[hsl(var(--heroui-foreground-400))] mt-1">
                   {type === "video"
-                    ? "MP4, MOV, WEBM, up to 100MB each"
-                    : `PNG, JPG, up to ${maxSize || 5}MB each`}
+                    ? `MP4, MOV, WEBM, up to ${maxSize || 100}MB each`
+                    : type === "all"
+                      ? `PNG, JPG, MP4, MOV, WEBM, up to ${maxSize || 100}MB each`
+                      : `PNG, JPG, up to ${maxSize || 5}MB each`}
                 </p>
               </div>
             )}
 
-            {previewUrls.map((url, index) =>
-              !url ? null : (
+            {previewUrls.map((url, index) => {
+              if (!url) return null;
+
+              const isFromDefault = index < defaultMedia.length;
+              const file = isFromDefault
+                ? null
+                : files[index - defaultMedia.length];
+              const mimeType = file?.type || "";
+              const isVideo =
+                mimeType.startsWith("video") || url.match(/\.(mp4|mov|webm)$/i);
+
+              return (
                 <div
                   key={index}
                   className="relative rounded overflow-hidden bg-[hsl(var(--heroui-default-200))] border flex flex-col items-center"
                 >
-                  {type === "video" ? (
+                  {isVideo ? (
                     <video
                       controls
                       className="object-scale-down w-full h-40 sm:h-56"
-                      src={previewUrls[index]}
+                      src={url}
                     >
                       <track
                         default
@@ -227,7 +244,7 @@ export default function Dropzone({
                   )}
 
                   <div className="absolute top-2 right-2 flex gap-1 z-10">
-                    {(!maxFiles || maxFiles > 1) && type === "image" && (
+                    {(!maxFiles || maxFiles > 1) && !isVideo && (
                       <button
                         className="text-white bg-black/50 hover:bg-black/80 rounded-full p-1"
                         title="Set as thumbnail"
@@ -251,8 +268,8 @@ export default function Dropzone({
                     </button>
                   </div>
                 </div>
-              ),
-            )}
+              );
+            })}
 
             {error && <p className="mt-2 text-tiny text-danger">{error}</p>}
           </div>

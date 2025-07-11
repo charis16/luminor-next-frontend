@@ -12,36 +12,6 @@ export type Album = {
   authorAvatar: string;
 };
 
-export const ALBUMS: Album[] = [
-  {
-    id: 1,
-    category: "Vacation",
-    slug: "vacation",
-    description: "Photos from my vacation",
-    thumbnail: "https://heroui.com/images/card-example-5.jpeg",
-    authorName: "John Doe",
-    authorAvatar: "https://randomuser.me/api/portraits/men/32.jpg",
-  },
-  {
-    id: 2,
-    category: "Wedding",
-    slug: "wedding",
-    description: "Wedding ceremony memories",
-    thumbnail: "https://heroui.com/images/card-example-3.jpeg",
-    authorName: "Jane Smith",
-    authorAvatar: "https://randomuser.me/api/portraits/women/44.jpg",
-  },
-  {
-    id: 3,
-    category: "Nature",
-    slug: "nature",
-    description: "Beautiful nature shots",
-    thumbnail: "https://heroui.com/images/card-example-4.jpeg",
-    authorName: "Alex Johnson",
-    authorAvatar: "https://randomuser.me/api/portraits/men/65.jpg",
-  },
-];
-
 export const AlbumSchema = z.object({
   isPublished: z.boolean(),
   slug: z.string().optional(),

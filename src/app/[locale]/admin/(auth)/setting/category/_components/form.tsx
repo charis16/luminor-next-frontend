@@ -119,8 +119,6 @@ const CategoryForm: ForwardRefRenderFunction<CategoryFormHandle> = () => {
     }
   }, [category]);
 
-  console.log({ category });
-
   return (
     <form
       ref={formRef}

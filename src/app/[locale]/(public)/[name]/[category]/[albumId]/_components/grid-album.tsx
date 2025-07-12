@@ -9,6 +9,7 @@ import { Button } from "@heroui/button";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 
 import { useAlbumDetailBySlug } from "@/app/[locale]/(public)/_hooks/use-album-detail-by-slug";
+import ImageWithSkeleton from "@/app/_components/image-skeleton";
 
 const itemVariants = {
   hidden: { opacity: 0, y: 50 }, // Mulai dalam keadaan tidak terlihat dan turun ke bawah
@@ -63,16 +64,15 @@ export default function GridAlbum({ slug }: GridAlbumProps) {
               onMouseEnter={() => setHoveredIndex(index)} // **Simpan indeks gambar yang di-hover**
               onMouseLeave={() => setHoveredIndex(null)}
             >
-              <div className="relative w-full aspect-[16/9] group overflow-hidden">
-                <Image
+              <div className="relative w-full aspect-[16/9] overflow-hidden">
+                <ImageWithSkeleton
                   fill
                   alt={`album ${index}`}
-                  as={NextImage}
-                  className="object-cover transition duration-300 group-hover:brightness-100"
-                  isBlurred={false}
-                  radius="none"
-                  removeWrapper={true}
+                  className="!w-full !h-full"
+                  imageClassName="object-contain bg-black"
+                  rounded={false}
                   src={image || "/images/placeholder-image.webp"}
+                  withShadow={false}
                 />
               </div>
             </motion.div>

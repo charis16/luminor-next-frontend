@@ -9,6 +9,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { FormHandle, SeoMetaDataFormValues, SeoMetaDataSchema } from "../_type";
 import { useSeoMetadataContext } from "../_context";
@@ -26,6 +27,7 @@ import InputTextArea from "@/app/[locale]/admin/_components/input-textarea";
 import { showToast } from "@/utils/show-toast";
 
 export default function SeoForm() {
+  const queryClient = useQueryClient();
   const [resetKey, setResetKey] = useState(+Date.now());
   const {
     formRef: sharedFormRef,
@@ -69,6 +71,9 @@ export default function SeoForm() {
             onSetIsSubmitting(false);
             onRefetch();
 
+            queryClient.invalidateQueries({
+              queryKey: ["websites"],
+            });
             setResetKey(+Date.now()); // Reset key to force re-render if needed
             showToast({
               type: "success",

@@ -10,6 +10,7 @@ import {
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Switch } from "@heroui/switch";
+import { useQueryClient } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 
 import { useFaqContext } from "../_context";
@@ -21,6 +22,7 @@ import { InputText, InputTextArea } from "@/app/[locale]/admin/_components";
 import { showToast } from "@/utils/show-toast";
 
 const CategoryForm: ForwardRefRenderFunction<FormHandle> = () => {
+  const queryClient = useQueryClient();
   const params = useParams();
   const uuid = params?.id as string | undefined;
   const { mutate, isPending } = useMutateFaq();
@@ -57,6 +59,10 @@ const CategoryForm: ForwardRefRenderFunction<FormHandle> = () => {
           onRefetch();
           onSetIsSubmitting(false);
           router.back();
+
+          queryClient.invalidateQueries({
+            queryKey: ["websites"],
+          });
 
           showToast({
             type: "success",

@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { MutableRefObject, useCallback, useEffect, useRef } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 
 import {
   ContactInformationSchema,
@@ -16,6 +17,7 @@ import { InputText, InputTextArea } from "@/app/[locale]/admin/_components";
 import { showToast } from "@/utils/show-toast";
 
 export default function Form() {
+  const queryClient = useQueryClient();
   const {
     formRef: sharedFormRef,
     data: contactInformationData,
@@ -54,6 +56,9 @@ export default function Form() {
               description: `Contact Information ${contactInformationData ? "edited" : "created"} successfully`,
             });
 
+            queryClient.invalidateQueries({
+              queryKey: ["websites"],
+            });
             onRefetch();
           },
           onError: (err: any) => {

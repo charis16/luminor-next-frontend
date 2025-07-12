@@ -34,7 +34,7 @@ export const CategorySchema = z.object({
   isPublished: z.boolean(),
   category: z.string().min(1, "Category is required"),
   description: z.string({ message: "Description is required" }),
-  slug: z.string({ message: "Description is required" }),
+  slug: z.string().optional(),
   image: z.any().optional(),
 });
 

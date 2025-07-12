@@ -11,6 +11,7 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Switch } from "@heroui/switch";
 import { useParams, useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 
 import {
   CategoryFormHandle,
@@ -30,6 +31,7 @@ import {
 import { showToast } from "@/utils/show-toast";
 
 const CategoryForm: ForwardRefRenderFunction<CategoryFormHandle> = () => {
+  const queryClient = useQueryClient();
   const params = useParams();
   const uuid = params?.id as string | undefined;
   const { mutate, isPending } = useMutateCategory();
@@ -69,6 +71,10 @@ const CategoryForm: ForwardRefRenderFunction<CategoryFormHandle> = () => {
           onSetIsSubmitting(false);
           onRefetch();
           router.back();
+
+          queryClient.invalidateQueries({
+            queryKey: ["categories"],
+          });
 
           showToast({
             type: "success",

@@ -10,6 +10,7 @@ import {
 } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { AboutUsFormValues, AboutUsSchema, FormHandle } from "../_type";
 import { useAboutUsContext } from "../_context";
@@ -19,6 +20,7 @@ import { RichTextEditor } from "@/app/[locale]/admin/_components";
 import { showToast } from "@/utils/show-toast";
 
 const AboutUsForm: ForwardRefRenderFunction<FormHandle> = () => {
+  const queryClient = useQueryClient();
   const form = useForm<AboutUsFormValues>({
     resolver: zodResolver(AboutUsSchema),
     defaultValues: {
@@ -54,6 +56,10 @@ const AboutUsForm: ForwardRefRenderFunction<FormHandle> = () => {
               type: "success",
               title: `${aboutUsData ? "Edit" : "Create"} Contact Information Success`,
               description: `Contact Information ${aboutUsData ? "edited" : "created"} successfully`,
+            });
+
+            queryClient.invalidateQueries({
+              queryKey: ["websites"],
             });
 
             onRefetch();

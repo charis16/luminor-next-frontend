@@ -4,11 +4,11 @@ import * as React from "react";
 import { useRouter } from "next/navigation";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { ToastProvider } from "@heroui/toast";
 import { HeroUIProvider } from "@heroui/system";
 import { useState } from "react";
 import { ThemeProviderProps } from "next-themes";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
+import { ToastProvider } from "@heroui/toast";
 
 import { useIsMounted } from "@/hooks/use-is-mounted";
 
@@ -41,7 +41,7 @@ function Providers({ children, themeProps }: ProvidersProps) {
             placement="top-right"
             toastOffset={60}
             toastProps={{
-              timeout: 1000,
+              timeout: 5000,
               hideIcon: true,
               classNames: {
                 closeButton:

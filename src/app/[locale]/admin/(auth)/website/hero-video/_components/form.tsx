@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { MutableRefObject, useEffect, useRef, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 
 import {
   FormHandle,
@@ -19,6 +20,7 @@ import { DropzoneInput } from "@/app/[locale]/admin/_components";
 import { showToast } from "@/utils/show-toast";
 
 export default function Form() {
+  const queryClient = useQueryClient();
   const [resetKey, setResetKey] = useState(+Date.now());
   const form = useForm<HeroVideoSchemaFormValue>({
     resolver: zodResolver(HeroVideoSchema),
@@ -68,6 +70,10 @@ export default function Form() {
             type: "success",
             title: `${heroVideo ? "Edit" : "Create"} Hero Video Success`,
             description: `Hero Video ${heroVideo ? "edited" : "created"} successfully`,
+          });
+
+          queryClient.invalidateQueries({
+            queryKey: ["websites", "hero-video"],
           });
 
           setResetKey(+Date.now()); // Reset key to force re-render if needed

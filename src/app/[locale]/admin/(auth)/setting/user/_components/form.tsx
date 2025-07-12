@@ -11,6 +11,7 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Switch } from "@heroui/switch";
 import { useParams, useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { FormHandle, UserFormValues, UserSchema } from "../_type";
 import { useUserContext } from "../_context";
@@ -29,6 +30,7 @@ import { EnumRole } from "@/types/enums";
 import { useAuth } from "@/app/[locale]/admin/_context/auth-context";
 
 const Form: ForwardRefRenderFunction<FormHandle> = () => {
+  const queryClient = useQueryClient();
   const params = useParams();
   const uuid = params?.id as string | undefined;
   const { user: authUser } = useAuth();
@@ -85,6 +87,10 @@ const Form: ForwardRefRenderFunction<FormHandle> = () => {
           onSetIsSubmitting(false);
           onRefetch();
           router.back();
+
+          queryClient.invalidateQueries({
+            queryKey: ["team-members"],
+          });
 
           showToast({
             type: "success",

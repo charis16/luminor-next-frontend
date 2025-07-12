@@ -30,6 +30,7 @@ export default function GridAlbum({ slug }: GridAlbumProps) {
   const { data: selectedData } = useAlbumDetailBySlug(slug);
   const [zoomedIndex, setZoomedIndex] = useState<number | null>(null);
   const images = selectedData?.data?.images || [];
+  const youtubeUrl = selectedData?.data?.youtube_url?.split(",") || [];
 
   const handleZoomNext = () => {
     setZoomedIndex((prev) => (prev !== null ? (prev + 1) % images.length : 0));
@@ -41,11 +42,71 @@ export default function GridAlbum({ slug }: GridAlbumProps) {
     );
   };
 
+  // Combine images and YouTube URLs into a single array with type info
+  const combinedMedia = [
+    ...images.map((img) => ({ type: "image", url: img })),
+    ...youtubeUrl
+      .filter((url) => url?.trim())
+      .map((url) => ({ type: "youtube", url: url.trim() })),
+  ];
+
+  const getYoutubeEmbedUrl = (url: string) => {
+    try {
+      // Handle different YouTube URL formats
+      const regExp =
+        /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+      const match = url.match(regExp);
+
+      return match && match[2].length === 11
+        ? `https://www.youtube.com/embed/${match[2]}`
+        : null;
+    } catch {
+      return null;
+    }
+  };
+
+  const renderMediaItem = (
+    item: { type: string; url: string },
+    index: number,
+  ) => {
+    if (item.type === "youtube") {
+      const embedUrl = getYoutubeEmbedUrl(item.url);
+
+      if (!embedUrl) return null;
+
+      return (
+        <div className="relative w-full aspect-[16/9] overflow-hidden">
+          <iframe
+            allowFullScreen
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            className="absolute inset-0 w-full h-full rounded-md"
+            src={embedUrl}
+            title={`YouTube video ${index}`}
+          />
+        </div>
+      );
+    }
+
+    return (
+      <div className="relative w-full aspect-[16/9] overflow-hidden">
+        <ImageWithSkeleton
+          fill
+          alt={`album ${index}`}
+          className="!w-full !h-full"
+          imageClassName="object-contain bg-black"
+          rounded={false}
+          src={item.url || "/images/placeholder-image.webp"}
+          withShadow={false}
+        />
+      </div>
+    );
+  };
+
   return (
     <>
       <div className="mx-auto flex flex-col gap-2 md:gap-6 md:py-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
-          {images.map((image, index) => (
+          {combinedMedia.map((item, index) => (
             <motion.div
               key={index}
               className={cn(
@@ -64,17 +125,7 @@ export default function GridAlbum({ slug }: GridAlbumProps) {
               onMouseEnter={() => setHoveredIndex(index)} // **Simpan indeks gambar yang di-hover**
               onMouseLeave={() => setHoveredIndex(null)}
             >
-              <div className="relative w-full aspect-[16/9] overflow-hidden">
-                <ImageWithSkeleton
-                  fill
-                  alt={`album ${index}`}
-                  className="!w-full !h-full"
-                  imageClassName="object-contain bg-black"
-                  rounded={false}
-                  src={image || "/images/placeholder-image.webp"}
-                  withShadow={false}
-                />
-              </div>
+              {renderMediaItem(item, index)}
             </motion.div>
           ))}
         </div>

@@ -58,7 +58,7 @@ const LatestWork = () => {
               <Link
                 href={`/${album.user_slug.replace(/\s+/g, "-")}/${album.category_slug.replace(/\s+/g, "-")}/${album.slug.replace(/\s+/g, "-")}`}
               >
-                <div className="relative w-full aspect-[16/9] overflow-hidden rounded-md shadow-md">
+                <div className="relative w-full aspect-[16/9] overflow-hidden shadow-md">
                   <ImageWithSkeleton
                     fill
                     alt={album.slug}
@@ -66,7 +66,7 @@ const LatestWork = () => {
                     className="!w-full !h-full"
                     imageClassName="object-cover"
                     rounded={false} // Biar gak dobel corner
-                    src={album.thumbnail}
+                    src={album.thumbnail || "/images/placeholder-image.webp"}
                     withShadow={false} // Shadow cukup di parent
                   />
                   <div className="absolute bottom-0 left-0 right-0 bg-black/60 px-3 py-2 z-10">

@@ -47,7 +47,7 @@ export default function ImageWithSkeleton({
         alt={alt}
         as={NextImage}
         className={cn(
-          "absolute inset-0  transition-opacity duration-300",
+          "absolute inset-0  transition-opacity duration-300 ",
           imageClassName,
           isLoaded ? "opacity-100" : "opacity-0",
         )}

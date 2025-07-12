@@ -224,7 +224,7 @@ export default async function AlbumDetailPage(props: {
           title={selectedData?.data?.category_name || ""}
         />
         <div className="flex-1 md:ml-[120px] md:px-10 px-5 py-10 md:py-32">
-          <div className="relative w-full aspect-[3/1] md:aspect-[16/5] max-h-[50vh] overflow-hidden">
+          <div className="relative w-full h-[40vh] md:h-[65vh] mb-6">
             <ImageWithSkeleton
               fill
               alt={selectedData?.data?.title || ""}

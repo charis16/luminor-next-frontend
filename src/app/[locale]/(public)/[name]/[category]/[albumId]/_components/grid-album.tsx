@@ -30,6 +30,7 @@ export default function GridAlbum({ slug }: GridAlbumProps) {
   const { data: selectedData } = useAlbumDetailBySlug(slug);
   const [zoomedIndex, setZoomedIndex] = useState<number | null>(null);
   const images = selectedData?.data?.images || [];
+  const thumbnail = selectedData?.data?.thumbnail;
   const youtubeUrl = selectedData?.data?.youtube_url?.split(",") || [];
 
   const handleZoomNext = () => {
@@ -106,28 +107,30 @@ export default function GridAlbum({ slug }: GridAlbumProps) {
     <>
       <div className="mx-auto flex flex-col gap-2 md:gap-6 md:py-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
-          {combinedMedia.map((item, index) => (
-            <motion.div
-              key={index}
-              className={cn(
-                "relative group overflow-hidden cursor-zoom-in",
-                hoveredIndex !== null &&
-                  hoveredIndex !== index &&
-                  "brightness-75",
-              )}
-              custom={index}
-              exit="exit"
-              initial="hidden"
-              variants={itemVariants}
-              viewport={{ once: false, amount: 0.2 }}
-              whileInView="visible"
-              onClick={() => setZoomedIndex(index)}
-              onMouseEnter={() => setHoveredIndex(index)} // **Simpan indeks gambar yang di-hover**
-              onMouseLeave={() => setHoveredIndex(null)}
-            >
-              {renderMediaItem(item, index)}
-            </motion.div>
-          ))}
+          {combinedMedia
+            .filter((item) => item.url !== thumbnail)
+            .map((item, index) => (
+              <motion.div
+                key={index}
+                className={cn(
+                  "relative group overflow-hidden cursor-zoom-in",
+                  hoveredIndex !== null &&
+                    hoveredIndex !== index &&
+                    "brightness-75",
+                )}
+                custom={index}
+                exit="exit"
+                initial="hidden"
+                variants={itemVariants}
+                viewport={{ once: false, amount: 0.2 }}
+                whileInView="visible"
+                onClick={() => setZoomedIndex(index)}
+                onMouseEnter={() => setHoveredIndex(index)} // **Simpan indeks gambar yang di-hover**
+                onMouseLeave={() => setHoveredIndex(null)}
+              >
+                {renderMediaItem(item, index)}
+              </motion.div>
+            ))}
         </div>
       </div>
       <Modal

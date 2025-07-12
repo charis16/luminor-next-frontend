@@ -135,7 +135,7 @@ export default function GridAlbum({
                     className="!w-full !h-full"
                     imageClassName="object-cover"
                     rounded={false} // Biar gak dobel corner
-                    src={album.thumbnail}
+                    src={album.thumbnail || "/images/placeholder-image.webp"}
                     withShadow={false} // Shadow cukup di parent
                   />
 

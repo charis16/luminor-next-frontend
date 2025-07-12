@@ -28,6 +28,7 @@ export function useMutateAlbum() {
       formData.append("description", data.description);
       formData.append("user_id", data.author);
       formData.append("is_published", data.isPublished ? "true" : "false");
+      formData.append("youtube_url", data.youtubeUrl?.join(",") ?? "");
 
       if (data.thumbnail instanceof File) {
         formData.append("thumbnail", data.thumbnail);

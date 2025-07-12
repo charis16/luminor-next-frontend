@@ -21,6 +21,7 @@ export function useMutateCategory() {
       formData.append("name", data.category);
       formData.append("description", data.description);
       formData.append("is_published", data.isPublished ? "1" : "0");
+      formData.append("youtube_url", data.youtubeUrl?.join(",") ?? "");
 
       if (Array.isArray(data.image) && data.image[0] instanceof File) {
         formData.append("image", data.image[0]);

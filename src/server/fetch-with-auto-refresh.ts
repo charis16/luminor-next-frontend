@@ -4,6 +4,7 @@ import { parse, serialize } from "cookie";
 import { rawServerOnly } from "./go-raw-server-only";
 
 import { safeRawCall } from "@/utils/api";
+import { getClientIP } from "@/utils/get-client-ip";
 
 interface FetchWithRefreshOptions {
   req: NextRequest;
@@ -39,6 +40,12 @@ export async function fetchWithAutoRefresh({
   const accessCookie = getFilteredCookie(req, ["admin_access_token"]);
   const refreshCookie = getFilteredCookie(req, ["admin_refresh_token"]);
 
+  // Tambahkan IP client ke headers
+  const finalHeaders = {
+    ...init.headers,
+    "X-Client-IP": getClientIP(req),
+  };
+
   const makeRequest = (cookieHeader: string, body: any, headers: any) => {
     return rawServerOnly(input.toString(), init.method || "GET", {
       data: body,
@@ -51,7 +58,7 @@ export async function fetchWithAutoRefresh({
 
   // === First attempt
   const [res, reqErr] = await safeRawCall(
-    makeRequest(accessCookie, init.body, init.headers || {}),
+    makeRequest(accessCookie, init.body, finalHeaders),
   );
 
   if (res && res.status !== 401) {
@@ -69,7 +76,12 @@ export async function fetchWithAutoRefresh({
       rawServerOnly(
         `${process.env.API_BASE_URL}/v1/api/auth/admin-refresh-token`,
         "POST",
-        { headers: { Cookie: refreshCookie } },
+        {
+          headers: {
+            Cookie: refreshCookie,
+            "X-Client-IP": getClientIP(req),
+          },
+        },
       ),
     );
 

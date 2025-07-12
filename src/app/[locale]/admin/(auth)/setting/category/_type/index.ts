@@ -36,6 +36,7 @@ export const CategorySchema = z.object({
   description: z.string({ message: "Description is required" }),
   slug: z.string().optional(),
   image: z.any().optional(),
+  youtubeUrl: z.array(z.string()).optional(),
 });
 
 export type CategoryFormValues = z.infer<typeof CategorySchema>;

@@ -237,18 +237,24 @@ export default async function ServicePage(props: {
           subtitle={selectedData?.data.user?.name || ""}
           title={t("portfolio.ourWork")}
         />
-        <div className="md:ml-[120px] md:px-10 px-5 md:py-32 gap-6 grow">
-          <div className="flex-col md:flex-row flex my-6 gap-3 justify-center items-center md:items-start md:justify-start">
+        <div className="md:ml-[120px] md:px-10 px-5 md:py-32 gap-6 md:gap-9 grow ">
+          <div className="flex-col md:flex-row flex my-6 gap-3 md:gap-5 justify-center md:justify-start items-center md:items-stretch ">
             <Avatar
               isBordered
-              className="size-24 shrink-0"
-              size="lg"
+              className="size-24 md:!size-32 shrink-0 rounded-full"
+              classNames={{
+                img: "object-cover object-[center_30%]",
+              }}
+              radius="full"
               src={
                 selectedData?.data.user?.photo_url ||
                 "/images/placeholder-image.webp"
               }
+              style={{
+                objectPosition: "center 30%",
+              }}
             />
-            <div className="inline-flex gap-2 my-2 md:hidden">
+            <div className="inline-flex gap-2  my-2 md:hidden">
               <Link
                 aria-label="Instagram"
                 href={selectedData?.data?.user?.url_instagram || "#"}
@@ -264,9 +270,12 @@ export default async function ServicePage(props: {
                 <TikTokIcon height={24} width={24} />
               </Link>
             </div>
-            <div className="flex md:flex-col gap-2">
+            <div className="flex md:flex-col gap-9">
               <Description
-                description={selectedData?.data?.user?.description || ""}
+                description={
+                  selectedData?.data?.user?.description ||
+                  "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos."
+                }
               />
               <div className="hidden md:inline-flex gap-2">
                 <Link

@@ -13,9 +13,13 @@ import {
 } from "../../_components/icons";
 import EmptyState from "../../_components/empty-state";
 
+import ImageWithSkeleton from "@/app/_components/image-skeleton";
+
 export default function Team() {
   const t = useTranslations("about");
-  const { data } = useTeamMembers();
+  const { data, isLoading } = useTeamMembers();
+
+  const skeletonCount = 4;
 
   return (
     <div className="flex flex-col gap-10 py-6">
@@ -40,34 +44,36 @@ export default function Team() {
           </h2>
           <p className="text-neutral-400">{t("meetTheTeamDesc")}</p>
         </div>
-        {data && data?.data && data.data.length ? (
+
+        {isLoading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {data?.data?.map((member) => (
+            {[...Array(skeletonCount)].map((_, i) => (
+              <div
+                key={i}
+                className="rounded-md h-[420px] bg-neutral-200 dark:bg-neutral-800 animate-pulse"
+              />
+            ))}
+          </div>
+        ) : data?.data?.length ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {data.data.map((member) => (
               <div
                 key={member.uuid}
                 className="relative group h-[420px] overflow-hidden rounded-md shadow-md"
               >
-                <Image
+                <ImageWithSkeleton
+                  fill
                   alt="Team Member"
-                  className="w-full h-full object-cover"
-                  isBlurred={false}
-                  radius="none"
-                  removeWrapper={true}
                   src={member.photo_url || "/images/placeholder-image.webp"}
                 />
-
                 <h3 className="absolute bottom-4 left-4 text-white text-xl z-10 font-bold">
                   {member.name}
                 </h3>
 
-                {/* Overlay and additional content only appears on hover */}
                 <div className="absolute inset-0 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/60">
-                  {/* Role vertical top right */}
                   <div className="text-white tracking-widest rotate-90 absolute top-[20%] -right-8 z-30 font-semibold">
                     {member.role}
                   </div>
-
-                  {/* Social icons bottom right */}
                   <div className="absolute bottom-4 right-4 flex flex-col items-end gap-2">
                     {[
                       {

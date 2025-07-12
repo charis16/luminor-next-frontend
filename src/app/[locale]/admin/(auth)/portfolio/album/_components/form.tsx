@@ -24,6 +24,7 @@ import { useDeleteImage } from "../_hooks/use-delete-album";
 
 import {
   DropzoneInput,
+  FormTagInput,
   InputText,
   RichTextEditor,
   SelectOption,
@@ -58,6 +59,7 @@ const AlbumForm: ForwardRefRenderFunction<FormHandle> = () => {
       description: "",
       images: [],
       thumbnail: null,
+      youtubeUrl: [],
     },
   });
 
@@ -120,6 +122,8 @@ const AlbumForm: ForwardRefRenderFunction<FormHandle> = () => {
         category: album.category_id,
         description: album.description,
         author: album.user_id,
+        youtubeUrl:
+          album.youtube_url !== "" ? album?.youtube_url?.split(",") : [],
       });
 
       const thumbnail =
@@ -273,6 +277,22 @@ const AlbumForm: ForwardRefRenderFunction<FormHandle> = () => {
             id={field.name}
             label="Album Description"
             placeholder="Tulis deskripsi album..."
+          />
+        )}
+      />
+
+      <Controller
+        control={form.control}
+        name="youtubeUrl"
+        render={({ field, fieldState }) => (
+          <FormTagInput
+            key={field.name}
+            errorMessage={fieldState.error?.message}
+            field={field}
+            id="Youtube URL"
+            isInvalid={!!fieldState.error}
+            label="Youtube URL"
+            placeholder="ex: https://www.youtube.com/watch?v=dQw4w9WgXcQ"
           />
         )}
       />

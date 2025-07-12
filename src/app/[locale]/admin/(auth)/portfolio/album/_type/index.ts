@@ -21,6 +21,7 @@ export const AlbumSchema = z.object({
   description: z.string().min(1, "Description is required"),
   images: z.array(z.any()).optional(),
   thumbnail: z.any().nullable(),
+  youtubeUrl: z.array(z.string()).optional(),
 });
 
 export type AlbumFormValues = z.infer<typeof AlbumSchema>;

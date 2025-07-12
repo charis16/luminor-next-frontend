@@ -2,17 +2,15 @@
 
 import { Tab, Tabs } from "@heroui/tabs";
 import { useEffect, useState } from "react";
-import { Image } from "@heroui/image";
-import { cn } from "@heroui/theme";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import NextImage from "next/image";
 import { FileImage } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import EmptyState from "./empty-state";
 
 import { AlbumDetail } from "@/types/album-lists";
+import ImageWithSkeleton from "@/app/_components/image-skeleton";
 
 const itemVariants = {
   hidden: { opacity: 0, y: 50 },
@@ -30,6 +28,7 @@ interface GridAlbumProps {
   selected: string;
   onSelectedChange: (key: string) => void;
   albumData?: { data: (AlbumDetail | null)[] };
+  isLoading?: boolean;
 }
 
 export default function GridAlbum({
@@ -38,6 +37,7 @@ export default function GridAlbum({
   selected,
   onSelectedChange,
   albumData,
+  isLoading,
 }: GridAlbumProps) {
   const t = useTranslations("portfolio");
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
@@ -91,23 +91,27 @@ export default function GridAlbum({
         </div>
       )}
 
-      {records.length === 0 ? (
+      {isLoading ? (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+          {Array.from({ length: 12 }).map((_, index) => (
+            <div
+              key={index}
+              className="animate-pulse bg-neutral-200 dark:bg-neutral-800 rounded-md h-[300px]"
+            />
+          ))}
+        </div>
+      ) : records.length === 0 ? (
         <EmptyState
           icon={<FileImage className="size-16 md:size-24" />}
           subtitle={t("noAlbumsYet")}
           title={t("noAlbums")}
         />
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
           {records.map((album, index) => (
             <motion.div
               key={album.uuid}
-              className={cn(
-                "relative group overflow-hidden cursor-pointer",
-                hoveredIndex !== null &&
-                  hoveredIndex !== index &&
-                  "brightness-75",
-              )}
+              className="relative flex flex-col w-full cursor-pointer hover:brightness-100 brightness-75"
               custom={index}
               exit="exit"
               initial="hidden"
@@ -124,19 +128,22 @@ export default function GridAlbum({
                 )}/${album.slug.replace(/\s+/g, "-")}`}
               >
                 <div className="relative w-full aspect-[16/9] group overflow-hidden">
-                  <Image
+                  <ImageWithSkeleton
                     fill
-                    removeWrapper
-                    alt={album.title}
-                    as={NextImage}
-                    className="object-cover transition duration-300 group-hover:brightness-100 cursor-pointer"
-                    isBlurred={false}
-                    radius="none"
-                    src={album.thumbnail || "/images/placeholder-image.webp"}
+                    alt={album.slug}
+                    aspectRatio="" // Kosongin biar nggak double
+                    className="!w-full !h-full"
+                    imageClassName="object-cover"
+                    rounded={false} // Biar gak dobel corner
+                    src={album.thumbnail}
+                    withShadow={false} // Shadow cukup di parent
                   />
-                  <h3 className="absolute bottom-0 left-0 right-0 text-white text-start z-10 font-semibold text-lg px-3 py-1 backdrop-blur-sm cursor-pointer">
-                    {album.title}
-                  </h3>
+
+                  <div className="absolute bottom-0 left-0 right-0 bg-black/60 px-3 py-2 z-10">
+                    <h3 className="text-lg md:text-3xl font-medium text-white m-0">
+                      {album.title}
+                    </h3>
+                  </div>
                 </div>
               </Link>
             </motion.div>

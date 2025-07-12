@@ -15,6 +15,7 @@ export type AlbumDetail = {
   is_published: boolean;
   created_at: string;
   updated_at: string;
+  youtube_url: string | null;
 };
 
 export interface AlbumListResponse {

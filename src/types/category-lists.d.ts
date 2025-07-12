@@ -3,6 +3,7 @@ export type CategoryDetail = {
   name: string;
   description: string;
   slug: string;
+  youtube_url: string | null;
   photo_url: string | null;
   is_published: boolean;
   created_at: string;

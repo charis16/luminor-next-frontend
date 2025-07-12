@@ -25,6 +25,7 @@ import { useDeleteImageCategory } from "../_hooks/use-delete-category";
 
 import {
   DropzoneInput,
+  FormTagInput,
   InputText,
   InputTextArea,
 } from "@/app/[locale]/admin/_components";
@@ -49,6 +50,7 @@ const CategoryForm: ForwardRefRenderFunction<CategoryFormHandle> = () => {
       slug: "",
       image: null,
       id: uuid || undefined,
+      youtubeUrl: [],
     },
   });
 
@@ -121,6 +123,8 @@ const CategoryForm: ForwardRefRenderFunction<CategoryFormHandle> = () => {
         category: category.name,
         description: category.description,
         slug: category.slug,
+        youtubeUrl:
+          category.youtube_url !== "" ? category?.youtube_url?.split(",") : [],
       });
     }
   }, [category]);
@@ -192,6 +196,22 @@ const CategoryForm: ForwardRefRenderFunction<CategoryFormHandle> = () => {
             onClear={() => {
               field.onChange("");
             }}
+          />
+        )}
+      />
+
+      <Controller
+        control={form.control}
+        name="youtubeUrl"
+        render={({ field, fieldState }) => (
+          <FormTagInput
+            key={field.name}
+            errorMessage={fieldState.error?.message}
+            field={field}
+            id="Youtube URL"
+            isInvalid={!!fieldState.error}
+            label="Youtube URL"
+            placeholder="ex: https://www.youtube.com/watch?v=dQw4w9WgXcQ"
           />
         )}
       />

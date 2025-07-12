@@ -1,14 +1,14 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Image } from "@heroui/image";
-import NextImage from "next/image";
 import { ImageIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 
 import { useAlbums } from "../../_hooks/use-album";
 import EmptyState from "../../_components/empty-state";
+
+import ImageWithSkeleton from "@/app/_components/image-skeleton";
 
 export default function LatestRecent() {
   return (
@@ -58,21 +58,22 @@ const LatestWork = () => {
               <Link
                 href={`/${album.user_slug.replace(/\s+/g, "-")}/${album.category_slug.replace(/\s+/g, "-")}/${album.slug.replace(/\s+/g, "-")}`}
               >
-                <div className="relative w-full aspect-[16/9] group overflow-hidden">
-                  <Image
+                <div className="relative w-full aspect-[16/9] overflow-hidden rounded-md shadow-md">
+                  <ImageWithSkeleton
                     fill
                     alt={album.slug}
-                    as={NextImage}
-                    className="absolute inset-0 w-full h-full object-cover"
-                    radius="none"
-                    removeWrapper={true}
+                    aspectRatio="" // Kosongin biar nggak double
+                    className="!w-full !h-full"
+                    imageClassName="object-cover"
+                    rounded={false} // Biar gak dobel corner
                     src={album.thumbnail}
+                    withShadow={false} // Shadow cukup di parent
                   />
-                </div>
-                <div className="absolute bottom-0 left-0 right-0 bg-black/60  px-3 py-2 z-10">
-                  <p className="text-lg font-medium text-white m-0">
-                    {album.title}
-                  </p>
+                  <div className="absolute bottom-0 left-0 right-0 bg-black/60 px-3 py-2 z-10">
+                    <p className="text-lg md:text-3xl font-medium text-white m-0">
+                      {album.title}
+                    </p>
+                  </div>
                 </div>
               </Link>
             </motion.div>

@@ -14,7 +14,11 @@ export default function GridAlbumByUser({ slug }: GridAlbumByUserProps) {
   const [selected, setSelected] = useState("all");
 
   const { data: categoryUserData } = useCategoryBySlug(slug);
-  const { data: albumData } = useAlbumCategoryBySlug(slug, selected);
+  const {
+    data: albumData,
+    isLoading,
+    isFetching,
+  } = useAlbumCategoryBySlug(slug, selected);
 
   const tabs =
     categoryUserData?.data?.users?.map((cat) => ({
@@ -25,6 +29,7 @@ export default function GridAlbumByUser({ slug }: GridAlbumByUserProps) {
   return (
     <GridAlbum
       albumData={albumData}
+      isLoading={isLoading || isFetching}
       selected={selected}
       showTab={true}
       tabs={tabs}

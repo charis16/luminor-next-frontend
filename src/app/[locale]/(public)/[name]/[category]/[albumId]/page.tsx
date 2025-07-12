@@ -1,5 +1,3 @@
-import NextImage from "next/image";
-import { Image } from "@heroui/image";
 import { Avatar } from "@heroui/avatar";
 import { Metadata } from "next";
 import { stripHtml } from "string-strip-html";
@@ -17,6 +15,7 @@ import GridAlbum from "./_components/grid-album";
 import { capitalize } from "@/utils/capitalize";
 import getQueryClient from "@/utils/react-query";
 import { AlbumDetailBySlugResponse } from "@/types/website";
+import ImageWithSkeleton from "@/app/_components/image-skeleton";
 
 export async function generateMetadata(props: {
   params: Promise<{ name: string; category: string; albumId: string }>;
@@ -225,29 +224,33 @@ export default async function AlbumDetailPage(props: {
           title={selectedData?.data?.category_name || ""}
         />
         <div className="flex-1 md:ml-[120px] md:px-10 px-5 py-10 md:py-32">
-          <div className="relative w-full h-[40vh] md:h-[65vh] mb-6">
-            <Image
+          <div className="relative w-full h-[40vh] md:h-[65vh] mb-6 overflow-hidden">
+            <ImageWithSkeleton
               fill
-              priority
-              alt="Team Group"
-              as={NextImage}
-              className="object-cover"
-              isBlurred={false}
-              radius="none"
-              removeWrapper={true}
+              alt={selectedData?.data?.title || ""}
+              className="!w-full !h-full"
+              imageClassName="object-cover"
+              rounded={false}
               src={
                 selectedData?.data?.thumbnail ||
                 "/images/placeholder-image.webp"
               }
+              withShadow={false}
             />
             <Avatar
               isBordered
-              className="absolute top-4 right-4 z-10"
-              size="md"
+              className="absolute top-4 right-4 size-14 md:!size-20 shrink-0 rounded-full z-10"
+              classNames={{
+                img: "object-cover object-[center_30%]",
+              }}
+              radius="full"
               src={
                 selectedData?.data?.user_avatar ||
                 "/images/placeholder-image.webp"
               }
+              style={{
+                objectPosition: "center 30%",
+              }}
             />
 
             <Description slug={slug} />

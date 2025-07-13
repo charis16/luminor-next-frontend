@@ -227,6 +227,7 @@ export default async function AlbumDetailPage(props: {
           <div className="relative w-full h-[40vh] md:h-[65vh] mb-6">
             <ImageWithSkeleton
               fill
+              priority
               alt={selectedData?.data?.title || ""}
               className="!w-full !h-full"
               imageClassName="object-cover object-[center_30%]"

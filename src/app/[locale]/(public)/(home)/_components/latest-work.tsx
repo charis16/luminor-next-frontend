@@ -61,6 +61,7 @@ const LatestWork = () => {
                 <div className="relative w-full aspect-[16/9] overflow-hidden shadow-md">
                   <ImageWithSkeleton
                     fill
+                    priority
                     alt={album.slug}
                     aspectRatio="" // Kosongin biar nggak double
                     className="!w-full !h-full"

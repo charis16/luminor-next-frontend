@@ -37,7 +37,6 @@ export function getUserByUUIDOptions(
 // Client-side hook
 export function useUserByUUID(uuid?: string) {
   return useQuery({
-    staleTime: 1000 * 60 * 2,
     ...getUserByUUIDOptions(uuid || ""),
     enabled: !!uuid,
     placeholderData: (prev) => prev,

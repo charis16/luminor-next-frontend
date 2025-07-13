@@ -33,7 +33,7 @@ export function getContactInformationOptions(
 // For client
 export function useContactInformationLists(isMounted = true) {
   return useQuery({
-    staleTime: 1000 * 60 * 5,
+    staleTime: 1000 * 60 * 2,
     ...getContactInformationOptions(),
     placeholderData: (prev) => prev,
     enabled: isMounted,

@@ -14,6 +14,7 @@ type ImageWithSkeletonProps = {
   withShadow?: boolean;
   aspectRatio?: string;
   imageClassName?: string;
+  priority?: boolean;
 };
 
 export default function ImageWithSkeleton({
@@ -22,6 +23,7 @@ export default function ImageWithSkeleton({
   className = "",
   fill = false,
   rounded = true,
+  priority = false,
   withShadow = true,
   aspectRatio = "aspect-[3/4]",
   imageClassName = "",
@@ -53,7 +55,13 @@ export default function ImageWithSkeleton({
         )}
         fill={fill}
         isBlurred={false}
+        priority={priority}
         radius="none"
+        sizes={
+          fill
+            ? "(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            : undefined
+        }
         src={src}
         onLoad={() => setIsLoaded(true)}
       />

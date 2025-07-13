@@ -130,7 +130,10 @@ export default async function LayoutHome({
             <div className="flex justify-center items-center">
               <Link
                 aria-label="Instagram"
-                href={website?.url_instagram || "#"}
+                href={
+                  website?.url_instagram ||
+                  "https://www.instagram.com/luminor.pic"
+                }
                 target="_blank"
               >
                 <InstagramIcon height={18} width={18} />
@@ -138,7 +141,9 @@ export default async function LayoutHome({
               <Link
                 aria-label="TikTok"
                 className="ml-3"
-                href={website?.url_tiktok || "#"}
+                href={
+                  website?.url_tiktok || "https://www.tiktok.com/@luminor.pic"
+                }
                 target="_blank"
               >
                 <TikTokIcon height={18} width={18} />

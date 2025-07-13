@@ -33,8 +33,8 @@ export function getOptions(
 // For client
 export function useAboutUse(isMounted = true) {
   return useQuery({
+    staleTime: 1000 * 60 * 2,
     ...getOptions(),
-    staleTime: 1000 * 60 * 5,
     placeholderData: (prev) => prev,
     enabled: isMounted,
   });

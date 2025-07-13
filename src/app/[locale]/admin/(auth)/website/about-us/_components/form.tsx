@@ -109,7 +109,7 @@ const AboutUsForm: ForwardRefRenderFunction<FormHandle> = () => {
   return (
     <form
       ref={formRef}
-      className="grid grid-cols-1 gap-4 "
+      className="grid grid-cols-1 gap-4 pb-9"
       onSubmit={form.handleSubmit(onSubmit)}
     >
       {/* Description */}

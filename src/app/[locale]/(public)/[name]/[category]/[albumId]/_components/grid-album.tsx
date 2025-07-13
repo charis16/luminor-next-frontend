@@ -7,6 +7,7 @@ import NextImage from "next/image";
 import { Modal, ModalBody, ModalContent } from "@heroui/modal";
 import { Button } from "@heroui/button";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import Masonry from "react-masonry-css";
 
 import { useAlbumDetailBySlug } from "@/app/[locale]/(public)/_hooks/use-album-detail-by-slug";
 import ImageWithSkeleton from "@/app/_components/image-skeleton";
@@ -32,6 +33,12 @@ export default function GridAlbum({ slug }: GridAlbumProps) {
   const images = selectedData?.data?.images || [];
   const thumbnail = selectedData?.data?.thumbnail;
   const youtubeUrl = selectedData?.data?.youtube_url?.split(",") || [];
+
+  const breakpointColumnsObj = {
+    default: 3,
+    1024: 2,
+    640: 1,
+  };
 
   const handleZoomNext = () => {
     setZoomedIndex((prev) => (prev !== null ? (prev + 1) % images.length : 0));
@@ -106,7 +113,11 @@ export default function GridAlbum({ slug }: GridAlbumProps) {
   return (
     <>
       <div className="mx-auto flex flex-col gap-2 md:gap-6 md:py-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+        <Masonry
+          breakpointCols={breakpointColumnsObj}
+          className="my-masonry-grid"
+          columnClassName="my-masonry-grid_column"
+        >
           {combinedMedia
             .filter((item) => item.url !== thumbnail)
             .map((item, index) => (
@@ -131,7 +142,7 @@ export default function GridAlbum({ slug }: GridAlbumProps) {
                 {renderMediaItem(item, index)}
               </motion.div>
             ))}
-        </div>
+        </Masonry>
       </div>
       <Modal
         hideCloseButton

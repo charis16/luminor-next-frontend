@@ -25,60 +25,55 @@ export async function generateMetadata(props: {
 
   try {
     const data = await fetchInformation(slug);
+    const albumData = data?.data;
 
-    const descriptionParts = [
-      data?.data?.description
-        ? stripHtml(data.data.description).result &&
-          capitalize(stripHtml(data.data.description).result)
-        : undefined,
-      data?.data?.category_name
-        ? `Category: ${capitalize(data.data.category_name)}`
-        : undefined,
-      data?.data?.title ? `Album: ${capitalize(data.data.title)}` : undefined,
-      data?.data?.user_name
-        ? `By: ${capitalize(data.data.user_name)}`
-        : undefined,
-    ].filter(Boolean);
+    const description =
+      [
+        albumData?.description &&
+          capitalize(stripHtml(albumData.description).result),
+        albumData?.category_name &&
+          `Category: ${capitalize(albumData.category_name)}`,
+        albumData?.title && `Album: ${capitalize(albumData.title)}`,
+        albumData?.user_name && `By: ${capitalize(albumData.user_name)}`,
+      ]
+        .filter(Boolean)
+        .join(", ") || "Album description not available";
 
-    const fullDescription =
-      descriptionParts.length > 0
-        ? descriptionParts.join(" , ")
-        : "Album description not available";
+    const title = capitalize(albumData?.title) || "Our Album";
+    const thumbnail =
+      albumData?.thumbnail || `${baseUrl}/images/web-app-manifest-1200x300.png`;
 
     return {
-      title: capitalize(data?.data?.title) || "Our Album",
-      description: fullDescription,
+      title,
+      description,
       openGraph: {
-        title: capitalize(data?.data?.title) || "Our Album",
-        description: fullDescription,
-        images: [
-          {
-            url: data?.data?.thumbnail || "/default-thumbnail.jpg",
-            alt: capitalize(data?.data?.title) || "Our album",
-          },
-        ],
+        title,
+        description,
+        images: [{ url: thumbnail, alt: title }],
       },
       twitter: {
-        title: capitalize(data?.data?.title) || "Our album",
-        description: fullDescription,
-        images: [data?.data?.thumbnail || "/default-thumbnail.jpg"],
+        title,
+        description,
+        images: [thumbnail],
       },
       alternates: {
-        canonical: `/${data?.data?.user_slug}/${data?.data?.category_slug}/${data?.data?.title}`,
+        canonical: `/${albumData?.user_slug}/${albumData?.category_slug}/${albumData?.slug}`,
       },
       robots: {
         index: true,
         follow: true,
+        googleBot: { index: true, follow: true },
       },
+      manifest: "/site.webmanifest",
       keywords: [
-        data?.data?.title && capitalize(data.data.title),
+        albumData?.title && capitalize(albumData.title),
         "luminor",
         "blora",
         "photography",
         "photographer",
         "semarang",
-        data?.data?.category_name && capitalize(data.data.category_name),
-        data?.data?.user_name && capitalize(data.data.user_name),
+        albumData?.category_name && capitalize(albumData.category_name),
+        albumData?.user_name && capitalize(albumData.user_name),
       ]
         .filter(Boolean)
         .join(", "),
@@ -92,25 +87,23 @@ export async function generateMetadata(props: {
       },
       metadataBase: new URL(baseUrl),
       icons: {
-        icon: "/favicon.ico",
-        shortcut: "/favicon.ico",
-        apple: "/apple-touch-icon.png",
-        other: [
+        icon: [
+          { url: "/favicon.ico", type: "image/x-icon" },
+          { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
           {
-            rel: "icon",
-            url: "/favicon-32x32.png",
-            sizes: "32x32",
+            url: "/android-chrome-192x192.png",
+            sizes: "192x192",
+            type: "image/png",
           },
+          { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
           {
-            rel: "icon",
-            url: "/favicon-16x16.png",
-            sizes: "16x16",
+            url: "/android-chrome-512x512.png",
+            sizes: "512x512",
+            type: "image/png",
           },
-          {
-            rel: "mask-icon",
-            url: "/safari-pinned-tab.svg",
-            color: "#5bbad5",
-          },
+        ],
+        apple: [
+          { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
         ],
       },
     };
@@ -123,7 +116,7 @@ export async function generateMetadata(props: {
         description: "Category not found",
         images: [
           {
-            url: "/default-thumbnail.jpg",
+            url: `${baseUrl}/images/web-app-manifest-1200x300.png`,
             alt: "Category Not Found",
           },
         ],
@@ -131,7 +124,7 @@ export async function generateMetadata(props: {
       twitter: {
         title: "Our Work - Not Found",
         description: "Category not found",
-        images: ["/default-thumbnail.jpg"],
+        images: [`${baseUrl}/images/web-app-manifest-1200x300.png`],
       },
       alternates: {
         canonical: `/category/${slug}`,
@@ -156,21 +149,9 @@ export async function generateMetadata(props: {
         shortcut: "/favicon.ico",
         apple: "/apple-touch-icon.png",
         other: [
-          {
-            rel: "icon",
-            url: "/favicon-32x32.png",
-            sizes: "32x32",
-          },
-          {
-            rel: "icon",
-            url: "/favicon-16x16.png",
-            sizes: "16x16",
-          },
-          {
-            rel: "mask-icon",
-            url: "/safari-pinned-tab.svg",
-            color: "#5bbad5",
-          },
+          { rel: "icon", url: "/favicon-32x32.png", sizes: "32x32" },
+          { rel: "icon", url: "/favicon-16x16.png", sizes: "16x16" },
+          { rel: "mask-icon", url: "/safari-pinned-tab.svg", color: "#5bbad5" },
         ],
       },
     };

@@ -285,3 +285,16 @@ textarea,
 select {
   font-size: 16px !important; /* ✅ ini mencegah iOS zoom */
 }
+
+.my-masonry-grid {
+  display: flex;
+  margin-left: -16px; /* gap antar kolom */
+  width: auto;
+}
+.my-masonry-grid_column {
+  padding-left: 16px;
+  background-clip: padding-box;
+}
+.my-masonry-grid_column > div {
+  margin-bottom: 16px;
+}

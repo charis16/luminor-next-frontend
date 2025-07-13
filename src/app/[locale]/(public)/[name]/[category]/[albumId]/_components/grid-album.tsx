@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
 import { Image } from "@heroui/image";
-import { cn } from "@heroui/theme";
 import { motion } from "framer-motion";
 import NextImage from "next/image";
 import { Modal, ModalBody, ModalContent } from "@heroui/modal";
@@ -35,9 +34,18 @@ export default function GridAlbum({ slug }: GridAlbumProps) {
   const youtubeUrl = selectedData?.data?.youtube_url?.split(",") || [];
 
   const breakpointColumnsObj = {
-    default: 3,
-    1024: 2,
-    640: 1,
+    default: 4,
+    1024: 3,
+    768: 2,
+    500: 1,
+  };
+
+  const getSizeClass = (url: string, index: number) => {
+    if (url.includes("portrait") || index % 5 === 0) {
+      return "col-span-2 row-span-2"; // Bikin besar
+    }
+
+    return "col-span-1 row-span-1";
   };
 
   const handleZoomNext = () => {
@@ -96,10 +104,11 @@ export default function GridAlbum({ slug }: GridAlbumProps) {
     }
 
     return (
-      <div className="relative w-full aspect-[16/9] overflow-hidden">
+      <div className="relative w-full min-h-full overflow-hidden">
         <ImageWithSkeleton
           fill
           alt={`album ${index}`}
+          aspectRatio={undefined}
           className="!w-full !h-full"
           imageClassName="object-contain bg-black"
           rounded={false}
@@ -118,30 +127,21 @@ export default function GridAlbum({ slug }: GridAlbumProps) {
           className="my-masonry-grid"
           columnClassName="my-masonry-grid_column"
         >
-          {combinedMedia
-            .filter((item) => item.url !== thumbnail)
-            .map((item, index) => (
-              <motion.div
-                key={index}
-                className={cn(
-                  "relative group overflow-hidden cursor-zoom-in",
-                  hoveredIndex !== null &&
-                    hoveredIndex !== index &&
-                    "brightness-75",
-                )}
-                custom={index}
-                exit="exit"
-                initial="hidden"
-                variants={itemVariants}
-                viewport={{ once: false, amount: 0.2 }}
-                whileInView="visible"
-                onClick={() => setZoomedIndex(index)}
-                onMouseEnter={() => setHoveredIndex(index)} // **Simpan indeks gambar yang di-hover**
-                onMouseLeave={() => setHoveredIndex(null)}
-              >
-                {renderMediaItem(item, index)}
-              </motion.div>
-            ))}
+          {combinedMedia.map((item, index) => (
+            <motion.div
+              key={index}
+              className="break-inside-avoid overflow-hidden cursor-zoom-in"
+              custom={index}
+              exit="exit"
+              initial="hidden"
+              variants={itemVariants}
+              viewport={{ once: false, amount: 0.2 }}
+              whileInView="visible"
+              onClick={() => setZoomedIndex(index)}
+            >
+              {renderMediaItem(item, index)}
+            </motion.div>
+          ))}
         </Masonry>
       </div>
       <Modal

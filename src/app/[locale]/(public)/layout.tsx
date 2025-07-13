@@ -13,6 +13,7 @@ import { getOptions as albumOptions } from "./_hooks/use-album";
 import { getOptions as websiteOptions } from "./_hooks/use-website";
 import { getOptions as categoryOptions } from "./_hooks/use-categories";
 import { getOptions as teamMemberOptions } from "./_hooks/use-team-members";
+import BackToTop from "./_components/back-to-top";
 
 import getQueryClient from "@/utils/react-query";
 
@@ -124,6 +125,7 @@ export default async function LayoutHome({
           {t("chatWithUs")}
           <WhatsappIcon />
         </a>
+        <BackToTop />
         <footer className="backdrop-blur relative z-10 text-white px-6 py-4">
           {/* Footer Bottom */}
           <div className="flex flex-col md:flex-row gap-2 justify-end items-center ">

@@ -4,7 +4,6 @@ import { stripHtml } from "string-strip-html";
 import { notFound } from "next/navigation";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 
-import BackToTop from "../../../_components/back-to-top";
 import TitlePage from "../../../_components/title-page";
 import { fetchInformation } from "../../../_hooks/use-album-detail-by-slug";
 import { getOptions as albumDetailBySlug } from "../../../_hooks/use-album-detail-by-slug";
@@ -239,7 +238,6 @@ export default async function AlbumDetailPage(props: {
           </div>
 
           <GridAlbum slug={slug} />
-          <BackToTop />
         </div>
       </div>
     </HydrationBoundary>

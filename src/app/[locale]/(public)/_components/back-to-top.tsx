@@ -2,32 +2,35 @@
 
 import { useState, useEffect, useRef } from "react";
 import { ChevronUp } from "lucide-react";
+import { cn } from "@heroui/theme";
 
 import { useIsMobile } from "@/hooks/use-mobile";
 
 export default function BackToTop() {
   const [isVisible, setIsVisible] = useState(false);
   const [isScrolling, setIsScrolling] = useState(false);
+  const [isNearFooter, setIsNearFooter] = useState(false);
+  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isMobile = useIsMobile();
-  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null); // Simpan timeout di ref
 
   useEffect(() => {
     const handleScroll = () => {
       const scrollY = window.scrollY;
-      const threshold = window.innerHeight * 0.3; // 30% dari tinggi layar
+      const threshold = window.innerHeight * 0.3;
+      const reachedThreshold = scrollY > threshold;
 
-      setIsVisible(scrollY > threshold); // Tombol muncul setelah scroll 30% layar
+      const scrollBottom =
+        window.innerHeight + scrollY >= document.body.offsetHeight - 100;
+
+      setIsVisible(reachedThreshold);
+      setIsNearFooter(scrollBottom);
 
       if (isMobile) {
-        setIsScrolling(true); // Hanya aktif di mobile
-
-        // Hapus timeout sebelumnya jika ada
-        if (scrollTimeoutRef.current) {
-          clearTimeout(scrollTimeoutRef.current);
-        }
-
-        // Set timeout baru untuk deteksi berhenti scroll
-        scrollTimeoutRef.current = setTimeout(() => setIsScrolling(false), 300); // Muncul lagi setelah 300ms tidak scroll
+        setIsScrolling(true);
+        if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
+        scrollTimeoutRef.current = setTimeout(() => {
+          setIsScrolling(false);
+        }, 300);
       }
     };
 
@@ -35,29 +38,26 @@ export default function BackToTop() {
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
-      if (scrollTimeoutRef.current) {
-        clearTimeout(scrollTimeoutRef.current);
-      }
+      if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
     };
   }, [isMobile]);
 
-  // Fungsi untuk kembali ke atas
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
     <div
-      className={`z-20 fixed bottom-40 md:bottom-48 right-4 flex flex-col items-center cursor-pointer group transition-opacity duration-500 ${
-        isVisible && !isScrolling ? "opacity-100" : "opacity-0"
-      }`}
+      className={cn(
+        "z-20 fixed right-4 flex flex-col items-center group cursor-pointer transition-all duration-500 ease-in-out",
+        isVisible && !isScrolling ? "opacity-100" : "opacity-0",
+        isNearFooter ? "bottom-40" : "bottom-10",
+      )}
       role="button"
       tabIndex={0}
       onClick={scrollToTop}
-      onKeyPress={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          scrollToTop();
-        }
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") scrollToTop();
       }}
     >
       {isMobile ? (

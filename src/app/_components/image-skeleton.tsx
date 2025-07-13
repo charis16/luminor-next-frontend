@@ -25,16 +25,29 @@ export default function ImageWithSkeleton({
   rounded = true,
   priority = false,
   withShadow = true,
-  aspectRatio = "aspect-[3/4]",
+  aspectRatio,
   imageClassName = "",
 }: ImageWithSkeletonProps) {
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isPortrait, setIsPortrait] = useState<boolean | null>(null);
+
+  const handleLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    const { naturalWidth, naturalHeight } = e.currentTarget;
+
+    setIsPortrait(naturalHeight > naturalWidth);
+    setIsLoaded(true);
+  };
 
   return (
     <div
       className={cn(
         "relative w-full",
-        aspectRatio,
+        aspectRatio ??
+          (isPortrait === null
+            ? ""
+            : isPortrait
+              ? "aspect-[3/4]"
+              : "aspect-[4/3]"),
         rounded && "rounded-md overflow-hidden",
         withShadow && "shadow-md",
         className,
@@ -49,7 +62,7 @@ export default function ImageWithSkeleton({
         alt={alt}
         as={NextImage}
         className={cn(
-          "absolute inset-0  transition-opacity duration-300 ",
+          "absolute inset-0 transition-opacity duration-300 object-cover",
           imageClassName,
           isLoaded ? "opacity-100" : "opacity-0",
         )}
@@ -63,7 +76,7 @@ export default function ImageWithSkeleton({
             : undefined
         }
         src={src}
-        onLoad={() => setIsLoaded(true)}
+        onLoad={handleLoad}
       />
     </div>
   );

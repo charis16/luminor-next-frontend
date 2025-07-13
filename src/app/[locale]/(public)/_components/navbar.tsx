@@ -21,7 +21,7 @@ import {
   DropdownTrigger,
 } from "@heroui/dropdown";
 import { Button } from "@heroui/button";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, SearchIcon } from "lucide-react";
 
 import { useWebsites } from "../_hooks/use-website";
 import { LanguageSwitcher } from "../../admin/_components";
@@ -211,6 +211,14 @@ export const Navbar = () => {
           </Dropdown>
 
           <NavbarItem className="hidden sm:flex gap-2">
+            <Button
+              isIconOnly
+              className="bg-transparent text-white hover:bg-white/10 border-none"
+              variant="bordered"
+            >
+              <SearchIcon className="h-5 w-5" />
+            </Button>
+
             <Button
               isExternal
               as={Link}

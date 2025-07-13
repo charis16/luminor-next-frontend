@@ -130,7 +130,7 @@ export default function GridAlbum({ slug }: GridAlbumProps) {
           {combinedMedia.map((item, index) => (
             <motion.div
               key={index}
-              className="break-inside-avoid overflow-hidden cursor-zoom-in"
+              className="overflow-hidden cursor-zoom-in brightness-90 hover:brightness-100 transition-all duration-300"
               custom={index}
               exit="exit"
               initial="hidden"

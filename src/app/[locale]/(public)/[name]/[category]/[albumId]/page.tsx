@@ -16,12 +16,18 @@ import getQueryClient from "@/utils/react-query";
 import { AlbumDetailBySlugResponse } from "@/types/website";
 import ImageWithSkeleton from "@/app/_components/image-skeleton";
 
+interface PageProps {
+  params: Promise<{
+    name: string;
+    category: string;
+    albumId: string;
+  }>;
+}
+
 export async function generateMetadata({
   params,
-}: {
-  params: { name: string; category: string; albumId: string };
-}): Promise<Metadata> {
-  const { albumId: slug } = params;
+}: PageProps): Promise<Metadata> {
+  const { albumId: slug } = await params;
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
   try {
@@ -131,12 +137,8 @@ export async function generateMetadata({
   }
 }
 
-export default async function AlbumDetailPage({
-  params,
-}: {
-  params: { name: string; category: string; albumId: string };
-}) {
-  const { albumId: slug } = params;
+export default async function AlbumDetailPage({ params }: PageProps) {
+  const { albumId: slug } = await params;
 
   const queryClient = getQueryClient();
 

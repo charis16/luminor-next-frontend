@@ -90,6 +90,10 @@ export async function generateMetadata(props: {
       robots: {
         index: true,
         follow: true,
+        googleBot: {
+          index: true,
+          follow: true,
+        },
       },
       keywords: keywordsArr,
       authors: [{ name: "Luminor Team", url: baseUrl }],
@@ -147,8 +151,12 @@ export async function generateMetadata(props: {
         canonical: `/${slug}`,
       },
       robots: {
-        index: false,
-        follow: false,
+        index: true,
+        follow: true,
+        googleBot: {
+          index: true,
+          follow: true,
+        },
       },
       keywords: "Our Portfolio, not found, 404",
       authors: [{ name: "Luminor Team", url: baseUrl }],

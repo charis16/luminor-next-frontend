@@ -61,7 +61,10 @@ export async function generateMetadata(props: {
       robots: {
         index: true,
         follow: true,
-        googleBot: { index: true, follow: true },
+        googleBot: {
+          index: true,
+          follow: true,
+        },
       },
       manifest: "/site.webmanifest",
       keywords: [
@@ -129,8 +132,12 @@ export async function generateMetadata(props: {
         canonical: `/category/${slug}`,
       },
       robots: {
-        index: false,
-        follow: false,
+        index: true,
+        follow: true,
+        googleBot: {
+          index: true,
+          follow: true,
+        },
       },
       keywords:
         "category,blora, weedings,photography,photographer, not found, 404",

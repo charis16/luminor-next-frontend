@@ -60,6 +60,10 @@ export async function generateMetadata(props: {
       robots: {
         index: true,
         follow: true,
+        googleBot: {
+          index: true,
+          follow: true,
+        },
       },
       keywords: data?.data?.name
         ? `${capitalize(data.data.name)}, category, luminor`
@@ -119,8 +123,12 @@ export async function generateMetadata(props: {
         canonical: `/category/${slug}`,
       },
       robots: {
-        index: false,
-        follow: false,
+        index: true,
+        follow: true,
+        googleBot: {
+          index: true,
+          follow: true,
+        },
       },
       keywords: "category, not found, 404",
       authors: [{ name: "Luminor Team", url: baseUrl }],

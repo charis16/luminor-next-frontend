@@ -40,7 +40,6 @@ export default function GridAlbum({
   isLoading,
 }: GridAlbumProps) {
   const t = useTranslations("portfolio");
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [records, setRecords] = useState<AlbumDetail[]>([]);
 
   const removeDuplicates = (data: AlbumDetail[]) => {
@@ -118,8 +117,6 @@ export default function GridAlbum({
               variants={itemVariants}
               viewport={{ once: false, amount: 0.2 }}
               whileInView="visible"
-              onMouseEnter={() => setHoveredIndex(index)}
-              onMouseLeave={() => setHoveredIndex(null)}
             >
               <Link
                 href={`/${album.user_slug.replace(/\s+/g, "-")}/${album.category_slug.replace(

@@ -101,7 +101,7 @@ export default async function LayoutHome({
     if (result.status === "rejected") {
       const err = result.reason;
 
-      if (err?.status === 403 || err?.status === 404) {
+      if (err?.status === 403 || err?.status === 404 || err?.status === 500) {
         return notFound();
       }
       throw err;

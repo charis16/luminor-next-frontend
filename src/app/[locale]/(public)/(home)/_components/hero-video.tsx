@@ -23,13 +23,7 @@ export default function HeroVideo() {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
-    const playPromise = videoRef.current?.play();
-
-    if (playPromise !== undefined) {
-      playPromise.catch((error) => {
-        console.warn("Autoplay prevented:", error);
-      });
-    }
+    videoRef.current?.play();
   }, []);
 
   return (

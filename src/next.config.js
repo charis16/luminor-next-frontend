@@ -6,7 +6,6 @@ const withNextIntl = createNextIntlPlugin();
 const nextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
-  productionBrowserSourceMaps: true,
   output: "standalone",
   images: {
     remotePatterns: [
@@ -25,6 +24,15 @@ const nextConfig = {
           {
             key: "Cache-Control",
             value: "public, max-age=31536000, immutable", // cache 1 tahun
+          },
+        ],
+      },
+      {
+        source: "/fonts/(.*)", // match files in public/fonts/
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable", // cache 1 year
           },
         ],
       },

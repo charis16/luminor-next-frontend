@@ -3,8 +3,9 @@ const createNextIntlPlugin = require("next-intl/plugin");
 const nextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
+  output: "standalone",
   images: {
-    unoptimized: true,
+    //unoptimized: true,
     remotePatterns: [
       {
         protocol: "https",

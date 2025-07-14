@@ -1,7 +1,4 @@
-/** @type {import('next').NextConfig} */
 const createNextIntlPlugin = require("next-intl/plugin");
-
-const withNextIntl = createNextIntlPlugin();
 
 const nextConfig = {
   poweredByHeader: false,
@@ -18,20 +15,20 @@ const nextConfig = {
   async headers() {
     return [
       {
-        source: "/images/(.*)", // match file di public/images/
+        source: "/images/(.*)",
         headers: [
           {
             key: "Cache-Control",
-            value: "public, max-age=31536000, immutable", // cache 1 tahun
+            value: "public, max-age=31536000, immutable",
           },
         ],
       },
       {
-        source: "/fonts/(.*)", // match files in public/fonts/
+        source: "/fonts/(.*)",
         headers: [
           {
             key: "Cache-Control",
-            value: "public, max-age=31536000, immutable", // cache 1 year
+            value: "public, max-age=31536000, immutable",
           },
         ],
       },
@@ -39,4 +36,4 @@ const nextConfig = {
   },
 };
 
-module.exports = withNextIntl(nextConfig);
+module.exports = createNextIntlPlugin()(nextConfig);

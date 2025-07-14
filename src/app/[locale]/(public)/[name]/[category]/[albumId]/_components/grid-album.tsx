@@ -1,5 +1,6 @@
 "use client";
-import { useState } from "react";
+
+import { useEffect, useState } from "react";
 import { Image } from "@heroui/image";
 import { motion } from "framer-motion";
 import NextImage from "next/image";
@@ -37,6 +38,18 @@ export default function GridAlbum({ slug }: GridAlbumProps) {
     768: 2,
     500: 1,
   };
+
+  const [isClientLoading, setIsClientLoading] = useState(true);
+
+  useEffect(() => {
+    if (!isLoading && !isPending) {
+      const timeout = setTimeout(() => {
+        setIsClientLoading(false);
+      }, 2000);
+
+      return () => clearTimeout(timeout);
+    }
+  }, [isLoading, isPending]);
 
   const handleZoomNext = () => {
     setZoomedIndex((prev) => (prev !== null ? (prev + 1) % images.length : 0));
@@ -112,44 +125,62 @@ export default function GridAlbum({ slug }: GridAlbumProps) {
   return (
     <>
       <div className="mx-auto flex flex-col gap-2 md:gap-6 md:py-6">
-        {isLoading || isPending ? (
-          <Masonry
-            breakpointCols={breakpointColumnsObj}
-            className="my-masonry-grid"
-            columnClassName="my-masonry-grid_column"
-          >
-            {Array.from({ length: 6 }).map((_, index) => (
-              <div
-                key={`skeleton-${index}`}
-                className="aspect-[3/4] w-full bg-neutral-200 animate-pulse rounded-md"
-              />
-            ))}
-          </Masonry>
-        ) : (
-          <Masonry
-            breakpointCols={breakpointColumnsObj}
-            className="my-masonry-grid"
-            columnClassName="my-masonry-grid_column"
-          >
-            {combinedMedia
-              .filter((item) => item.url !== thumbnail)
-              .map((item, index) => (
+        <motion.div
+          key={
+            isLoading || isPending || isClientLoading ? "skeleton" : "content"
+          }
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          initial={{ opacity: 0 }}
+          transition={{ duration: 0.4 }}
+        >
+          {isLoading || isPending || isClientLoading ? (
+            <Masonry
+              breakpointCols={breakpointColumnsObj}
+              className="my-masonry-grid"
+              columnClassName="my-masonry-grid_column"
+            >
+              {Array.from({ length: 12 }).map((_, index) => (
                 <motion.div
-                  key={index}
-                  className="overflow-hidden cursor-zoom-in brightness-90 hover:brightness-100 transition-all duration-300"
-                  custom={index}
-                  exit="exit"
-                  initial="hidden"
-                  variants={itemVariants}
-                  viewport={{ once: false, amount: 0.2 }}
-                  whileInView="visible"
-                  onClick={() => setZoomedIndex(index)}
-                >
-                  {renderMediaItem(item, index)}
-                </motion.div>
+                  key={`skeleton-${index}`}
+                  animate={{ opacity: 1 }}
+                  className={`w-full bg-neutral-700 animate-pulse rounded-md ${
+                    index % 3 === 0
+                      ? "aspect-[3/4]"
+                      : index % 3 === 1
+                        ? "aspect-[4/3]"
+                        : "aspect-[1/1]"
+                  }`}
+                  initial={{ opacity: 0 }}
+                  transition={{ delay: index * 0.05 }}
+                />
               ))}
-          </Masonry>
-        )}
+            </Masonry>
+          ) : (
+            <Masonry
+              breakpointCols={breakpointColumnsObj}
+              className="my-masonry-grid"
+              columnClassName="my-masonry-grid_column"
+            >
+              {combinedMedia
+                .filter((item) => item.url !== thumbnail)
+                .map((item, index) => (
+                  <motion.div
+                    key={index}
+                    animate={{ opacity: 1 }}
+                    className="overflow-hidden cursor-zoom-in brightness-90 hover:brightness-100 transition-all duration-300"
+                    custom={index}
+                    exit="exit"
+                    initial={{ opacity: 0 }}
+                    transition={{ delay: index * 0.05 }}
+                    onClick={() => setZoomedIndex(index)}
+                  >
+                    {renderMediaItem(item, index)}
+                  </motion.div>
+                ))}
+            </Masonry>
+          )}
+        </motion.div>
       </div>
       <Modal
         hideCloseButton

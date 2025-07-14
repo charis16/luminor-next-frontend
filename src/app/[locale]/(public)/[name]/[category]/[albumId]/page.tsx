@@ -16,31 +16,30 @@ import getQueryClient from "@/utils/react-query";
 import { AlbumDetailBySlugResponse } from "@/types/website";
 import ImageWithSkeleton from "@/app/_components/image-skeleton";
 
-export async function generateMetadata(props: {
-  params: Promise<{ name: string; category: string; albumId: string }>;
+export async function generateMetadata({
+  params,
+}: {
+  params: { name: string; category: string; albumId: string };
 }): Promise<Metadata> {
-  const { albumId: slug } = await props.params;
+  const { albumId: slug } = params;
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
   try {
     const data = await fetchInformation(slug);
-    const albumData = data?.data;
+    const album = data?.data;
 
+    const title = capitalize(album?.title) || "Our Album";
     const description =
       [
-        albumData?.description &&
-          capitalize(stripHtml(albumData.description).result),
-        albumData?.category_name &&
-          `Category: ${capitalize(albumData.category_name)}`,
-        albumData?.title && `Album: ${capitalize(albumData.title)}`,
-        albumData?.user_name && `By: ${capitalize(albumData.user_name)}`,
+        album?.description && capitalize(stripHtml(album.description).result),
+        album?.category_name && `Category: ${capitalize(album.category_name)}`,
+        album?.user_name && `By: ${capitalize(album.user_name)}`,
       ]
         .filter(Boolean)
         .join(", ") || "Album description not available";
 
-    const title = capitalize(albumData?.title) || "Our Album";
     const thumbnail =
-      albumData?.thumbnail || `${baseUrl}/images/web-app-manifest-1200x300.png`;
+      album?.thumbnail || `${baseUrl}/images/web-app-manifest-1200x300.png`;
 
     return {
       title,
@@ -48,7 +47,7 @@ export async function generateMetadata(props: {
       openGraph: {
         title,
         description,
-        images: [{ url: thumbnail, alt: title }],
+        images: [{ url: thumbnail, alt: title, width: 1200, height: 630 }],
       },
       twitter: {
         title,
@@ -56,57 +55,36 @@ export async function generateMetadata(props: {
         images: [thumbnail],
       },
       alternates: {
-        canonical: `/${albumData?.user_slug}/${albumData?.category_slug}/${albumData?.slug}`,
+        canonical: `/${album?.user_slug}/${album?.category_slug}/${album?.slug}`,
       },
-      robots: {
-        index: true,
-        follow: true,
-        googleBot: {
-          index: true,
-          follow: true,
-        },
-      },
+      metadataBase: new URL(baseUrl),
       manifest: "/site.webmanifest",
+      robots: { index: true, follow: true },
       keywords: [
-        albumData?.title && capitalize(albumData.title),
+        album?.title && capitalize(album.title),
         "luminor",
         "blora",
         "photography",
         "photographer",
         "semarang",
-        albumData?.category_name && capitalize(albumData.category_name),
-        albumData?.user_name && capitalize(albumData.user_name),
+        album?.category_name && capitalize(album.category_name),
+        album?.user_name && capitalize(album.user_name),
       ]
         .filter(Boolean)
         .join(", "),
       authors: [{ name: "Luminor Team", url: baseUrl }],
       creator: "Luminor Team",
       applicationName: "Luminor",
-      formatDetection: {
-        telephone: false,
-        address: false,
-        email: false,
-      },
-      metadataBase: new URL(baseUrl),
+      formatDetection: { telephone: false, address: false, email: false },
       icons: {
         icon: [
           { url: "/favicon.ico", type: "image/x-icon" },
-          { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
-          {
-            url: "/android-chrome-192x192.png",
-            sizes: "192x192",
-            type: "image/png",
-          },
-          { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
-          {
-            url: "/android-chrome-512x512.png",
-            sizes: "512x512",
-            type: "image/png",
-          },
+          { url: "/favicon-16x16.png", sizes: "16x16" },
+          { url: "/favicon-32x32.png", sizes: "32x32" },
+          { url: "/android-chrome-192x192.png", sizes: "192x192" },
+          { url: "/android-chrome-512x512.png", sizes: "512x512" },
         ],
-        apple: [
-          { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
-        ],
+        apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
       },
     };
   } catch {
@@ -131,25 +109,14 @@ export async function generateMetadata(props: {
       alternates: {
         canonical: `/category/${slug}`,
       },
-      robots: {
-        index: true,
-        follow: true,
-        googleBot: {
-          index: true,
-          follow: true,
-        },
-      },
+      metadataBase: new URL(baseUrl),
+      robots: { index: true, follow: true },
       keywords:
         "category,blora, weedings,photography,photographer, not found, 404",
       authors: [{ name: "Luminor Team", url: baseUrl }],
       creator: "Luminor Team",
       applicationName: "Luminor",
-      formatDetection: {
-        telephone: false,
-        address: false,
-        email: false,
-      },
-      metadataBase: new URL(baseUrl),
+      formatDetection: { telephone: false, address: false, email: false },
       icons: {
         icon: "/favicon.ico",
         shortcut: "/favicon.ico",
@@ -164,89 +131,73 @@ export async function generateMetadata(props: {
   }
 }
 
-export default async function AlbumDetailPage(props: {
-  params: Promise<{ name: string; category: string; albumId: string }>;
+export default async function AlbumDetailPage({
+  params,
+}: {
+  params: { name: string; category: string; albumId: string };
 }) {
-  const { albumId: slug } = await props.params;
+  const { albumId: slug } = params;
 
   const queryClient = getQueryClient();
 
-  let results: [PromiseSettledResult<AlbumDetailBySlugResponse>] = [
-    { status: "rejected", reason: null } as any,
-  ];
-
   try {
-    results = (await Promise.allSettled([
+    const results = await Promise.allSettled([
       queryClient.ensureQueryData<AlbumDetailBySlugResponse>(
         albumDetailBySlug(slug),
       ),
-    ])) as typeof results;
+    ]);
 
-    for (const result of results) {
-      if (result.status === "rejected") {
-        const err = result.reason;
+    const result = results[0];
 
-        if (err?.status === 403 || err?.status === 404) return notFound();
-        throw err;
-      }
+    if (result.status === "rejected") {
+      const err = result.reason;
+
+      if (err?.status === 403 || err?.status === 404) return notFound();
+      throw err;
     }
+
+    const album = result.value.data;
+    const dehydratedState = dehydrate(queryClient);
+
+    return (
+      <HydrationBoundary state={dehydratedState}>
+        <div className="relative min-h-screen bg-black text-white flex flex-col md:flex-row">
+          <TitlePage
+            subtitle={album?.title || ""}
+            title={album?.category_name || ""}
+          />
+          <div className="flex-1 md:ml-[120px] md:px-10 px-5 py-10 md:py-32">
+            <div className="relative w-full h-[40vh] md:h-[65vh] mb-6">
+              <ImageWithSkeleton
+                fill
+                priority
+                alt={album?.title || ""}
+                className="!w-full !h-full"
+                imageClassName="object-cover object-[center_30%]"
+                rounded={false}
+                src={album?.thumbnail || "/images/placeholder-image.webp"}
+                withShadow={false}
+              />
+              <Avatar
+                isBordered
+                className="absolute top-4 right-4 size-14 md:!size-20 shrink-0 rounded-full z-10"
+                classNames={{ img: "object-cover object-[center_30%]" }}
+                radius="full"
+                src={album?.user_avatar || "/images/placeholder-image.webp"}
+                style={{ objectPosition: "center 30%" }}
+              />
+              <Description slug={slug} />
+            </div>
+
+            <GridAlbum slug={slug} />
+          </div>
+        </div>
+      </HydrationBoundary>
+    );
   } catch (err: any) {
     if (err?.status === 403 || err?.status === 404) {
       return notFound();
     }
     throw err;
   }
-
-  const dehydratedState = dehydrate(queryClient);
-
-  // ✅ results[0] sekarang sudah bisa diakses
-  const selectedData =
-    results[0].status === "fulfilled" ? results[0].value : null;
-
-  return (
-    <HydrationBoundary state={dehydratedState}>
-      <div className="relative min-h-screen bg-black text-white flex flex-col md:flex-row">
-        <TitlePage
-          subtitle={selectedData?.data?.title || ""}
-          title={selectedData?.data?.category_name || ""}
-        />
-        <div className="flex-1 md:ml-[120px] md:px-10 px-5 py-10 md:py-32">
-          <div className="relative w-full h-[40vh] md:h-[65vh] mb-6">
-            <ImageWithSkeleton
-              fill
-              priority
-              alt={selectedData?.data?.title || ""}
-              className="!w-full !h-full"
-              imageClassName="object-cover object-[center_30%]"
-              rounded={false}
-              src={
-                selectedData?.data?.thumbnail ||
-                "/images/placeholder-image.webp"
-              }
-              withShadow={false}
-            />
-            <Avatar
-              isBordered
-              className="absolute top-4 right-4 size-14 md:!size-20 shrink-0 rounded-full z-10"
-              classNames={{
-                img: "object-cover object-[center_30%]",
-              }}
-              radius="full"
-              src={
-                selectedData?.data?.user_avatar ||
-                "/images/placeholder-image.webp"
-              }
-              style={{
-                objectPosition: "center 30%",
-              }}
-            />
-
-            <Description slug={slug} />
-          </div>
-
-          <GridAlbum slug={slug} />
-        </div>
-      </div>
-    </HydrationBoundary>
-  );
 }

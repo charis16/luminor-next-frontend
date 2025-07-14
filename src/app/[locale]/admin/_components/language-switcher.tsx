@@ -60,8 +60,7 @@ export default function LanguageSwitcher() {
         <Button
           disableRipple
           isIconOnly
-          className="!p-0 !bg-transparent text-lg"
-          size="sm"
+          className="!p-0 !bg-transparent text-2xl"
           variant="light"
           onPress={() => setIsOpen(true)}
         >

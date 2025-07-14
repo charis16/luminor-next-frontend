@@ -102,12 +102,13 @@ export const Navbar = () => {
               href="/"
             >
               <Image
-                alt="Luminor"
+                removeWrapper
+                alt="Luminor Logo Navbar"
                 as={NextImage}
+                className="object-contain"
                 height={32}
                 isBlurred={false}
-                removeWrapper={true}
-                src={"/images/logo.png"}
+                src="/images/logo.png"
                 width={32}
               />
               <p className="font-bold text-inherit uppercase md:block">
@@ -213,6 +214,7 @@ export const Navbar = () => {
           <NavbarItem className="hidden sm:flex gap-2">
             <Button
               isIconOnly
+              aria-label="Search"
               className="bg-transparent text-white hover:bg-white/10 border-none"
               variant="bordered"
             >
@@ -221,6 +223,7 @@ export const Navbar = () => {
 
             <Button
               isExternal
+              aria-label="contact us"
               as={Link}
               className="bg-[rgb(42,181,64)]/80 text-white hover:bg-[rgb(42,181,64)] border-none"
               endContent={<WhatsappIcon />}

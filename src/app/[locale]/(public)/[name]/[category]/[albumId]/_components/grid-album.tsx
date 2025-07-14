@@ -12,13 +12,8 @@ import { useAlbumDetailBySlug } from "@/app/[locale]/(public)/_hooks/use-album-d
 import ImageWithSkeleton from "@/app/_components/image-skeleton";
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 50 }, // Mulai dalam keadaan tidak terlihat dan turun ke bawah
-  visible: (index: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.4, delay: index * 0.02, ease: "easeOut" }, // Delay bertingkat untuk efek smooth
-  }),
-  exit: { opacity: 0, y: 50, transition: { duration: 0.3, ease: "easeInOut" } }, // Efek keluar viewport
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { duration: 0.4 } },
 };
 
 interface GridAlbumProps {
@@ -26,7 +21,6 @@ interface GridAlbumProps {
 }
 
 export default function GridAlbum({ slug }: GridAlbumProps) {
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const { data: selectedData } = useAlbumDetailBySlug(slug);
   const [zoomedIndex, setZoomedIndex] = useState<number | null>(null);
   const images = selectedData?.data?.images || [];
@@ -38,14 +32,6 @@ export default function GridAlbum({ slug }: GridAlbumProps) {
     1024: 3,
     768: 2,
     500: 1,
-  };
-
-  const getSizeClass = (url: string, index: number) => {
-    if (url.includes("portrait") || index % 5 === 0) {
-      return "col-span-2 row-span-2"; // Bikin besar
-    }
-
-    return "col-span-1 row-span-1";
   };
 
   const handleZoomNext = () => {
@@ -127,21 +113,23 @@ export default function GridAlbum({ slug }: GridAlbumProps) {
           className="my-masonry-grid"
           columnClassName="my-masonry-grid_column"
         >
-          {combinedMedia.map((item, index) => (
-            <motion.div
-              key={index}
-              className="overflow-hidden cursor-zoom-in brightness-90 hover:brightness-100 transition-all duration-300"
-              custom={index}
-              exit="exit"
-              initial="hidden"
-              variants={itemVariants}
-              viewport={{ once: false, amount: 0.2 }}
-              whileInView="visible"
-              onClick={() => setZoomedIndex(index)}
-            >
-              {renderMediaItem(item, index)}
-            </motion.div>
-          ))}
+          {combinedMedia
+            .filter((item) => item.url !== thumbnail)
+            .map((item, index) => (
+              <motion.div
+                key={index}
+                className="overflow-hidden cursor-zoom-in brightness-90 hover:brightness-100 transition-all duration-300"
+                custom={index}
+                exit="exit"
+                initial="hidden"
+                variants={itemVariants}
+                viewport={{ once: false, amount: 0.2 }}
+                whileInView="visible"
+                onClick={() => setZoomedIndex(index)}
+              >
+                {renderMediaItem(item, index)}
+              </motion.div>
+            ))}
         </Masonry>
       </div>
       <Modal

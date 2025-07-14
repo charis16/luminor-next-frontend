@@ -116,7 +116,6 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
   userScalable: true,
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "white" },
@@ -134,6 +133,9 @@ export default async function RootLayout({
 
   return (
     <html suppressHydrationWarning lang={locale}>
+      <head>
+        <meta content="width=device-width, initial-scale=1" name="viewport" />
+      </head>
       <body
         className={clsx(
           "min-h-dvh bg-background font-sans antialiased",

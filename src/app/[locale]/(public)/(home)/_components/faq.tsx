@@ -22,12 +22,12 @@ export default function FaqSection() {
       id="faq-section"
     >
       <div className="flex flex-col gap-2 pl-6">
-        <h2 className="text-xl md:text-4xl font-bold text-foreground">
+        <h1 className="text-xl md:text-4xl font-bold text-foreground">
           {t("faqs")}
-        </h2>
-        <h4 className="text-neutral-400 text-lg md:max-w-3xl">
+        </h1>
+        <h2 className="text-neutral-400 text-lg md:max-w-3xl">
           {t("faqDesc")}
-        </h4>
+        </h2>
       </div>
 
       {data?.data && data.data.length > 0 ? (

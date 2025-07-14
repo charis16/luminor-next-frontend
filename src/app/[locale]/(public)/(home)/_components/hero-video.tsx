@@ -44,7 +44,15 @@ export default function HeroVideo() {
           className="absolute top-0 left-0 w-full h-full object-cover"
           preload="auto"
           src={videoUrl}
-        />
+        >
+          <track
+            default
+            kind="captions"
+            label="Bahasa Indonesia"
+            src="/captions.vtt"
+            srcLang="id"
+          />
+        </video>
       ) : (
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-2  text-white">
           <EmptyState

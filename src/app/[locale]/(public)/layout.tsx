@@ -129,31 +129,32 @@ export default async function LayoutHome({
         <footer className="backdrop-blur relative z-10 text-white px-6 py-4">
           {/* Footer Bottom */}
           <div className="flex flex-col md:flex-row gap-2 justify-end items-center ">
-            <div className="flex justify-center items-center">
+            <div className="flex justify-center items-center gap-2">
               <Link
                 aria-label="Instagram"
+                className="inline-flex items-center justify-center rounded-full hover:bg-white/10"
                 href={
                   website?.url_instagram ||
                   "https://www.instagram.com/luminor.pic"
                 }
                 target="_blank"
               >
-                <InstagramIcon height={18} width={18} />
+                <InstagramIcon height={24} width={24} />
               </Link>
               <Link
                 aria-label="TikTok"
-                className="ml-3"
+                className="inline-flex items-center justify-center rounded-full hover:bg-white/10"
                 href={
                   website?.url_tiktok || "https://www.tiktok.com/@luminor.pic"
                 }
                 target="_blank"
               >
-                <TikTokIcon height={18} width={18} />
+                <TikTokIcon height={24} width={24} />
               </Link>
               <LanguageSwitcher />
             </div>
           </div>
-          <div className="mt-2 border-t border-white/10 pt-6 flex flex-col md:flex-row items-center justify-center text-sm text-neutral-500">
+          <div className="mt-2 border-t border-white/10 pt-6 flex flex-col md:flex-row items-center justify-center text-sm text-neutral-400">
             {/* Kiri - Info */}
             <div className="text-center flex flex-col gap-1 md:flex-row">
               © 2025 Luminor,

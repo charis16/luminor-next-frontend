@@ -1,53 +1,40 @@
 # === Stage 1: Build Next.js App ===
 FROM node:18-alpine AS builder
 
-# Set working directory
 WORKDIR /app
-
-# Set environment variables
 ENV NODE_OPTIONS="--max-old-space-size=2048"
 
-# Copy env file lebih awal (dibaca saat build)
+# Copy env (optional)
 COPY ./src/.env .env
 
-# Copy dependency files dan install seluruh dependency (dev + prod)
+# Install dependencies
 COPY ./src/package.json ./src/yarn.lock ./
 RUN yarn install --frozen-lockfile && yarn cache clean
 
-# Copy entire source code
+# Copy source code
 COPY ./src .
 
-# Bersihkan build sebelumnya (kalau ada)
-RUN rm -rf .next
-
-# Build Next.js dengan output standalone
+# Build tanpa output: 'standalone'
 RUN yarn build
 
-# === Stage 2: Minimal Production Image ===
+---
+
+# === Stage 2: Production Image ===
 FROM node:18-alpine AS runner
 
-# Set working directory
 WORKDIR /app
-
-RUN apk add --no-cache curl
-
-# Set production environment
 ENV NODE_ENV=production
 ENV PORT=3000
 
-# Copy env file untuk runtime (opsional jika dibutuhkan oleh server.js)
-COPY ./src/.env .env
+RUN apk add --no-cache curl
 
-# Copy hasil build dan public
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/package.json ./package.json
-COPY --from=builder /app/yarn.lock ./yarn.lock
+# Copy source code + build output
+COPY ./src ./
 
-# Expose port
+# Install only production dependencies
+RUN yarn install --production && yarn cache clean
+
 EXPOSE 3000
 
-# Jalankan Next.js production server
+# Start app
 CMD ["yarn", "start"]
-# atau jika pakai npm:
-# CMD ["npm", "start"]

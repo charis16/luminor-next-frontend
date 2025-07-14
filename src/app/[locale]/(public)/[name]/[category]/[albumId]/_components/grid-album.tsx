@@ -21,7 +21,11 @@ interface GridAlbumProps {
 }
 
 export default function GridAlbum({ slug }: GridAlbumProps) {
-  const { data: selectedData } = useAlbumDetailBySlug(slug);
+  const {
+    data: selectedData,
+    isPending,
+    isLoading,
+  } = useAlbumDetailBySlug(slug);
   const [zoomedIndex, setZoomedIndex] = useState<number | null>(null);
   const images = selectedData?.data?.images || [];
   const thumbnail = selectedData?.data?.thumbnail;
@@ -108,29 +112,44 @@ export default function GridAlbum({ slug }: GridAlbumProps) {
   return (
     <>
       <div className="mx-auto flex flex-col gap-2 md:gap-6 md:py-6">
-        <Masonry
-          breakpointCols={breakpointColumnsObj}
-          className="my-masonry-grid"
-          columnClassName="my-masonry-grid_column"
-        >
-          {combinedMedia
-            .filter((item) => item.url !== thumbnail)
-            .map((item, index) => (
-              <motion.div
-                key={index}
-                className="overflow-hidden cursor-zoom-in brightness-90 hover:brightness-100 transition-all duration-300"
-                custom={index}
-                exit="exit"
-                initial="hidden"
-                variants={itemVariants}
-                viewport={{ once: false, amount: 0.2 }}
-                whileInView="visible"
-                onClick={() => setZoomedIndex(index)}
-              >
-                {renderMediaItem(item, index)}
-              </motion.div>
+        {isLoading || isPending ? (
+          <Masonry
+            breakpointCols={breakpointColumnsObj}
+            className="my-masonry-grid"
+            columnClassName="my-masonry-grid_column"
+          >
+            {Array.from({ length: 6 }).map((_, index) => (
+              <div
+                key={`skeleton-${index}`}
+                className="aspect-[3/4] w-full bg-neutral-200 animate-pulse rounded-md"
+              />
             ))}
-        </Masonry>
+          </Masonry>
+        ) : (
+          <Masonry
+            breakpointCols={breakpointColumnsObj}
+            className="my-masonry-grid"
+            columnClassName="my-masonry-grid_column"
+          >
+            {combinedMedia
+              .filter((item) => item.url !== thumbnail)
+              .map((item, index) => (
+                <motion.div
+                  key={index}
+                  className="overflow-hidden cursor-zoom-in brightness-90 hover:brightness-100 transition-all duration-300"
+                  custom={index}
+                  exit="exit"
+                  initial="hidden"
+                  variants={itemVariants}
+                  viewport={{ once: false, amount: 0.2 }}
+                  whileInView="visible"
+                  onClick={() => setZoomedIndex(index)}
+                >
+                  {renderMediaItem(item, index)}
+                </motion.div>
+              ))}
+          </Masonry>
+        )}
       </div>
       <Modal
         hideCloseButton

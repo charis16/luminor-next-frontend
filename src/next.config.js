@@ -4,7 +4,6 @@ const nextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
   images: {
-    unoptimized: true,
     domains: ["cdn.luminorpictures.com"],
     remotePatterns: [
       {

@@ -12,11 +12,6 @@ import Masonry from "react-masonry-css";
 import { useAlbumDetailBySlug } from "@/app/[locale]/(public)/_hooks/use-album-detail-by-slug";
 import ImageWithSkeleton from "@/app/_components/image-skeleton";
 
-const itemVariants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { duration: 0.4 } },
-};
-
 interface GridAlbumProps {
   slug: string;
 }

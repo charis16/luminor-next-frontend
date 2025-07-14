@@ -38,13 +38,16 @@ ENV PORT=3000
 # Copy env file untuk runtime (opsional jika dibutuhkan oleh server.js)
 COPY ./src/.env .env
 
-# Copy hasil build dari tahap builder
-COPY --from=builder /app/.next/standalone ./
-COPY --from=builder /app/.next/static ./.next/static
+# Copy hasil build dan public
+COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/yarn.lock ./yarn.lock
 
 # Expose port
 EXPOSE 3000
 
-# Jalankan Next.js standalone server
-CMD ["node", "server.js"]
+# Jalankan Next.js production server
+CMD ["yarn", "start"]
+# atau jika pakai npm:
+# CMD ["npm", "start"]
